@@ -59,6 +59,7 @@ public partial class ScriptSkill : IScriptSkill
     public int SkillInterval { get; set; } = 100;
     public int SkillTimeout { get; set; } = -1;
     public SkillUseMode SkillUseMode { get; set; } = SkillUseMode.UseIfAvailable;
+    public string PotionName { get; set; } = "";
 
     public void Start()
     {
@@ -139,6 +140,7 @@ public partial class ScriptSkill : IScriptSkill
         OverrideProvider.Load(skill.Skills);
         SkillTimeout = skill.SkillTimeout;
         SkillUseMode = skill.SkillUseMode;
+        PotionName = skill.PotionName.ToLower().Trim();
     }
 
     public void LoadAdvanced(string skills, int skillTimeout = -1, SkillUseMode skillMode = SkillUseMode.UseIfAvailable)
@@ -233,6 +235,16 @@ public partial class ScriptSkill : IScriptSkill
         // This method will activate a skill
         void UseSkill(int skill)
         {
+            // Equip potion if skill is 5 and PotionName is set
+            if (skill == 5 && !string.IsNullOrWhiteSpace(PotionName))
+            {
+                string normalizedPotionName = PotionName.ToLower().Trim();
+                if (Inventory.TryGetItem(normalizedPotionName, out var potionItem))
+                {
+                    Inventory.EquipItem(normalizedPotionName);
+                }
+            }
+
             switch (SkillUseMode)
             {
                 // if SkillUseMode is UseIfAvailable then use skills without waiting for cooldown

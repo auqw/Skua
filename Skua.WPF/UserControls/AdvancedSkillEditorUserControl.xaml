@@ -182,49 +182,67 @@
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
                 <local:SkillRuleUserControl DataContext="{Binding UseRules}" />
-                <StackPanel
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    HorizontalAlignment="Center"
-                    DockPanel.Dock="Bottom"
-                    Orientation="Horizontal" Width="277">
-                    <StackPanel.ToolTip>
-                        <TextBlock>
-                            Adds the skill index with specified use rules.<LineBreak />
-                            Note that the numbers reflect only skills<LineBreak />
-                            and not the auto attack, so 1 is your in-game skill 2.</TextBlock>
-                    </StackPanel.ToolTip>
-                    <StackPanel.Resources>
-                        <Style BasedOn="{StaticResource MaterialDesignRaisedButton}" TargetType="Button">
-                            <Setter Property="Margin" Value="3" />
-                        </Style>
-                    </StackPanel.Resources>
-                    <Button
-                        Command="{Binding AddSkillToCurrentCommand}"
-                        Content="0"
-                        CommandParameter="0"  />
-                    <Button
-                        Command="{Binding AddSkillToCurrentCommand}"
-                        CommandParameter="1"
-                        Content="1" />
-                    <Button
-                        Command="{Binding AddSkillToCurrentCommand}"
-                        CommandParameter="2"
-                        Content="2" />
-                    <Button
-                        Command="{Binding AddSkillToCurrentCommand}"
-                        CommandParameter="3"
-                        Content="3" />
-                    <Button
-                        Command="{Binding AddSkillToCurrentCommand}"
-                        CommandParameter="4"
-                        Content="4" />
-                    <Button
-                        Command="{Binding AddSkillToCurrentCommand}"
-                        CommandParameter="5"
-                        Content="{materialDesign:PackIcon Kind=HealthPotion}" />
-                </StackPanel>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Center"
+                        DockPanel.Dock="Bottom"
+                        Orientation="Horizontal" Width="277">
+                        <StackPanel.ToolTip>
+                            <TextBlock>
+                                Adds the skill index with specified use rules.<LineBreak />
+                                Note that the numbers reflect only skills<LineBreak />
+                                and not the auto attack, so 1 is your in-game skill 2.</TextBlock>
+                        </StackPanel.ToolTip>
+                        <StackPanel.Resources>
+                            <Style BasedOn="{StaticResource MaterialDesignRaisedButton}" TargetType="Button">
+                                <Setter Property="Margin" Value="3" />
+                            </Style>
+                        </StackPanel.Resources>
+                        <Button
+                            Command="{Binding AddSkillToCurrentCommand}"
+                            Content="0"
+                            CommandParameter="0"  />
+                        <Button
+                            Command="{Binding AddSkillToCurrentCommand}"
+                            CommandParameter="1"
+                            Content="1" />
+                        <Button
+                            Command="{Binding AddSkillToCurrentCommand}"
+                            CommandParameter="2"
+                            Content="2" />
+                        <Button
+                            Command="{Binding AddSkillToCurrentCommand}"
+                            CommandParameter="3"
+                            Content="3" />
+                        <Button
+                            Command="{Binding AddSkillToCurrentCommand}"
+                            CommandParameter="4"
+                            Content="4" />
+                        <Button
+                            Command="{Binding AddSkillToCurrentCommand}"
+                            CommandParameter="5"
+                            Content="{materialDesign:PackIcon Kind=HealthPotion}" />
+                    </StackPanel>
+                    <TextBox
+                        Grid.Row="1"
+                        Margin="3,3,3,0"
+                        materialDesign:HintAssist.Hint="Potion Name"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding PotionName, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.ToolTip>
+                            <TextBlock>
+                                Enter the name of the potion to equip when button 5 is used.<LineBreak />
+                                The potion will only be equipped if it is owned.</TextBlock>
+                        </TextBox.ToolTip>
+                    </TextBox>
+                </Grid>
             </Grid>
         </GroupBox>
         <!--#endregion-->

@@ -54,6 +54,9 @@ public partial class AdvancedSkillEditorViewModel : ObservableRecipient
     [ObservableProperty]
     private string _currentClassName = string.Empty;
 
+    [ObservableProperty]
+    private string _potionName = string.Empty;
+
     public string[] ClassUseModes { get; }
     public SkillRulesViewModel UseRules { get; }
     public IRelayCommand ClearSkillsCommand { get; }
@@ -72,7 +75,8 @@ public partial class AdvancedSkillEditorViewModel : ObservableRecipient
     private void SaveSkills()
     {
         string skills = string.Join(" | ", _currentSkillsList.Select(s => s.Convert()));
-        AdvancedSkill advSkill = new(CurrentClassName, skills, CurrentSkillTimeout, SelectedClassUseMode, UseWaitModeBool ? SkillUseMode.WaitForCooldown : SkillUseMode.UseIfAvailable);
+        string normalizedPotionName = PotionName.ToLower().Trim();
+        AdvancedSkill advSkill = new(CurrentClassName, skills, CurrentSkillTimeout, SelectedClassUseMode, UseWaitModeBool ? SkillUseMode.WaitForCooldown : SkillUseMode.UseIfAvailable, normalizedPotionName);
         OnPropertyChanged(nameof(CurrentSkillsList));
         Messenger.Send<SaveAdvancedSkillMessage>(new(advSkill));
     }
@@ -161,6 +165,7 @@ public partial class AdvancedSkillEditorViewModel : ObservableRecipient
         recipient.UseWaitModeBool = message.AdvSkill.SkillUseMode == SkillUseMode.UseIfAvailable ? false : true;
         recipient.CurrentClassName = message.AdvSkill.ClassName;
         recipient.SelectedClassUseMode = (int)message.AdvSkill.ClassUseMode;
+        recipient.PotionName = message.AdvSkill.PotionName;
         recipient.CurrentSkillsList.AddRange(message.AdvSkill.Skills.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(s => new SkillItemViewModel(s.Trim())));
     }
 }

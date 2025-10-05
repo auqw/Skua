@@ -94,13 +94,19 @@ public class AdvancedSkillContainer : ObservableRecipient, IAdvancedSkillContain
         LoadedSkills.Clear();
         foreach (string line in File.ReadAllLines(_userSkillsSetsPath))
         {
-            string[] parts = line.Split(new[] { '=' }, 4);
+            string[] parts = line.Split(new[] { '=' }, 5);
             if (parts.Length == 3)
                 _loadedSkills.Add(new AdvancedSkill(parts[1].Trim(), parts[2].Trim(), 250, parts[0].Trim(), "WaitForCooldown"));
             else if (parts.Length == 4)
             {
                 bool waitForCooldown = int.TryParse(parts[3].RemoveLetters(), out int result);
                 _loadedSkills.Add(new AdvancedSkill(parts[1].Trim(), parts[2].Trim(), waitForCooldown ? result : 250, parts[0].Trim(), waitForCooldown ? SkillUseMode.WaitForCooldown : SkillUseMode.UseIfAvailable));
+            }
+            else if (parts.Length == 5)
+            {
+                bool waitForCooldown = int.TryParse(parts[3].RemoveLetters(), out int result);
+                string potionName = parts[4].Trim();
+                _loadedSkills.Add(new AdvancedSkill(parts[1].Trim(), parts[2].Trim(), waitForCooldown ? result : 250, parts[0].Trim(), waitForCooldown ? SkillUseMode.WaitForCooldown : SkillUseMode.UseIfAvailable, potionName));
             }
         }
 
