@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Flash;
 using Skua.Core.Interfaces;
+using Skua.Core.Interfaces.Auras;
 using Skua.Core.Messaging;
 using Skua.Core.Models.Skills;
 using Skua.Core.Skills;
@@ -18,6 +19,8 @@ public partial class ScriptSkill : IScriptSkill
     private readonly Lazy<IScriptWait> _lazyWait;
     private readonly Lazy<IScriptOption> _lazyOptions;
     private readonly Lazy<IScriptInventory> _lazyInventory;
+    private readonly Lazy<IScriptSelfAuras> _lazySelf;
+    private readonly Lazy<IScriptTargetAuras> _lazyTarget;
 
     private IFlashUtil Flash => _lazyFlash.Value;
     private IScriptPlayer Player => _lazyPlayer.Value;
@@ -25,6 +28,8 @@ public partial class ScriptSkill : IScriptSkill
     private IScriptWait Wait => _lazyWait.Value;
     private IScriptOption Options => _lazyOptions.Value;
     private IScriptInventory Inventory => _lazyInventory.Value;
+    private IScriptSelfAuras Self => _lazySelf.Value;
+    private IScriptTargetAuras Target => _lazyTarget.Value;
 
     public IAdvancedSkillContainer AdvancedSkillContainer { get; set; }
 
@@ -35,7 +40,9 @@ public partial class ScriptSkill : IScriptSkill
         Lazy<IScriptCombat> combat,
         Lazy<IScriptOption> options,
         Lazy<IScriptInventory> inventory,
-        Lazy<IScriptWait> wait)
+        Lazy<IScriptWait> wait,
+        Lazy<IScriptSelfAuras> self,
+        Lazy<IScriptTargetAuras> target)
     {
         _lazyFlash = flash;
         _lazyPlayer = player;
@@ -43,6 +50,8 @@ public partial class ScriptSkill : IScriptSkill
         _lazyWait = wait;
         _lazyOptions = options;
         _lazyInventory = inventory;
+        _lazySelf = self;
+        _lazyTarget = target;
         AdvancedSkillContainer = advContainer;
     }
 
@@ -67,7 +76,7 @@ public partial class ScriptSkill : IScriptSkill
     {
         if(BaseProvider is null)
         {
-            BaseProvider = new AdvancedSkillProvider(Player, Combat);
+            BaseProvider = new AdvancedSkillProvider(Player, Combat, Self, Target);
             BaseProvider.Load(genericSkills);
             _provider = BaseProvider;
         }
@@ -116,7 +125,7 @@ public partial class ScriptSkill : IScriptSkill
 
     public void LoadAdvanced(string className, bool autoEquip, ClassUseMode useMode = ClassUseMode.Base)
     {
-        OverrideProvider = new AdvancedSkillProvider(Player, Combat);
+        OverrideProvider = new AdvancedSkillProvider(Player, Combat, Self, Target);
 
         if(className == "generic")
         {
@@ -146,7 +155,7 @@ public partial class ScriptSkill : IScriptSkill
 
     public void LoadAdvanced(string skills, int skillTimeout = -1, SkillUseMode skillMode = SkillUseMode.UseIfAvailable)
     {
-        OverrideProvider = new AdvancedSkillProvider(Player, Combat);
+        OverrideProvider = new AdvancedSkillProvider(Player, Combat, Self, Target);
         SkillTimeout = skillTimeout;
         SkillUseMode = skillMode;
         OverrideProvider.Load(skills);

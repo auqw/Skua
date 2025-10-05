@@ -1,4 +1,6 @@
 ﻿using Skua.Core.Interfaces;
+using Skua.Core.Interfaces.Auras;
+using Skua.Core.Models.Auras;
 using System.Diagnostics;
 
 namespace Skua.Core.Skills;
@@ -19,7 +21,7 @@ public class AdvancedSkillCommand
     }
 
     
-    public bool? ShouldUse(IScriptPlayer player, int skillIndex, bool canUse)
+    public bool? ShouldUse(IScriptPlayer player, int skillIndex, bool canUse, IScriptSelfAuras? self = null, IScriptTargetAuras? target = null)
     {
         if (UseRules.Count == 0 || UseRules[skillIndex].First().Rule == SkillRule.None)
             return true; 
@@ -42,6 +44,14 @@ public class AdvancedSkillCommand
                     if (useRule.ShouldSkip && !canUse)
                         return null; 
                     Task.Delay(useRule.Value).Wait();
+                    break;
+                case SkillRule.Aura:
+                    if (self != null && useRule.AuraName != null && useRule.Comparison != null)
+                        shouldUse = AuraUseRule(self, useRule.AuraName, useRule.Comparison, useRule.Value);
+                    break;
+                case SkillRule.TargetAura:
+                    if (target != null && useRule.AuraName != null && useRule.Comparison != null)
+                        shouldUse = AuraUseRule(target, useRule.AuraName, useRule.Comparison, useRule.Value);
                     break;
             }
 
@@ -67,6 +77,23 @@ public class AdvancedSkillCommand
         return greater ? player.Mana >= mana : player.Mana <= mana;
     }
 
+    private bool AuraUseRule(IScriptAuras auras, string auraName, string comparison, int value)
+    {
+        if (!auras.TryGetAura(auraName, out Aura? aura) || aura == null)
+            return false;
+        
+        if (string.IsNullOrEmpty(aura.Value) || !int.TryParse(aura.Value, out int auraValue))
+            return false;
+        
+        return comparison switch
+        {
+            ">" => auraValue > value,
+            "<" => auraValue < value,
+            "=" => auraValue == value,
+            _ => false
+        };
+    }
+
     public void Reset()
     {
         _Index = 0;
@@ -78,7 +105,9 @@ public enum SkillRule
     None,
     Health,
     Mana,
-    Wait
+    Wait,
+    Aura,
+    TargetAura
 }
 
 public struct UseRule
@@ -92,6 +121,15 @@ public struct UseRule
     {
         Rule = rule;
         Greater = greater;
+        Value = value;
+        ShouldSkip = shouldSkip;
+    }
+    
+    public UseRule(SkillRule rule, string auraName, string comparison, int value, bool shouldSkip)
+    {
+        Rule = rule;
+        AuraName = auraName;
+        Comparison = comparison;
         Value = value;
         ShouldSkip = shouldSkip;
     }
@@ -114,4 +152,6 @@ public struct UseRule
     public readonly bool Greater = default;
     public readonly int Value = default;
     public readonly bool ShouldSkip = default;
+    public readonly string? AuraName = default;
+    public readonly string? Comparison = default;
 }
