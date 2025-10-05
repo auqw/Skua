@@ -361,6 +361,17 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
                 Initialize();
                 break;
 
+            case "openWebsite":
+                if (args != null && args.Length > 0 && args[0] is string url)
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    });
+                }
+                break;
+
             case "debug":
                 Trace.WriteLine(args[0]);
                 break;

@@ -52,7 +52,6 @@ public class FlashUtil : IFlashUtil
             flash.Dock = DockStyle.Fill;
             flash.TabIndex = 0;
             flash.FlashCall += CallHandler;
-            
             _messenger.Send<FlashChangedMessage<AxShockwaveFlash>>(new(flash));
             flash.EndInit();
             Flash = flash;

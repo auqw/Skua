@@ -119,6 +119,7 @@ public class Main extends MovieClip {
         this.game.params.isEU = this.isEU;
         this.game.params.loginURL = this.loginURL;
 
+        this.game.addEventListener(MouseEvent.CLICK,this.onGameClick);
         this.game.sfc.addEventListener(SFSEvent.onExtensionResponse, this.onExtensionResponse);
         this.gameDomain = LoaderInfo(event.target).applicationDomain;
 
@@ -132,6 +133,37 @@ public class Main extends MovieClip {
 
     public function onExtensionResponse(packet:*):void {
         this.external.call('pext', JSON.stringify(packet));
+    }
+
+    private function onGameClick(event:MouseEvent) : void
+    {
+        if (event == null)
+                return;
+        var className:String = getQualifiedClassName(event.target.parent);
+        switch(event.target.name)
+        {
+            case "btCharPage":
+                this.external.call("openWebsite","https://account.aq.com/CharPage?id=" + event.target.parent.txtUserName.text);
+                return;
+            case "btnWiki":
+                if (event.target.parent.parent.parent.name == "qRewardPrev") {
+                    this.external.call("openWebsite", "http://aqwwiki.wikidot.com/" + instance.game.ui.getChildByName("qRewardPrev").cnt.strTitle.text);
+                } else if (className.indexOf("LPFFrameItemPreview") > -1) {
+                    this.external.call("openWebsite","http://aqwwiki.wikidot.com/" + event.target.parent.tInfo.getLineText(0));
+                } else if (className.indexOf("LPFFrameHousePreview") > -1) {
+                    this.external.call("openWebsite","http://aqwwiki.wikidot.com/" + instance.game.ui.mcPopup.getChildByName("mcInventory").previewPanel.frames[3].mc.tInfo.getLineText(0));
+                } else if (className.indexOf("mcQFrame") > -1) {
+                    this.external.call("openWebsite","https://cse.google.com/cse?oe=utf8&ie=utf8&source=uds&safe=active&sort=&cx=015511893259151479029:wctfduricyy&start=0#gsc.tab=0&gsc.q=" + instance.game.getInstanceFromModalStack("QFrameMC").qData.sName);
+                }
+                return;
+            case "hit":
+                if (className.indexOf("cProto") > -1 && event.target.parent.ti.text.toLowerCase() == "wiki monster") {
+                    this.external.call("openWebsite", "http://aqwwiki.wikidot.com/" + instance.game.world.myAvatar.target.objData.strMonName || "monsters");
+                }
+                return;
+            default:
+                return;
+        }
     }
 
     private function monitorLoginScreen():void {
