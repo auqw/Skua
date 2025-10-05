@@ -15,6 +15,12 @@ public partial class SkillRulesViewModel : ObservableRecipient
         _manaGreaterThanBool = rules.ManaGreaterThanBool;
         _manaUseValue = rules.ManaUseValue;
         _skipUseBool = rules.SkipUseBool;
+        _auraName = rules.AuraName;
+        _auraComparison = rules.AuraComparison;
+        _auraValue = rules.AuraValue;
+        _targetAuraName = rules.TargetAuraName;
+        _targetAuraComparison = rules.TargetAuraComparison;
+        _targetAuraValue = rules.TargetAuraValue;
     }
 
     [ObservableProperty]
@@ -52,6 +58,20 @@ public partial class SkillRulesViewModel : ObservableRecipient
     [ObservableProperty]
     private bool _skipUseBool;
 
+    [ObservableProperty]
+    private string? _auraName;
+    [ObservableProperty]
+    private string _auraComparison = ">";
+    [ObservableProperty]
+    private int _auraValue;
+
+    [ObservableProperty]
+    private string? _targetAuraName;
+    [ObservableProperty]
+    private string _targetAuraComparison = ">";
+    [ObservableProperty]
+    private int _targetAuraValue;
+
     [RelayCommand]
     private void ResetUseRules()
     {
@@ -62,5 +82,11 @@ public partial class SkillRulesViewModel : ObservableRecipient
         ManaUseValue = 0;
         WaitUseValue = 0;
         SkipUseBool = false;
+        AuraName = null;
+        AuraComparison = ">";
+        AuraValue = 0;
+        TargetAuraName = null;
+        TargetAuraComparison = ">";
+        TargetAuraValue = 0;
     }
 }
