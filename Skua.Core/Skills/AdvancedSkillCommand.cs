@@ -1,9 +1,17 @@
 ﻿using Skua.Core.Interfaces;
+using Skua.Core.Interfaces.Auras;
 
 namespace Skua.Core.Skills;
 
 public class AdvancedSkillCommand
 {
+    private readonly IScriptSelfAuras? _auras;
+
+    public AdvancedSkillCommand(IScriptSelfAuras? auras = null)
+    {
+        _auras = auras;
+    }
+
     public Dictionary<int, int> Skills { get; set; } = new();
     public List<UseRule[]> UseRules { get; set; } = new();
     private int _Index = 0;
@@ -40,6 +48,7 @@ public class AdvancedSkillCommand
                     break;
 
                 case SkillRule.Aura:
+                    shouldUse = AuraUseRule(useRule.AuraName);
                     break;
 
                 case SkillRule.Wait:
@@ -71,10 +80,12 @@ public class AdvancedSkillCommand
         return greater ? player.Mana >= mana : player.Mana <= mana;
     }
 
-    // TODO: Implement auras into player
-    private bool AuraUseRule(IScriptPlayer player, bool greater, int count)
+    private bool AuraUseRule(string? auraName)
     {
-        return false;
+        if (_auras == null || string.IsNullOrEmpty(auraName))
+            return false;
+        
+        return _auras.HasActiveAura(auraName);
     }
 
     public void Reset()
@@ -107,6 +118,13 @@ public struct UseRule
         ShouldSkip = shouldSkip;
     }
 
+    public UseRule(SkillRule rule, string auraName, bool shouldSkip)
+    {
+        Rule = rule;
+        AuraName = auraName;
+        ShouldSkip = shouldSkip;
+    }
+
     /// <summary>
     /// <list type="bullet">
     /// <item><see langword="null"/> = Wait</item>
@@ -126,4 +144,5 @@ public struct UseRule
 
     public readonly int Value = default;
     public readonly bool ShouldSkip = default;
+    public readonly string? AuraName = default;
 }

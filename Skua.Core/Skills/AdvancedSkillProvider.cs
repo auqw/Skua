@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Interfaces;
+using Skua.Core.Interfaces.Auras;
 using Skua.Core.Messaging;
 using Skua.Core.Utils;
 
@@ -9,13 +10,16 @@ public class AdvancedSkillProvider : ISkillProvider
 {
     private readonly IScriptPlayer _player;
     private readonly IScriptCombat _combat;
-    private readonly AdvancedSkillCommand _currentCommand = new();
+    private readonly IScriptSelfAuras? _auras;
+    private readonly AdvancedSkillCommand _currentCommand;
     private readonly UseRule[] _none = new[] { new UseRule(SkillRule.None) };
 
-    public AdvancedSkillProvider(IScriptPlayer player, IScriptCombat combat)
+    public AdvancedSkillProvider(IScriptPlayer player, IScriptCombat combat, IScriptSelfAuras? auras = null)
     {
         _player = player;
         _combat = combat;
+        _auras = auras;
+        _currentCommand = new(auras);
     }
 
     public bool ResetOnTarget { get; set; } = false;
@@ -62,6 +66,13 @@ public class AdvancedSkillProvider : ISkillProvider
             if (stringRules[i].Contains('w'))
             {
                 rules[i] = new UseRule(SkillRule.Wait, true, int.Parse(stringRules[i].RemoveLetters()), shouldSkip);
+                continue;
+            }
+
+            if (stringRules[i].Contains('a') && stringRules[i].Contains(':'))
+            {
+                string auraName = stringRules[i][(stringRules[i].IndexOf(':') + 1)..];
+                rules[i] = new UseRule(SkillRule.Aura, auraName, shouldSkip);
                 continue;
             }
         }
