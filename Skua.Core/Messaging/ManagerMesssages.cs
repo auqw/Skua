@@ -23,3 +23,4 @@ public sealed record RemoveGroupMessage(GroupItemViewModel Group);
 public sealed record StartGroupMessage(GroupItemViewModel Group, bool WithScript);
 public sealed record RenameGroupMessage(GroupItemViewModel Group);
 public sealed record RemoveAccountFromGroupMessage(GroupItemViewModel Group, AccountItemViewModel Account);
+public sealed record RefreshAccountDisplayNamesMessage();

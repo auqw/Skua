@@ -1,0 +1,60 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Class="Skua.Manager.Avalonia.Views.MainWindow"
+        d:DesignWidth="800"
+        d:DesignHeight="500"
+        Title="{Binding Title}"
+        Width="800"
+        Height="500"
+        WindowStartupLocation="CenterScreen"
+        Icon="/Assets/SkuaIcon.ico">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Tab Navigation -->
+        <Border Grid.Row="0"
+                Margin="4,4,4,1"
+                Padding="3"
+                Classes="card">
+            <DockPanel Height="30">
+                <ListBox Classes="top-tabs"
+                     ItemsSource="{Binding Tabs}"
+                     SelectedItem="{Binding SelectedTab}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                     HorizontalAlignment="Stretch">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="2" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Header}"
+                                   VerticalAlignment="Center"
+                                   Margin="7,0"
+                                   Padding="3,1" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <!-- Content Area -->
+        <Border Grid.Row="1"
+                Margin="4,2,4,4"
+                Padding="3"
+                Classes="card">
+            <ContentControl Content="{Binding SelectedTab.Content}"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch" />
+        </Border>
+    </Grid>
+
+</Window>

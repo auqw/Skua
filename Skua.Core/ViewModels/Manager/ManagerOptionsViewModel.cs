@@ -8,9 +8,10 @@ namespace Skua.Core.ViewModels.Manager;
 
 public class ManagerOptionsViewModel : ObservableObject
 {
-    public ManagerOptionsViewModel(List<DisplayOptionItemViewModelBase> options, ISettingsService settingsService, IFileDialogService fileService)
+    public ManagerOptionsViewModel(List<DisplayOptionItemViewModelBase> options, List<DisplayOptionItemViewModelBase> devOptions, ISettingsService settingsService, IFileDialogService fileService)
     {
         ManagerOptions = options;
+        DevOptions = devOptions;
         _settingsService = settingsService;
         _fileService = fileService;
 
@@ -30,6 +31,7 @@ public class ManagerOptionsViewModel : ObservableObject
     }
 
     public List<DisplayOptionItemViewModelBase> ManagerOptions { get; }
+    public List<DisplayOptionItemViewModelBase> DevOptions { get; }
 
     private string _downloadPath;
     private readonly ISettingsService _settingsService;

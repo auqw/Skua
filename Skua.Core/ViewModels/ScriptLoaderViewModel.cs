@@ -1,7 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Interfaces;
+using Skua.Core.Interfaces.Services;
 using Skua.Core.Messaging;
 using Skua.Core.Models;
 
@@ -18,7 +19,7 @@ public partial class ScriptLoaderViewModel : BotControlViewModelBase
         IWindowService windowService,
         IDialogService dialogService,
         IEnumerable<LogTabViewModel> logs)
-        : base("Load Script", 350, 450)
+        : base("Scripts", 350, 450)
     {
         StrongReferenceMessenger.Default.Register<ScriptLoaderViewModel, LoadScriptMessage, int>(this, (int)MessageChannels.ScriptStatus, LoadScript);
         StrongReferenceMessenger.Default.Register<ScriptLoaderViewModel, EditScriptMessage, int>(this, (int)MessageChannels.ScriptStatus, EditScript);
@@ -29,12 +30,12 @@ public partial class ScriptLoaderViewModel : BotControlViewModelBase
         StrongReferenceMessenger.Default.Register<ScriptLoaderViewModel, ScriptStoppingMessage, int>(this, (int)MessageChannels.ScriptStatus, ScriptStopping);
 
         _scriptPath = ClientFileSources.SkuaScriptsDIR;
-        ScriptLogs = logs.ToArray()[1];
+        _processService = processService;
+        _fileDialog = fileDialog;
         ScriptManager = scriptManager;
         _windowService = windowService;
-        _processService = processService;
         _dialogService = dialogService;
-        _fileDialog = fileDialog;
+        ScriptLogs = logs.FirstOrDefault(l => l.Title == "Script") ?? logs.First();
     }
 
     public IScriptManager ScriptManager { get; }

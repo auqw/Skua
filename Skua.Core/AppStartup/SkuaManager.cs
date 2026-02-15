@@ -1,7 +1,9 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Skua.Core.Interfaces;
+using Skua.Core.Messaging;
 using Skua.Core.ViewModels;
 using Skua.Core.ViewModels.Manager;
 
@@ -18,7 +20,6 @@ internal class SkuaManager
             new("Updates", s.GetRequiredService<ClientUpdatesViewModel>()),
             new("Options", s.GetRequiredService<ManagerOptionsViewModel>()),
             new("Themes", s.GetRequiredService<ApplicationThemesViewModel>()),
-            new("Goals", s.GetRequiredService<GoalsViewModel>()),
             new("About", s.GetRequiredService<AboutViewModel>()),
             new("Change Logs", s.GetRequiredService<ChangeLogsViewModel>()),
         };
@@ -35,7 +36,21 @@ internal class SkuaManager
             CreateSettingOptionItem<bool>("Delete .zip after Download", "Whether to delete the .zip folder after downloading and extracting the new version", "DeleteZipFileAfter")
         };
 
-        return new(options, s.GetRequiredService<ISettingsService>(), s.GetRequiredService<IFileDialogService>());
+        List<DisplayOptionItemViewModelBase> devOptions = new()
+        {
+            new CommandOptionItemViewModel<bool>(
+                "Anonymise Accounts",
+                "Show managed accounts as Account N labels in manager lists.",
+                "AnonymiseAccounts",
+                new RelayCommand<bool>(b =>
+                {
+                    Ioc.Default.GetRequiredService<ISettingsService>().Set("AnonymiseAccounts", b);
+                    StrongReferenceMessenger.Default.Send(new RefreshAccountDisplayNamesMessage());
+                }),
+                Ioc.Default.GetRequiredService<ISettingsService>().Get("AnonymiseAccounts", false))
+        };
+
+        return new(options, devOptions, s.GetRequiredService<ISettingsService>(), s.GetRequiredService<IFileDialogService>());
 
         static RelayCommand<T> CreateSettingCommand<T>(string key) => new(b => Ioc.Default.GetRequiredService<ISettingsService>().Set(key, b));
         static CommandOptionItemViewModel<T> CreateSettingOptionItem<T>(string content, string description, string key) => new(content, description, key, CreateSettingCommand<T>(key), Ioc.Default.GetRequiredService<ISettingsService>().Get<T>(key));

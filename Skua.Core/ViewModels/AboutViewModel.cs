@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
+using Skua.Core.Interfaces;
 using Skua.Core.Utils;
-using System.Diagnostics;
 
 namespace Skua.Core.ViewModels;
 
@@ -8,14 +8,17 @@ public class AboutViewModel : BotControlViewModelBase
 {
     private string _markDownContent = "Loading content...";
 
-    public AboutViewModel() : base("About")
+    public AboutViewModel(IProcessService processService) : base("About")
     {
+        _processService = processService;
         _markDownContent = string.Empty;
 
         Task.Run(async () => await GetAboutContent());
 
         NavigateCommand = new RelayCommand<string>(NavigateToUrl);
     }
+
+    private readonly IProcessService _processService;
 
     public string MarkdownDoc
     {
@@ -33,11 +36,11 @@ public class AboutViewModel : BotControlViewModelBase
         {
             if (url.StartsWith("./"))
             {
-                Process.Start(new ProcessStartInfo($"https://github.com/auqw/Skua/blob/master/{url.Substring(2)}") { UseShellExecute = true });
+                _processService.OpenLink($"https://github.com/auqw/Skua/blob/master/{url.Substring(2)}");
             }
             else
             {
-                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                _processService.OpenLink(url);
             }
         }
         catch

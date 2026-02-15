@@ -1,6 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
+using Skua.Core.Interfaces.Services;
 using Skua.Core.Interfaces;
 using Skua.Core.Models.GitHub;
 using Skua.Core.Utils;

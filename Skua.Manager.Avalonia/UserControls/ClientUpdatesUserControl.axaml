@@ -1,0 +1,72 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="Skua.Manager.Avalonia.UserControls.ClientUpdatesUserControl"
+             d:DesignWidth="900"
+             d:DesignHeight="600"
+             mc:Ignorable="d">
+    <Grid Margin="8" RowDefinitions="Auto,Auto,*,Auto">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8">
+            <Button Command="{Binding RefreshCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <materialIcons:MaterialIcon Kind="Refresh" Width="14" Height="14" />
+                    <TextBlock Text="Refresh" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding UpdateCommand}" IsEnabled="{Binding UpdateVisible}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <materialIcons:MaterialIcon Kind="ArrowUpBold" Width="14" Height="14" />
+                    <TextBlock Text="Update Latest" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding UpdateScriptsCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <materialIcons:MaterialIcon Kind="ScriptTextPlayOutline" Width="14" Height="14" />
+                    <TextBlock Text="Update Scripts" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding ResetScriptsCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <materialIcons:MaterialIcon Kind="Restore" Width="14" Height="14" />
+                    <TextBlock Text="Reset Scripts" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="0,8,0,8" Spacing="4">
+            <TextBlock Text="{Binding Status}" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding Current, StringFormat=Current: {0}}" />
+            <TextBlock Text="{Binding ProgressStatus}" IsVisible="{Binding IsBusy}" />
+            <ProgressBar IsIndeterminate="{Binding IsBusy}" Height="6" />
+        </StackPanel>
+
+        <ListBox Grid.Row="2" ItemsSource="{Binding Releases}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="{DynamicResource SkuaBorderBrush}" BorderThickness="0,0,0,1" Padding="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{Binding Info.Name}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding Info.Version}" FontSize="12" Foreground="{DynamicResource SkuaMutedTextBrush}" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Command="{Binding DownloadCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <materialIcons:MaterialIcon Kind="Download" Width="14" Height="14" />
+                                    <TextBlock Text="Download" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <TextBlock Grid.Row="3"
+                   Margin="0,8,0,0"
+                   Text="Manage client versions and script updates from this tab."
+                   Foreground="{DynamicResource SkuaMutedTextBrush}" />
+    </Grid>
+</UserControl>
+
