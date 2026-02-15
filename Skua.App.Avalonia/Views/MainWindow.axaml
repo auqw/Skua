@@ -1,0 +1,55 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Skua.App.Avalonia.Views.MainWindow"
+        Width="1280"
+        Height="780"
+        MinWidth="1024"
+        MinHeight="640"
+        Title="{Binding Title}"
+        WindowStartupLocation="CenterScreen"
+        Icon="/Assets/SkuaIcon.ico">
+  <Grid RowDefinitions="Auto,*">
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Height="34">
+      <StackPanel Orientation="Horizontal" Spacing="6">
+        <Menu Classes="top-toolbar" Margin="8,0,0,0">
+          <MenuItem x:Name="ScriptsMenuItem" Classes="top-nav-item" Header="Scripts" PointerEntered="TopMenuItem_PointerEntered">
+            <MenuItem Header="Open Script" />
+            <MenuItem Header="Save Script" />
+            <MenuItem Header="Reload Script List" />
+          </MenuItem>
+          <MenuItem x:Name="OptionsMenuItem" Classes="top-nav-item" Header="Options" PointerEntered="TopMenuItem_PointerEntered">
+            <MenuItem Header="Application Options" />
+            <MenuItem Header="Client Options" />
+          </MenuItem>
+          <MenuItem x:Name="HelpersMenuItem" Classes="top-nav-item" Header="Helpers" PointerEntered="TopMenuItem_PointerEntered">
+            <MenuItem Header="Map Loader" />
+            <MenuItem Header="Quest Manager" />
+          </MenuItem>
+          <MenuItem x:Name="ToolsMenuItem" Classes="top-nav-item" Header="Tools" PointerEntered="TopMenuItem_PointerEntered">
+            <MenuItem Header="Packet Logger" />
+            <MenuItem Header="Hotkeys" />
+          </MenuItem>
+          <MenuItem Classes="top-nav-item" Header="Skills" />
+          <MenuItem Classes="top-nav-item" Header="Packets" />
+          <MenuItem Classes="top-nav-item" Header="Bank" />
+          <MenuItem Classes="top-nav-item" Header="Logs" />
+          <MenuItem x:Name="PluginsMenuItem" Classes="top-nav-item" Header="Plugins" PointerEntered="TopMenuItem_PointerEntered">
+            <MenuItem Header="View Plugins" />
+          </MenuItem>
+        </Menu>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" Margin="8,0,0,0" PointerEntered="NonMenuArea_PointerEntered">
+        <Border Classes="toolbar-item-host" Margin="12,0,0,0"><TextBlock Text="Auto" Classes="toolbar-item" /></Border>
+        <Border Classes="toolbar-item-host" Margin="12,0,0,0"><TextBlock Text="Jump" Classes="toolbar-item" /></Border>
+        <Border Classes="toolbar-item-host" Margin="12,0,12,0"><TextBlock Text="+" Classes="toolbar-item" /></Border>
+      </StackPanel>
+    </Grid>
+
+    <Grid Grid.Row="1" Background="#000000" PointerEntered="NonMenuArea_PointerEntered">
+      <TextBlock Text="Game content area (Flash-hosted) goes here."
+                 Classes="muted"
+                 HorizontalAlignment="Center"
+                 VerticalAlignment="Center" />
+    </Grid>
+  </Grid>
+</Window>
