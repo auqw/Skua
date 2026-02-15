@@ -306,6 +306,27 @@ public class ManagerSettings
     [JsonPropertyName("LastServer")]
     public string LastServer { get; set; } = string.Empty;
 
+    [JsonPropertyName("ManagerIsDarkTheme")]
+    public bool ManagerIsDarkTheme { get; set; } = true;
+
+    [JsonPropertyName("ManagerAccentColor")]
+    public string ManagerAccentColor { get; set; } = "#C9479A";
+
+    [JsonPropertyName("ManagerAccentForegroundColor")]
+    public string ManagerAccentForegroundColor { get; set; } = "#FFFFFFFF";
+
+    [JsonPropertyName("ManagerIsColorAdjusted")]
+    public bool ManagerIsColorAdjusted { get; set; } = false;
+
+    [JsonPropertyName("ManagerDesiredContrastRatio")]
+    public float ManagerDesiredContrastRatio { get; set; } = 4.5f;
+
+    [JsonPropertyName("ManagerContrastValue")]
+    public string ManagerContrastValue { get; set; } = "Medium";
+
+    [JsonPropertyName("AnonymiseAccounts")]
+    public bool AnonymiseAccounts { get; set; } = false;
+
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 

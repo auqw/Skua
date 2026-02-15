@@ -218,7 +218,6 @@ public static class Services
             };
             return vm;
         });
-        services.AddSingleton<GoalsViewModel>();
         services.AddSingleton<AboutViewModel>();
         services.AddSingleton<ChangeLogsViewModel>();
         services.AddSingleton(SkuaManager.CreateViewModel);

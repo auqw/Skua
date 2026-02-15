@@ -26,6 +26,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         Messenger.Register<AccountManagerViewModel, RemoveGroupMessage>(this, (r, m) => r._RemoveGroup(m.Group));
         Messenger.Register<AccountManagerViewModel, RenameGroupMessage>(this, (r, m) => r._RenameGroup(m.Group));
         Messenger.Register<AccountManagerViewModel, RemoveAccountFromGroupMessage>(this, (r, m) => r._RemoveAccountFromGroup(m.Group, m.Account));
+        Messenger.Register<AccountManagerViewModel, RefreshAccountDisplayNamesMessage>(this, (r, _) => r.RefreshAccountDisplayNames());
         Messenger.Register<AccountManagerViewModel, StartGroupMessage>(this, (r, m) => r._StartGroup(m.Group, m.WithScript));
         StrongReferenceMessenger.Default.Register<AccountManagerViewModel, LoadScriptMessage, int>(this,
             (int)MessageChannels.ScriptStatus, (r, m) => r.HandleLoadScript(m));
@@ -72,9 +73,6 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
 
     [ObservableProperty]
     private int _columns = 3;
-
-    [ObservableProperty]
-    private bool _useNameAsDisplay;
 
     // Tag Filtering Properties
     [ObservableProperty]
@@ -133,31 +131,36 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
     [RelayCommand]
     public void AddAccount()
     {
-        if (string.IsNullOrEmpty(UsernameInput) || string.IsNullOrEmpty(PasswordInput))
+        if (string.IsNullOrWhiteSpace(UsernameInput) || string.IsNullOrWhiteSpace(PasswordInput))
         {
             _dialogService.ShowMessageBox("Username or password must not be empty", "Missing Input");
             return;
         }
 
+        string username = UsernameInput.Trim();
+        string password = PasswordInput;
+        string displayName = string.IsNullOrWhiteSpace(DisplayNameInput) ? username : DisplayNameInput.Trim();
+
         // Check if account with this username already exists
-        AccountItemViewModel? existingAccount = Accounts.FirstOrDefault(a => a.Username.Equals(UsernameInput, StringComparison.OrdinalIgnoreCase));
+        AccountItemViewModel? existingAccount = Accounts.FirstOrDefault(a => a.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
 
         if (existingAccount != null)
         {
             // Update existing account
-            existingAccount.Password = PasswordInput;
-            existingAccount.DisplayName = string.IsNullOrEmpty(DisplayNameInput) ? UsernameInput : DisplayNameInput;
+            existingAccount.Password = password;
+            existingAccount.DisplayName = displayName;
         }
         else
         {
             // Create new account
             AccountItemViewModel newAccount = new()
             {
-                Username = UsernameInput,
-                Password = PasswordInput,
-                DisplayName = string.IsNullOrEmpty(DisplayNameInput) ? UsernameInput : DisplayNameInput
+                Username = username,
+                Password = password,
+                DisplayName = displayName
             };
             Accounts.Add(newAccount);
+            ReindexAccounts();
         }
 
         ApplyTagFilter();
@@ -222,6 +225,20 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         }
     }
 
+    [RelayCommand]
+    private void SelectAll()
+    {
+        foreach (AccountItemViewModel account in Accounts)
+        {
+            account.UseCheck = false;
+        }
+
+        foreach (AccountItemViewModel account in FilteredAccounts)
+        {
+            account.UseCheck = true;
+        }
+    }
+
     private void _RemoveAccount(AccountItemViewModel account)
     {
         if (account.UseCheck)
@@ -238,6 +255,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
 
         Accounts.Remove(account);
         FilteredAccounts.Remove(account);
+        ReindexAccounts();
 
         _SaveAccounts();
         _SaveGroups();
@@ -281,7 +299,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         }
     }
 
-    private void _LaunchAcc(string username, string password, string displayName = null, bool? withScript = null)
+    private void _LaunchAcc(string username, string password, string? displayName = null, bool? withScript = null)
     {
         try
         {
@@ -315,7 +333,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
             Process? process = Process.Start(psi);
             if (process != null)
             {
-                string accountName = !string.IsNullOrEmpty(displayName) ? displayName : username;
+                string accountName = !string.IsNullOrWhiteSpace(displayName) ? displayName : username;
                 StrongReferenceMessenger.Default.Send(new AddProcessMessage(process, accountName));
             }
         }
@@ -536,6 +554,8 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
             Accounts.Add(accountVm);
         }
 
+        ReindexAccounts();
+
         ApplyTagFilter();
     }
 
@@ -688,5 +708,21 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         ScriptPath = message.Path;
 
         _dialogService.ShowMessageBox($"Script loaded: {Path.GetFileName(message.Path)}", "Script Loaded");
+    }
+
+    private void ReindexAccounts()
+    {
+        for (int i = 0; i < Accounts.Count; i++)
+        {
+            Accounts[i].AccountNumber = i + 1;
+        }
+    }
+
+    private void RefreshAccountDisplayNames()
+    {
+        foreach (AccountItemViewModel account in Accounts)
+        {
+            account.RefreshDisplayName();
+        }
     }
 }

@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="Skua.Manager.Avalonia.UserControls.ManagerOptionsUserControl"
+             d:DesignWidth="900"
+             d:DesignHeight="600"
+             mc:Ignorable="d">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="8" Spacing="8">
+            <Border BorderBrush="{DynamicResource SkuaBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="6">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="General"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,2" />
+                    <ItemsControl ItemsSource="{Binding ManagerOptions}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{DynamicResource SkuaBorderBrush}" BorderThickness="0,0,0,1" Padding="6">
+                                    <StackPanel Spacing="3">
+                                        <CheckBox Content="{Binding Content}"
+                                                  IsChecked="{Binding Value, Mode=TwoWay}"
+                                                  Command="{Binding Command}"
+                                                  CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" />
+                                        <TextBlock Text="{Binding Description}"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource SkuaMutedTextBrush}"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border BorderBrush="{DynamicResource SkuaBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="6">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Dev Options"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,2" />
+                    <ItemsControl ItemsSource="{Binding DevOptions}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{DynamicResource SkuaBorderBrush}" BorderThickness="0,0,0,1" Padding="6">
+                                    <StackPanel Spacing="3">
+                                        <CheckBox Content="{Binding Content}"
+                                                  IsChecked="{Binding Value, Mode=TwoWay}"
+                                                  Command="{Binding Command}"
+                                                  CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" />
+                                        <TextBlock Text="{Binding Description}"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource SkuaMutedTextBrush}"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+                <StackPanel Spacing="6">
+                    <StackPanel Spacing="1">
+                        <TextBlock Text="Client Download Folder"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Text="Used for saving downloaded client update packages."
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SkuaMutedTextBrush}" />
+                    </StackPanel>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBox Grid.Column="0"
+                                 IsReadOnly="True"
+                                 Text="{Binding DownloadPath, FallbackValue=Client Download Folder}"
+                                 Margin="0,0,8,0" />
+                        <Button Grid.Column="1"
+                                Command="{Binding ChangeDownloadPathCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <materialIcons:MaterialIcon Kind="FolderEditOutline" Width="14" Height="14" />
+                                <TextBlock Text="Browse" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Button Height="36"
+                    Command="{Binding OpenGHAuthCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <materialIcons:MaterialIcon Kind="Github" Width="14" Height="14" />
+                    <TextBlock Text="GitHub Authentication" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
+
