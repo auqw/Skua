@@ -1,0 +1,15 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fluent="clr-namespace:Avalonia.Themes.Fluent;assembly=Avalonia.Themes.Fluent"
+             x:Class="Skua.App.Avalonia.App"
+             RequestedThemeVariant="Default">
+  <Application.Styles>
+    <FluentTheme>
+      <FluentTheme.Palettes>
+        <fluent:ColorPaletteResources x:Key="Light" Accent="#C9479A" />
+        <fluent:ColorPaletteResources x:Key="Dark" Accent="#C9479A" />
+      </FluentTheme.Palettes>
+    </FluentTheme>
+    <StyleInclude Source="/Themes/ClientStyles.axaml" />
+  </Application.Styles>
+</Application>

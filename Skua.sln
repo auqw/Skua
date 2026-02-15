@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skua.WPF", "Skua.WPF\Skua.W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skua.Manager.Avalonia", "Skua.Manager.Avalonia\Skua.Manager.Avalonia.csproj", "{B2C3D4E5-6F78-90A1-B2C3-D4E5F6A7B8C9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skua.App.Avalonia", "Skua.App.Avalonia\Skua.App.Avalonia.csproj", "{C4D6E8F0-1234-4ABC-9D0E-1F23456789AB}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skua.Core.Interfaces", "Skua.Core.Interfaces\Skua.Core.Interfaces.csproj", "{AC7BF025-419A-49EC-BD68-D17440EA7931}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skua.Core.Models", "Skua.Core.Models\Skua.Core.Models.csproj", "{D883487A-7D7A-4557-A23A-CFF9C6807563}"
@@ -100,6 +102,10 @@ Global
 		{B2C3D4E5-6F78-90A1-B2C3-D4E5F6A7B8C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2C3D4E5-6F78-90A1-B2C3-D4E5F6A7B8C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2C3D4E5-6F78-90A1-B2C3-D4E5F6A7B8C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4D6E8F0-1234-4ABC-9D0E-1F23456789AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4D6E8F0-1234-4ABC-9D0E-1F23456789AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4D6E8F0-1234-4ABC-9D0E-1F23456789AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4D6E8F0-1234-4ABC-9D0E-1F23456789AB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AC7BF025-419A-49EC-BD68-D17440EA7931}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AC7BF025-419A-49EC-BD68-D17440EA7931}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC7BF025-419A-49EC-BD68-D17440EA7931}.Debug|x64.ActiveCfg = Debug|Any CPU
