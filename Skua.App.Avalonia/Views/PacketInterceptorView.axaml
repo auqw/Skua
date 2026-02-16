@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:Skua.Core.Models.Servers;assembly=Skua.Core.Models"
+             x:Class="Skua.App.Avalonia.Views.PacketInterceptorView">
+  <Grid Margin="8"
+        RowDefinitions="Auto,Auto,Auto,*">
+    <Grid Grid.Row="0"
+          ColumnDefinitions="*,Auto"
+          Margin="0,0,0,8">
+      <ComboBox Grid.Column="0"
+                ItemsSource="{Binding ServerList}"
+                SelectedItem="{Binding SelectedServer}">
+        <ComboBox.ItemTemplate>
+          <DataTemplate DataType="models:Server">
+            <TextBlock Text="{Binding Name}" />
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+      </ComboBox>
+      <Button Grid.Column="1"
+              Margin="8,0,0,0"
+              MinWidth="110"
+              Content="Connect / Disconnect"
+              Command="{Binding ConnectInterceptorCommand}" />
+    </Grid>
+
+    <Grid Grid.Row="1"
+          ColumnDefinitions="Auto,Auto,*"
+          Margin="0,0,0,8">
+      <CheckBox Grid.Column="0"
+                Content="Log Packets"
+                IsChecked="{Binding IsLogging}" />
+      <Button Grid.Column="1"
+              Margin="8,0,0,0"
+              Content="Clear"
+              Command="{Binding ClearPacketsCommand}" />
+    </Grid>
+
+    <TextBlock Grid.Row="2"
+               Margin="0,0,0,8"
+               Text="Outbound = yellow, inbound = blue, blocked = red"
+               Opacity="0.75" />
+
+    <Border Grid.Row="3"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+        <ListBox ItemsSource="{Binding Packets}"
+               SelectionMode="Multiple"
+               BorderThickness="0"
+               Background="Transparent">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Margin="6,4"
+                       Text="{Binding Packet}" />
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Border>
+  </Grid>
+</UserControl>

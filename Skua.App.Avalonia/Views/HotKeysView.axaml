@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.Views.HotKeysView">
+  <ScrollViewer Margin="8"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+    <ItemsControl ItemsSource="{Binding HotKeys}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Border Margin="0,0,0,8"
+                  Padding="8"
+                  BorderThickness="1"
+                  BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+              <TextBlock Grid.Column="0"
+                         VerticalAlignment="Center"
+                         Text="{Binding Title}" />
+              <TextBlock Grid.Column="1"
+                         Margin="12,0,12,0"
+                         VerticalAlignment="Center"
+                         Text="{Binding KeyGesture}" />
+              <Button Grid.Column="2"
+                      Content="Edit"
+                      Command="{Binding EditHotKeyCommand}" />
+            </Grid>
+          </Border>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </ScrollViewer>
+</UserControl>

@@ -54,6 +54,8 @@ public class DialogService : IDialogService
         {
             InputDialogViewModel input => ShowInputDialog(input, title),
             SelectGroupDialogViewModel selectGroup => ShowSelectGroupDialog(selectGroup, title),
+            AssignHotKeyDialogViewModel hotKey => ShowAssignHotKeyDialog(hotKey, title),
+            SkillRuleEditorDialogViewModel skillRules => ShowSkillRuleEditorDialog(skillRules, title),
             MessageBoxDialogViewModel messageBox => ShowMessageBoxInternal(messageBox.Message, messageBox.Title, messageBox.YesAndNo),
             CustomDialogViewModel custom => ShowCustomDialog(custom, title),
             _ => ShowFallbackDialog(viewModel.GetType().Name, title)
@@ -175,6 +177,145 @@ public class DialogService : IDialogService
         return index >= 0;
     }
 
+    private static bool? ShowSkillRuleEditorDialog(SkillRuleEditorDialogViewModel vm, string title)
+    {
+        // Edit a clone and copy back only on confirm so cancel behaves correctly.
+        SkillRulesViewModel scratch = new(vm.UseRules);
+
+        using WinForms.Form form = CreateForm(string.IsNullOrWhiteSpace(title) ? "Edit Rules" : title, 640, 720);
+        form.MinimumSize = new Size(640, 680);
+
+        WinForms.PropertyGrid propertyGrid = new()
+        {
+            Dock = WinForms.DockStyle.Fill,
+            SelectedObject = scratch,
+            HelpVisible = true,
+            ToolbarVisible = false,
+            PropertySort = WinForms.PropertySort.CategorizedAlphabetical
+        };
+
+        WinForms.Label help = new()
+        {
+            Dock = WinForms.DockStyle.Top,
+            Height = 42,
+            Text = "Edit rule values then click Confirm. Multi-aura entries can be managed in the main Skills panel.",
+            TextAlign = ContentAlignment.MiddleLeft,
+            Padding = new WinForms.Padding(8, 0, 8, 0)
+        };
+
+        WinForms.FlowLayoutPanel panel = new()
+        {
+            Dock = WinForms.DockStyle.Bottom,
+            Height = 44,
+            FlowDirection = WinForms.FlowDirection.RightToLeft,
+            WrapContents = false,
+            Padding = new WinForms.Padding(8, 6, 8, 6)
+        };
+
+        WinForms.Button confirm = new() { Text = "Confirm", Width = 92, Height = 28 };
+        WinForms.Button cancel = new() { Text = "Cancel", Width = 92, Height = 28 };
+
+        bool? result = null;
+        confirm.Click += (_, _) =>
+        {
+            CopySkillRules(scratch, vm.UseRules);
+            result = true;
+            form.Close();
+        };
+        cancel.Click += (_, _) =>
+        {
+            result = false;
+            form.Close();
+        };
+
+        panel.Controls.Add(confirm);
+        panel.Controls.Add(cancel);
+        form.Controls.Add(propertyGrid);
+        form.Controls.Add(help);
+        form.Controls.Add(panel);
+        form.AcceptButton = confirm;
+        form.CancelButton = cancel;
+
+        form.ShowDialog();
+        return result;
+    }
+
+    private static bool? ShowAssignHotKeyDialog(AssignHotKeyDialogViewModel vm, string title)
+    {
+        using WinForms.Form form = CreateForm(string.IsNullOrWhiteSpace(title) ? "Assign HotKey" : title, 420, 190);
+
+        WinForms.CheckBox ctrl = new()
+        {
+            Text = "Ctrl",
+            Checked = vm.CtrlCheck,
+            Location = new Point(12, 14),
+            AutoSize = true
+        };
+        WinForms.CheckBox shift = new()
+        {
+            Text = "Shift",
+            Checked = vm.ShiftCheck,
+            Location = new Point(92, 14),
+            AutoSize = true
+        };
+        WinForms.CheckBox alt = new()
+        {
+            Text = "Alt",
+            Checked = vm.AltCheck,
+            Location = new Point(176, 14),
+            AutoSize = true
+        };
+
+        WinForms.Label keyLabel = new()
+        {
+            Text = "Key",
+            AutoSize = true,
+            Location = new Point(12, 48)
+        };
+        WinForms.TextBox keyInput = new()
+        {
+            Text = vm.KeyInput,
+            Bounds = new Rectangle(12, 66, 392, 24)
+        };
+        keyInput.TextChanged += (_, _) =>
+        {
+            if (keyInput.Text.Length > 1)
+                keyInput.Text = keyInput.Text[..1].ToUpperInvariant();
+            keyInput.SelectionStart = keyInput.Text.Length;
+        };
+
+        WinForms.Button ok = CreateButton("OK", 240, 106);
+        WinForms.Button cancel = CreateButton("Cancel", 324, 106);
+
+        bool? result = null;
+        ok.Click += (_, _) =>
+        {
+            vm.CtrlCheck = ctrl.Checked;
+            vm.ShiftCheck = shift.Checked;
+            vm.AltCheck = alt.Checked;
+            vm.KeyInput = (keyInput.Text ?? string.Empty).Trim().ToUpperInvariant();
+            result = true;
+            form.Close();
+        };
+        cancel.Click += (_, _) =>
+        {
+            result = false;
+            form.Close();
+        };
+
+        form.Controls.Add(ctrl);
+        form.Controls.Add(shift);
+        form.Controls.Add(alt);
+        form.Controls.Add(keyLabel);
+        form.Controls.Add(keyInput);
+        form.Controls.Add(ok);
+        form.Controls.Add(cancel);
+        form.AcceptButton = ok;
+        form.CancelButton = cancel;
+        form.ShowDialog();
+        return result;
+    }
+
     private static bool? ShowFallbackDialog(string typeName, string title)
     {
         WinForms.MessageBox.Show(
@@ -261,4 +402,30 @@ public class DialogService : IDialogService
             Height = 28,
             Location = new Point(x, y)
         };
+
+    private static void CopySkillRules(SkillRulesViewModel source, SkillRulesViewModel target)
+    {
+        target.UseRuleBool = source.UseRuleBool;
+        target.MultiAuraBool = source.MultiAuraBool;
+        target.HealthGreaterThanBool = source.HealthGreaterThanBool;
+        target.HealthUseValue = source.HealthUseValue;
+        target.HealthIsPercentage = source.HealthIsPercentage;
+        target.ManaGreaterThanBool = source.ManaGreaterThanBool;
+        target.ManaUseValue = source.ManaUseValue;
+        target.ManaIsPercentage = source.ManaIsPercentage;
+        target.WaitUseValue = source.WaitUseValue;
+        target.SkipUseBool = source.SkipUseBool;
+        target.AuraGreaterThanBool = source.AuraGreaterThanBool;
+        target.AuraUseValue = source.AuraUseValue;
+        target.AuraTargetIndex = source.AuraTargetIndex;
+        target.AuraName = source.AuraName;
+        target.PartyMemberHealthGreaterThanBool = source.PartyMemberHealthGreaterThanBool;
+        target.PartyMemberHealthUseValue = source.PartyMemberHealthUseValue;
+        target.PartyMemberHealthIsPercentage = source.PartyMemberHealthIsPercentage;
+        target.MultiAuraOperatorIndex = source.MultiAuraOperatorIndex;
+
+        target.MultiAuraChecks.Clear();
+        foreach (AuraCheckViewModel check in source.MultiAuraChecks)
+            target.MultiAuraChecks.Add(new AuraCheckViewModel(check));
+    }
 }

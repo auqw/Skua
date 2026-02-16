@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.Views.CurrentDropsView">
+  <Grid Margin="8"
+        RowDefinitions="Auto,*,Auto">
+    <StackPanel Grid.Row="0"
+                Orientation="Horizontal"
+                Spacing="8"
+                Margin="0,0,0,8">
+      <Button Content="Pickup"
+              Command="{Binding PickupCommand}" />
+      <Button Content="Pickup All"
+              Command="{Binding PickupAllCommand}" />
+      <Button Content="Pickup AC"
+              Command="{Binding PickupACCommand}" />
+    </StackPanel>
+
+    <Border Grid.Row="1"
+            Margin="0,0,0,8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <ListBox ItemsSource="{Binding CurrentDrops}"
+               SelectedItem="{Binding SelectedDrop}"
+               BorderThickness="0"
+               Background="Transparent" />
+    </Border>
+
+    <TextBlock Grid.Row="2"
+               Text="Tip: use Ctrl/Shift selection, then run pickup from script/runtime helpers for bulk actions."
+               Opacity="0.7"
+               TextWrapping="Wrap" />
+  </Grid>
+</UserControl>

@@ -57,7 +57,10 @@ public partial class App : Application
         IClientFilesService clientFiles = Ioc.Default.GetRequiredService<IClientFilesService>();
         clientFiles.CreateDirectories();
         clientFiles.CreateFiles();
-        ApplyThemeFromManagerSettings(settings);
+        IThemeService themeService = Ioc.Default.GetRequiredService<IThemeService>();
+        themeService.ThemeChanged += OnThemeChanged;
+        themeService.SchemeChanged += OnSchemeChanged;
+        ApplyThemeFromService(themeService);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -166,9 +169,29 @@ public partial class App : Application
         StrongReferenceMessenger.Default.Reset();
     }
 
-    private void ApplyThemeFromManagerSettings(ISettingsService settings)
+    private void OnThemeChanged(object? theme)
     {
-        bool isDark = settings.Get("ManagerIsDarkTheme", true);
+        IThemeService themeService = Ioc.Default.GetRequiredService<IThemeService>();
+        ISettingsService settings = Ioc.Default.GetRequiredService<ISettingsService>();
+        RequestedThemeVariant = themeService.IsDarkTheme ? ThemeVariant.Dark : ThemeVariant.Light;
+        string? accentFromEvent = theme?.ToString();
+        ApplyAccentBrushes(
+            string.IsNullOrWhiteSpace(accentFromEvent) ? settings.Get("ManagerAccentColor", "#C9479A") : accentFromEvent,
+            settings.Get("ManagerAccentForegroundColor", "#FFFFFFFF"));
+    }
+
+    private void OnSchemeChanged(Core.Models.ColorScheme scheme, object? color)
+    {
+        if (scheme == Core.Models.ColorScheme.PrimaryForeground)
+            ApplyAccentBrushes(accentForegroundHex: color?.ToString());
+        else
+            ApplyAccentBrushes(accentHex: color?.ToString());
+    }
+
+    private void ApplyThemeFromService(IThemeService themeService)
+    {
+        ISettingsService settings = Ioc.Default.GetRequiredService<ISettingsService>();
+        bool isDark = themeService.IsDarkTheme;
         RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
         ApplyAccentBrushes(
             settings.Get("ManagerAccentColor", "#C9479A"),
@@ -181,7 +204,7 @@ public partial class App : Application
         Color accentForeground;
         try
         {
-            accent = Color.Parse(string.IsNullOrWhiteSpace(accentHex) ? "#C9479A" : accentHex);
+            accent = Color.Parse(string.IsNullOrWhiteSpace(accentHex) ? GetResourceColor("SkuaAccentColor", "#C9479A").ToString() : accentHex);
         }
         catch
         {
@@ -190,7 +213,7 @@ public partial class App : Application
 
         try
         {
-            accentForeground = Color.Parse(string.IsNullOrWhiteSpace(accentForegroundHex) ? "#FFFFFFFF" : accentForegroundHex);
+            accentForeground = Color.Parse(string.IsNullOrWhiteSpace(accentForegroundHex) ? GetResourceColor("SkuaAccentForegroundColor", "#FFFFFFFF").ToString() : accentForegroundHex);
         }
         catch
         {
@@ -231,6 +254,18 @@ public partial class App : Application
         Resources["SystemAccentColorDark3Brush"] = new SolidColorBrush(accentDark3);
 
         ApplyFluentAccent(accent);
+    }
+
+    private Color GetResourceColor(string key, string fallbackHex)
+    {
+        if (Resources.TryGetResource(key, ThemeVariant.Default, out object? value))
+        {
+            if (value is Color c)
+                return c;
+            if (value is ISolidColorBrush b)
+                return b.Color;
+        }
+        return Color.Parse(fallbackHex);
     }
 
     private void ApplyFluentAccent(Color accent)

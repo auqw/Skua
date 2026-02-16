@@ -13,6 +13,7 @@
         <fluent:ColorPaletteResources x:Key="Dark" Accent="#C9479A" />
       </FluentTheme.Palettes>
     </FluentTheme>
+    <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
     <StyleInclude Source="/Themes/ClientStyles.axaml" />
   </Application.Styles>
   <TrayIcon.Icons>
@@ -65,6 +66,12 @@
     <DataTemplate DataType="vms:ScriptLoaderViewModel">
       <views:ScriptLoaderView />
     </DataTemplate>
+    <DataTemplate DataType="vms:ScriptRepoViewModel">
+      <views:ScriptRepoView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:PluginsViewModel">
+      <views:PluginsView />
+    </DataTemplate>
     <DataTemplate DataType="vms:LoaderViewModel">
       <views:LoaderView />
     </DataTemplate>
@@ -74,14 +81,65 @@
     <DataTemplate DataType="vms:RuntimeHelpersViewModel">
       <views:RuntimeHelpersView />
     </DataTemplate>
+    <DataTemplate DataType="vms:NotifyDropViewModel">
+      <views:NotifyDropView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:FastTravelViewModel">
+      <views:FastTravelView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:CurrentDropsViewModel">
+      <views:CurrentDropsView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:JunkItemsViewModel">
+      <views:JunkItemsView />
+    </DataTemplate>
     <DataTemplate DataType="vms:ConsoleViewModel">
       <views:ConsoleView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:ScriptStatsViewModel">
+      <views:ScriptStatsView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:AdvancedSkillsViewModel">
+      <views:AdvancedSkillsView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:PacketSpammerViewModel">
+      <views:PacketSpammerView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:PacketLoggerViewModel">
+      <views:PacketLoggerView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:PacketInterceptorViewModel">
+      <views:PacketInterceptorView />
     </DataTemplate>
     <DataTemplate DataType="vms:GameOptionsViewModel">
       <views:GameOptionsView />
     </DataTemplate>
     <DataTemplate DataType="vms:ApplicationOptionsViewModel">
       <views:ApplicationOptionsView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:CoreBotsViewModel">
+      <views:CoreBotsView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:CBOLoadoutViewModel">
+      <views:CBOLoadoutView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:CBOClassSelectViewModel">
+      <views:CBOClassSelectView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:CBOClassEquipmentViewModel">
+      <views:CBOClassEquipmentView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:CBOptionsViewModel">
+      <views:CBOptionsView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:CBOOtherOptionsViewModel">
+      <views:CBOOtherOptionsView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:ApplicationThemesViewModel">
+      <views:ApplicationThemesView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:HotKeysViewModel">
+      <views:HotKeysView />
     </DataTemplate>
     <DataTemplate DataType="vms:LogsViewModel">
       <views:LogsView />

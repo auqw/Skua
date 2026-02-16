@@ -7,10 +7,8 @@
                 Spacing="3"
                 HorizontalAlignment="Center">
       <TextBlock HorizontalAlignment="Center"
-                 FontWeight="SemiBold">
-        <Run Text="Status: " />
-        <Run Text="{Binding ScriptStatus}" />
-      </TextBlock>
+                 FontWeight="SemiBold"
+                 Text="{Binding ScriptStatus, StringFormat='Status: {0}', TargetNullValue='Status: '}" />
       <TextBlock HorizontalAlignment="Center"
                  Text="{Binding LoadedScript}" />
     </StackPanel>

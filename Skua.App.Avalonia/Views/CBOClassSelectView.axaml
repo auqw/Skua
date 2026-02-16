@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.Views.CBOClassSelectView">
+  <Grid RowDefinitions="Auto,Auto,Auto"
+        ColumnDefinitions="*,*"
+        Margin="0">
+    <Button Grid.Row="0"
+            Grid.ColumnSpan="2"
+            Margin="0,0,0,8"
+            Content="Reload Classes"
+            Command="{Binding ReloadClassesCommand}" />
+
+    <Border Grid.Row="1"
+            Grid.Column="0"
+            Margin="0,0,4,8"
+            Padding="8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <StackPanel Spacing="6">
+        <TextBlock Text="Solo Class" FontWeight="SemiBold" />
+        <ComboBox ItemsSource="{Binding PlayerClasses}"
+                  SelectedItem="{Binding SelectedSoloClass}" />
+        <ComboBox ItemsSource="{Binding SoloModeStrings}"
+                  SelectedItem="{Binding SelectedSoloModeString}" />
+        <CheckBox Content="Specify Equipment"
+                  IsChecked="{Binding UseSoloEquipment}" />
+      </StackPanel>
+    </Border>
+
+    <Border Grid.Row="1"
+            Grid.Column="1"
+            Margin="4,0,0,8"
+            Padding="8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <StackPanel Spacing="6">
+        <TextBlock Text="Farm Class" FontWeight="SemiBold" />
+        <ComboBox ItemsSource="{Binding PlayerClasses}"
+                  SelectedItem="{Binding SelectedFarmClass}" />
+        <ComboBox ItemsSource="{Binding FarmModeStrings}"
+                  SelectedItem="{Binding SelectedFarmModeString}" />
+        <CheckBox Content="Specify Equipment"
+                  IsChecked="{Binding UseFarmEquipment}" />
+      </StackPanel>
+    </Border>
+
+    <Border Grid.Row="2"
+            Grid.Column="0"
+            Margin="0,0,4,0"
+            Padding="8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <StackPanel Spacing="6">
+        <TextBlock Text="Dodge Class" FontWeight="SemiBold" />
+        <ComboBox ItemsSource="{Binding PlayerClasses}"
+                  SelectedItem="{Binding SelectedDodgeClass}" />
+        <ComboBox ItemsSource="{Binding DodgeModeStrings}"
+                  SelectedItem="{Binding SelectedDodgeModeString}" />
+        <CheckBox Content="Specify Equipment"
+                  IsChecked="{Binding UseDodgeEquipment}" />
+      </StackPanel>
+    </Border>
+
+    <Border Grid.Row="2"
+            Grid.Column="1"
+            Margin="4,0,0,0"
+            Padding="8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <StackPanel Spacing="6">
+        <TextBlock Text="Boss Class" FontWeight="SemiBold" />
+        <ComboBox ItemsSource="{Binding PlayerClasses}"
+                  SelectedItem="{Binding SelectedBossClass}" />
+        <ComboBox ItemsSource="{Binding BossModeStrings}"
+                  SelectedItem="{Binding SelectedBossModeString}" />
+        <CheckBox Content="Specify Equipment"
+                  IsChecked="{Binding UseBossEquipment}" />
+      </StackPanel>
+    </Border>
+  </Grid>
+</UserControl>

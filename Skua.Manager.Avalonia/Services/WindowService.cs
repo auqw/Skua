@@ -52,12 +52,12 @@ public class WindowService : IWindowService
 
         Window window = CreateHostWindow(viewModel, viewModel.Title, viewModel.Width, viewModel.Height);
         window.CanResize = viewModel.CanResize;
-        window.Closed += (_, _) =>
+        window.Closing += (_, e) =>
         {
-            _managedWindows.Remove(key);
-            if (window.DataContext is IDisposable disposable)
-                disposable.Dispose();
-            window.DataContext = null;
+            e.Cancel = true;
+            window.Hide();
+            if (window.DataContext is ObservableRecipient recipient)
+                recipient.IsActive = false;
         };
         _managedWindows[key] = window;
     }
