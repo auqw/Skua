@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Threading;
 using AxShockwaveFlashObjects;
@@ -8,8 +9,8 @@ using Skua.App.Avalonia.Services;
 using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.ViewModels;
-using System.Collections.Specialized;
 using System;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 
@@ -17,36 +18,92 @@ namespace Skua.App.Avalonia.Views;
 
 public partial class MainWindow : Window
 {
+    private static readonly TimeSpan MetricRefreshInterval = TimeSpan.FromSeconds(1);
+
     private readonly IFlashUtil _flash;
     private readonly IScriptOption _options;
     private readonly SkuaStartupHandler _startup;
     private readonly MainMenuViewModel _mainMenuVm;
     private readonly MainViewModel _mainViewModel;
-    private MenuItem[] _hoverMenus = [];
     private MenuItem? _pluginsMenuItem;
     private readonly DispatcherTimer _metricsTimer;
-    private bool _flashLoaded;
+    private MenuItem[] _hoverMenus = [];
+    private bool _isFlashLoaded;
 
     public MainWindow()
     {
         InitializeComponent();
         _mainViewModel = Ioc.Default.GetRequiredService<MainViewModel>();
         _mainMenuVm = Ioc.Default.GetRequiredService<MainMenuViewModel>();
-        DataContext = _mainViewModel;
         _flash = Ioc.Default.GetRequiredService<IFlashUtil>();
         _options = Ioc.Default.GetRequiredService<IScriptOption>();
         _startup = Ioc.Default.GetRequiredService<SkuaStartupHandler>();
-        TopActionsPanel.DataContext = _mainMenuVm;
-        AutoPanel.DataContext = _mainMenuVm.AutoViewModel;
-        JumpPanel.DataContext = _mainMenuVm.JumpViewModel;
+        _metricsTimer = new DispatcherTimer(MetricRefreshInterval, DispatcherPriority.Background, (_, _) => UpdateMetrics());
 
+        DataContext = _mainViewModel;
+        ConfigureTopActions();
+        ConfigureMainMenu();
+        RegisterMessages();
+        RegisterLifecycleHandlers();
+    }
+
+    private void ConfigureTopActions()
+    {
+        BotWindowButton.Command = _mainMenuVm.ShowBotWindowCommand;
+        ConfigureAutoActions(_mainMenuVm.AutoViewModel);
+        ConfigureJumpActions(_mainMenuVm.JumpViewModel);
+    }
+
+    private void ConfigureAutoActions(AutoViewModel viewModel)
+    {
+        AutoAttackButton.Command = viewModel.StartAutoAttackCommand;
+        AutoHuntButton.Command = viewModel.StartAutoHuntCommand;
+        AutoStopButton.Command = viewModel.StopAutoAsyncCommand;
+        BindTextBlock(AutoClassText, nameof(AutoViewModel.SelectedClassString), viewModel, "Class: {0}");
+    }
+
+    private void ConfigureJumpActions(JumpViewModel viewModel)
+    {
+        JumpCurrentButton.Command = viewModel.GetCurrentCommand;
+        JumpRefreshButton.Command = viewModel.UpdateCellsCommand;
+        JumpGoButton.Command = viewModel.JumpToCommand;
+        BindTextBoxTwoWay(JumpCellTextBox, nameof(JumpViewModel.SelectedCell), viewModel);
+        BindTextBoxTwoWay(JumpPadTextBox, nameof(JumpViewModel.SelectedPad), viewModel);
+    }
+
+    private static void BindTextBlock(TextBlock textBlock, string path, object source, string? stringFormat = null)
+    {
+        textBlock[!TextBlock.TextProperty] = new Binding(path)
+        {
+            Source = source,
+            Mode = BindingMode.OneWay,
+            StringFormat = stringFormat
+        };
+    }
+
+    private static void BindTextBoxTwoWay(TextBox textBox, string path, object source)
+    {
+        textBox[!TextBox.TextProperty] = new Binding(path)
+        {
+            Source = source,
+            Mode = BindingMode.TwoWay
+        };
+    }
+
+    private void ConfigureMainMenu()
+    {
         BuildMainMenu();
         _mainMenuVm.MainMenuItems.CollectionChanged += MainMenuItemsChanged;
         _mainMenuVm.Plugins.CollectionChanged += PluginsChanged;
-        _metricsTimer = new DispatcherTimer(TimeSpan.FromSeconds(1), DispatcherPriority.Background, (_, _) => UpdateMetrics());
+    }
 
+    private void RegisterMessages()
+    {
         WeakReferenceMessenger.Default.Register<MainWindow, FlashChangedMessage<AxShockwaveFlash>>(this, static (r, m) => r.OnFlashControlChanged(m.Flash));
+    }
 
+    private void RegisterLifecycleHandlers()
+    {
         Opened += MainWindow_Opened;
         Closed += MainWindow_Closed;
     }
@@ -77,16 +134,14 @@ public partial class MainWindow : Window
 
     private void OnFlashCall(string function, params object[] args)
     {
-        switch (function)
+        if (function == "loaded" && !_isFlashLoaded)
         {
-            case "loaded" when !_flashLoaded:
-                _flashLoaded = true;
-                Dispatcher.UIThread.Post(() =>
-                {
-                    LoadingBar.IsVisible = false;
-                    FlashHost.IsVisible = true;
-                });
-                break;
+            _isFlashLoaded = true;
+            Dispatcher.UIThread.Post(() =>
+            {
+                LoadingBar.IsVisible = false;
+                FlashHost.IsVisible = true;
+            });
         }
     }
 

@@ -20,7 +20,8 @@
                   Margin="0,0,6,0"
                   PointerEntered="NonMenuArea_PointerEntered">
         <ToggleButton x:Name="AutoToggle" Classes="topbar-action" Content="Auto" />
-        <Popup IsOpen="{Binding IsChecked, ElementName=AutoToggle}"
+        <Popup x:Name="AutoPopup"
+               IsOpen="{Binding IsChecked, ElementName=AutoToggle}"
                Placement="Bottom"
                PlacementTarget="{Binding ElementName=AutoToggle}"
                HorizontalOffset="-220"
@@ -28,35 +29,36 @@
           <Border x:Name="AutoPanel" Classes="topbar-popup">
             <StackPanel Spacing="8">
               <StackPanel Orientation="Horizontal" Spacing="8">
-                <Button Content="Attack" Command="{Binding StartAutoAttackCommand}" />
-                <Button Content="Hunt" Command="{Binding StartAutoHuntCommand}" />
-                <Button Content="Stop" Command="{Binding StopAutoAsyncCommand}" />
+                <Button x:Name="AutoAttackButton" Content="Attack" />
+                <Button x:Name="AutoHuntButton" Content="Hunt" />
+                <Button x:Name="AutoStopButton" Content="Stop" />
               </StackPanel>
-              <TextBlock Text="{Binding SelectedClassString, StringFormat=Class: {0}}" />
+              <TextBlock x:Name="AutoClassText" />
             </StackPanel>
           </Border>
         </Popup>
 
         <ToggleButton x:Name="JumpToggle" Classes="topbar-action" Content="Jump" />
-        <Popup IsOpen="{Binding IsChecked, ElementName=JumpToggle}"
+        <Popup x:Name="JumpPopup"
+               IsOpen="{Binding IsChecked, ElementName=JumpToggle}"
                Placement="Bottom"
                PlacementTarget="{Binding ElementName=JumpToggle}"
                HorizontalOffset="-185"
                IsLightDismissEnabled="True">
           <Border x:Name="JumpPanel" Classes="topbar-popup">
             <StackPanel Spacing="8">
-              <TextBox Watermark="Cell" Text="{Binding SelectedCell}" />
-              <TextBox Watermark="Pad" Text="{Binding SelectedPad}" />
+              <TextBox x:Name="JumpCellTextBox" Watermark="Cell" />
+              <TextBox x:Name="JumpPadTextBox" Watermark="Pad" />
               <StackPanel Orientation="Horizontal" Spacing="8">
-                <Button Content="Current" Command="{Binding GetCurrentCommand}" />
-                <Button Content="Refresh" Command="{Binding UpdateCellsCommand}" />
-                <Button Content="Jump" Command="{Binding JumpToCommand}" />
+                <Button x:Name="JumpCurrentButton" Content="Current" />
+                <Button x:Name="JumpRefreshButton" Content="Refresh" />
+                <Button x:Name="JumpGoButton" Content="Jump" />
               </StackPanel>
             </StackPanel>
           </Border>
         </Popup>
 
-        <Button Classes="topbar-action" Content="+" Command="{Binding ShowBotWindowCommand}" />
+        <Button x:Name="BotWindowButton" Classes="topbar-action" Content="+" />
       </StackPanel>
     </Grid>
 

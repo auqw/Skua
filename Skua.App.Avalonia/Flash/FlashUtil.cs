@@ -97,7 +97,7 @@ public class FlashUtil : IFlashUtil
         }
         catch { /* ignored */ }
 
-        object ocx = null!;
+        object? ocx = null;
         try
         {
             ocx = Flash.GetOcx();
@@ -134,13 +134,19 @@ public class FlashUtil : IFlashUtil
     {
         try
         {
-            object o = Call(function, typeof(T), args);
-            return o is not null ? (T)o : (T)DefaultProvider.GetDefault<T>(typeof(T));
+            object? o = Call(function, typeof(T), args);
+            return o is T value ? value : GetDefaultValue<T>();
         }
         catch
         {
-            return (T)DefaultProvider.GetDefault<T>(typeof(T));
+            return GetDefaultValue<T>();
         }
+    }
+
+    private static T GetDefaultValue<T>()
+    {
+        object? defaultValue = DefaultProvider.GetDefault<T>(typeof(T));
+        return defaultValue is T typed ? typed : default!;
     }
 
     public object Call(string function, Type type, params object[] args)
@@ -149,6 +155,9 @@ public class FlashUtil : IFlashUtil
             _lazyManager.Value.ScriptCts?.Token.ThrowIfCancellationRequested();
         try
         {
+            if (Flash is null)
+                return default!;
+
             StringBuilder req = new StringBuilder().Append($"<invoke name=\"{function}\" returntype=\"xml\">");
             if (args.Length > 0)
             {
@@ -157,9 +166,16 @@ public class FlashUtil : IFlashUtil
                 req.Append("</arguments>");
             }
             req.Append("</invoke>");
-            string result = Flash?.CallFunction(req.ToString())!;
+            string? result = Flash.CallFunction(req.ToString());
+            if (string.IsNullOrWhiteSpace(result))
+                return default!;
+
             XElement el = XElement.Parse(result);
-            return el is null || el.FirstNode is null ? default! : Convert.ChangeType(el.FirstNode.ToString(), type);
+            if (el.FirstNode is null)
+                return default!;
+
+            object? value = Convert.ChangeType(el.FirstNode.ToString(), type);
+            return value ?? default!;
         }
         catch (Exception e)
         {
