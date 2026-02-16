@@ -31,7 +31,7 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
-        //InitializeComponent();
+        InitializeComponent();
         _mainViewModel = Ioc.Default.GetRequiredService<MainViewModel>();
         _mainMenuVm = Ioc.Default.GetRequiredService<MainMenuViewModel>();
         //_flash = Ioc.Default.GetRequiredService<IFlashUtil>();
