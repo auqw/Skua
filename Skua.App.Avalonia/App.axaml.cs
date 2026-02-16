@@ -16,7 +16,6 @@ using Skua.Core.ViewModels;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using WinForms = System.Windows.Forms;
 
 namespace Skua.App.Avalonia;
 
@@ -40,13 +39,13 @@ public partial class App : Application
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<IDispatcherService, DispatcherService>();
         services.AddSingleton<IClipboardService, ClipboardService>();
-        services.AddSingleton<IDialogService, DialogService>();
+        services.AddSingleton<IDialogService, StubDialogService>();
         services.AddSingleton<IWindowService, WindowService>();
-        services.AddSingleton<IFileDialogService, FileDialogService>();
+        services.AddSingleton<IFileDialogService, StubFileDialogService>();
         services.AddSingleton<IThemeService, AvaloniaThemeService>();
         services.AddSingleton<IHotKeyService, HotKeyService>();
         services.AddSingleton<ISoundService, SoundService>();
-        services.AddSingleton<IFlashUtil, FlashUtil>();
+        services.AddSingleton<IFlashUtil, StubFlashUtil>();
         services.AddSingleton<SkuaStartupHandler>();
         services.AddSkuaMainAppViewModels();
 
@@ -96,11 +95,11 @@ public partial class App : Application
         try
         {
             string details = $"Unhandled exception source: {source}\r\n\r\n{ex.GetType().FullName}: {ex.Message}\r\n\r\n{ex.StackTrace}";
-            WinForms.MessageBox.Show(
+            /*WinForms.MessageBox.Show(
                 details,
                 "Skua Client Exception",
                 WinForms.MessageBoxButtons.OK,
-                WinForms.MessageBoxIcon.Error);
+                WinForms.MessageBoxIcon.Error);*/
         }
         catch
         {
