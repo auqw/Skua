@@ -1,6 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:fluent="clr-namespace:Avalonia.Themes.Fluent;assembly=Avalonia.Themes.Fluent"
+             xmlns:vms="clr-namespace:Skua.Core.ViewModels;assembly=Skua.Core"
              x:Class="Skua.App.Avalonia.App"
              RequestedThemeVariant="Default">
   <Application.Styles>
@@ -12,4 +13,63 @@
     </FluentTheme>
     <StyleInclude Source="/Themes/ClientStyles.axaml" />
   </Application.Styles>
+  <TrayIcon.Icons>
+    <TrayIcons>
+      <TrayIcon Icon="/Assets/SkuaIcon.ico"
+                ToolTipText="Skua"
+                Clicked="TrayIcon_Clicked">
+        <TrayIcon.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="Show Client" Click="TrayShowClient_Click" />
+            <NativeMenuItem Header="Hide Client" Click="TrayHideClient_Click" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="Exit" Click="TrayExit_Click" />
+          </NativeMenu>
+        </TrayIcon.Menu>
+      </TrayIcon>
+    </TrayIcons>
+  </TrayIcon.Icons>
+  <Application.DataTemplates>
+    <DataTemplate DataType="vms:BotWindowViewModel">
+      <Grid ColumnDefinitions="210,*"
+            RowDefinitions="*"
+            Margin="8">
+        <Border Grid.Column="0"
+                Margin="0,0,8,0"
+                Padding="6"
+                Background="{DynamicResource SkuaPageBrush}"
+                BorderBrush="{DynamicResource SkuaNavHoverBrush}"
+                BorderThickness="1">
+          <ListBox ItemsSource="{Binding BotViews}"
+                   SelectedItem="{Binding SelectedItem}"
+                   BorderThickness="0"
+                   Background="Transparent">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Title}" Margin="6,4" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Border>
+        <Border Grid.Column="1"
+                Padding="8"
+                Background="{DynamicResource SkuaPageBrush}"
+                BorderBrush="{DynamicResource SkuaNavHoverBrush}"
+                BorderThickness="1">
+          <ContentControl Content="{Binding SelectedItem}" />
+        </Border>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate DataType="vms:BotControlViewModelBase">
+      <Border Padding="10"
+              Background="{DynamicResource SkuaPageBrush}"
+              BorderBrush="{DynamicResource SkuaNavHoverBrush}"
+              BorderThickness="1">
+        <StackPanel Spacing="6">
+          <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+          <TextBlock Text="This panel is not ported yet." />
+        </StackPanel>
+      </Border>
+    </DataTemplate>
+  </Application.DataTemplates>
 </Application>

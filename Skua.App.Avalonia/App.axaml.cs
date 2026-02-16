@@ -212,4 +212,37 @@ public partial class App : Application
         byte D(byte c) => (byte)Math.Clamp(c * (1 - amount), 0, 255);
         return Color.FromArgb(color.A, D(color.R), D(color.G), D(color.B));
     }
+
+    private void TrayIcon_Clicked(object? sender, EventArgs e)
+    {
+        ShowClientWindow();
+    }
+
+    private void TrayShowClient_Click(object? sender, EventArgs e)
+    {
+        ShowClientWindow();
+    }
+
+    private void TrayHideClient_Click(object? sender, EventArgs e)
+    {
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow is null)
+            return;
+        desktop.MainWindow.Hide();
+    }
+
+    private void TrayExit_Click(object? sender, EventArgs e)
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            desktop.Shutdown();
+    }
+
+    private void ShowClientWindow()
+    {
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow is null)
+            return;
+
+        if (!desktop.MainWindow.IsVisible)
+            desktop.MainWindow.Show();
+        desktop.MainWindow.Activate();
+    }
 }
