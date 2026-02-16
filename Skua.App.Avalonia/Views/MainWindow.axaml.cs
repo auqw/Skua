@@ -48,26 +48,26 @@ public partial class MainWindow : Window
 
     private void ConfigureTopActions()
     {
-        /*BotWindowButton.Command = _mainMenuVm.ShowBotWindowCommand;*/
+        BotWindowButton.Command = _mainMenuVm.ShowBotWindowCommand;
         ConfigureAutoActions(_mainMenuVm.AutoViewModel);
         ConfigureJumpActions(_mainMenuVm.JumpViewModel);
     }
 
     private void ConfigureAutoActions(AutoViewModel viewModel)
     {
-        /*AutoAttackButton.Command = viewModel.StartAutoAttackCommand;
+        AutoAttackButton.Command = viewModel.StartAutoAttackCommand;
         AutoHuntButton.Command = viewModel.StartAutoHuntCommand;
         AutoStopButton.Command = viewModel.StopAutoAsyncCommand;
-        BindTextBlock(AutoClassText, nameof(AutoViewModel.SelectedClassString), viewModel, "Class: {0}");*/
+        BindTextBlock(AutoClassText, nameof(AutoViewModel.SelectedClassString), viewModel, "Class: {0}");
     }
 
     private void ConfigureJumpActions(JumpViewModel viewModel)
     {
-        /*JumpCurrentButton.Command = viewModel.GetCurrentCommand;
+        JumpCurrentButton.Command = viewModel.GetCurrentCommand;
         JumpRefreshButton.Command = viewModel.UpdateCellsCommand;
         JumpGoButton.Command = viewModel.JumpToCommand;
         BindTextBoxTwoWay(JumpCellTextBox, nameof(JumpViewModel.SelectedCell), viewModel);
-        BindTextBoxTwoWay(JumpPadTextBox, nameof(JumpViewModel.SelectedPad), viewModel);*/
+        BindTextBoxTwoWay(JumpPadTextBox, nameof(JumpViewModel.SelectedPad), viewModel);
     }
 
     private static void BindTextBlock(TextBlock textBlock, string path, object source, string? stringFormat = null)
@@ -172,14 +172,14 @@ public partial class MainWindow : Window
 
     private void BuildMainMenu()
     {
-        /*MainMenuControl.Items.Clear();
+        MainMenuControl.Items.Clear();
         foreach (MainMenuItemViewModel item in _mainMenuVm.MainMenuItems)
-            MainMenuControl.Items.Add(CreateMainMenuItem(item));*/
+            MainMenuControl.Items.Add(CreateMainMenuItem(item));
 
         _pluginsMenuItem = new MenuItem { Header = "Plugins" };
         _pluginsMenuItem.Classes.Add("top-nav-item");
         _pluginsMenuItem.PointerEntered += TopMenuItem_PointerEntered;
-        //MainMenuControl.Items.Add(_pluginsMenuItem);
+        MainMenuControl.Items.Add(_pluginsMenuItem);
         BuildPluginsMenuItems();
         RefreshHoverMenus();
     }
@@ -196,10 +196,10 @@ public partial class MainWindow : Window
 
     private void RefreshHoverMenus()
     {
-        /*_hoverMenus = MainMenuControl.Items
+        _hoverMenus = MainMenuControl.Items
             .OfType<MenuItem>()
             .Where(x => x.HasSubMenu)
-            .ToArray();*/
+            .ToArray();
     }
 
     private MenuItem CreateMainMenuItem(MainMenuItemViewModel item)
@@ -247,9 +247,9 @@ public partial class MainWindow : Window
         double managedMb = GC.GetTotalMemory(false) / (1024d * 1024d);
         int fps = _options.SetFPS;
 
-        /*FpsMetricText.Text = $"FPS: {fps}";
+        FpsMetricText.Text = $"FPS: {fps}";
         WorkingSetMetricText.Text = $"RAM: {workingSetMb:0.0} MB";
         PrivateMetricText.Text = $"Private: {privateMb:0.0} MB";
-        ManagedMetricText.Text = $"Managed: {managedMb:0.0} MB";*/
+        ManagedMetricText.Text = $"Managed: {managedMb:0.0} MB";
     }
 }
