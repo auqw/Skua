@@ -22,10 +22,14 @@ public partial class GrabberViewModel : BotControlViewModelBase
         get => _selectedTab;
         set
         {
+            if (value is null)
+                return;
+
             GrabberListViewModel lastTab = _selectedTab;
             if (SetProperty(ref _selectedTab, value))
             {
-                lastTab.IsActive = false;
+                if (lastTab is not null)
+                    lastTab.IsActive = false;
                 _selectedTab.IsActive = true;
             }
         }

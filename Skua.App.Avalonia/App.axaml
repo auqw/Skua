@@ -65,6 +65,24 @@
     <DataTemplate DataType="vms:ScriptLoaderViewModel">
       <views:ScriptLoaderView />
     </DataTemplate>
+    <DataTemplate DataType="vms:LoaderViewModel">
+      <views:LoaderView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:GrabberViewModel">
+      <views:GrabberView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:RuntimeHelpersViewModel">
+      <views:RuntimeHelpersView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:ConsoleViewModel">
+      <views:ConsoleView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:GameOptionsViewModel">
+      <views:GameOptionsView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:ApplicationOptionsViewModel">
+      <views:ApplicationOptionsView />
+    </DataTemplate>
     <DataTemplate DataType="vms:LogsViewModel">
       <views:LogsView />
     </DataTemplate>
@@ -76,10 +94,7 @@
               Background="{DynamicResource SkuaPageBrush}"
               BorderBrush="{DynamicResource SkuaNavHoverBrush}"
               BorderThickness="1">
-        <StackPanel Spacing="6">
-          <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
-          <TextBlock Text="This panel is not ported yet." />
-        </StackPanel>
+        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
       </Border>
     </DataTemplate>
   </Application.DataTemplates>

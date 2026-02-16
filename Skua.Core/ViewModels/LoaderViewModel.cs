@@ -62,7 +62,11 @@ public partial class LoaderViewModel : BotControlViewModelBase, IManagedWindow
 
     private bool AllDigits()
     {
-        return InputIDs.Replace(",", "").Replace(" ", "").All(c => int.TryParse(c + "", out int i));
+        if (string.IsNullOrWhiteSpace(InputIDs))
+            return false;
+
+        string normalized = InputIDs.Replace(",", "").Replace(" ", "");
+        return normalized.Length > 0 && normalized.All(char.IsDigit);
     }
 
     [RelayCommand]
