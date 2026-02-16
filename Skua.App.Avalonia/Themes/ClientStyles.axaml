@@ -12,13 +12,11 @@
           <SolidColorBrush x:Key="SkuaPageBrush" Color="#ECEEF2" />
           <SolidColorBrush x:Key="SkuaNavHoverBrush" Color="#DDE2EA" />
           <SolidColorBrush x:Key="SkuaTextBrush" Color="#1E222B" />
-          <SolidColorBrush x:Key="SkuaMutedTextBrush" Color="#5F6674" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
           <SolidColorBrush x:Key="SkuaPageBrush" Color="#242830" />
           <SolidColorBrush x:Key="SkuaNavHoverBrush" Color="#3D4552" />
           <SolidColorBrush x:Key="SkuaTextBrush" Color="#E8ECF3" />
-          <SolidColorBrush x:Key="SkuaMutedTextBrush" Color="#ABB4C3" />
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
     </ResourceDictionary>
@@ -30,31 +28,9 @@
     <Setter Property="FontSize" Value="12" />
   </Style>
 
-  <Style Selector="TextBlock.muted">
-    <Setter Property="Foreground" Value="{DynamicResource SkuaMutedTextBrush}" />
-  </Style>
-
-  <Style Selector="TextBlock.toolbar-item">
-    <Setter Property="VerticalAlignment" Value="Center" />
-    <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
-  </Style>
-
-  <Style Selector="Border.toolbar-item-host">
-    <Setter Property="CornerRadius" Value="4" />
-    <Setter Property="Padding" Value="6,2" />
-    <Setter Property="Background" Value="Transparent" />
-  </Style>
-
-  <Style Selector="Border.toolbar-item-host:pointerover">
-    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
-  </Style>
-
-  <Style Selector="Border.toolbar-item-host:pointerover TextBlock.toolbar-item">
-    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-  </Style>
-
   <Style Selector="Menu.top-toolbar">
     <Setter Property="Background" Value="Transparent" />
+    <Setter Property="VerticalAlignment" Value="Center" />
   </Style>
 
   <Style Selector="MenuItem.top-nav-item">
@@ -107,5 +83,51 @@
 
   <Style Selector="MenuItem.top-nav-item:submenuopen /template/ ContentPresenter#PART_HeaderPresenter">
     <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.topbar-action">
+    <Setter Property="Height" Value="25" />
+    <Setter Property="MinWidth" Value="34" />
+    <Setter Property="Padding" Value="10,0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="Button.topbar-action:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="ToggleButton.topbar-action">
+    <Setter Property="Height" Value="25" />
+    <Setter Property="MinWidth" Value="50" />
+    <Setter Property="Padding" Value="10,0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="ToggleButton.topbar-action:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="ToggleButton.topbar-action:checked">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Border.topbar-popup">
+    <Setter Property="MinWidth" Value="280" />
+    <Setter Property="Padding" Value="10" />
+    <Setter Property="Background" Value="{DynamicResource SkuaPageBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="6" />
   </Style>
 </Styles>
