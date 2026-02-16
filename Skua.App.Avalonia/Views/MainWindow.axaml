@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Skua.App.Avalonia.Controls"
         x:Class="Skua.App.Avalonia.Views.MainWindow"
         Width="1280"
         Height="780"
@@ -8,48 +9,78 @@
         Title="{Binding Title}"
         WindowStartupLocation="CenterScreen"
         Icon="/Assets/SkuaIcon.ico">
-  <Grid RowDefinitions="Auto,*">
-    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Height="34">
-      <StackPanel Orientation="Horizontal" Spacing="6">
-        <Menu Classes="top-toolbar" Margin="8,0,0,0">
-          <MenuItem x:Name="ScriptsMenuItem" Classes="top-nav-item" Header="Scripts" PointerEntered="TopMenuItem_PointerEntered">
-            <MenuItem Header="Open Script" />
-            <MenuItem Header="Save Script" />
-            <MenuItem Header="Reload Script List" />
-          </MenuItem>
-          <MenuItem x:Name="OptionsMenuItem" Classes="top-nav-item" Header="Options" PointerEntered="TopMenuItem_PointerEntered">
-            <MenuItem Header="Application Options" />
-            <MenuItem Header="Client Options" />
-          </MenuItem>
-          <MenuItem x:Name="HelpersMenuItem" Classes="top-nav-item" Header="Helpers" PointerEntered="TopMenuItem_PointerEntered">
-            <MenuItem Header="Map Loader" />
-            <MenuItem Header="Quest Manager" />
-          </MenuItem>
-          <MenuItem x:Name="ToolsMenuItem" Classes="top-nav-item" Header="Tools" PointerEntered="TopMenuItem_PointerEntered">
-            <MenuItem Header="Packet Logger" />
-            <MenuItem Header="Hotkeys" />
-          </MenuItem>
-          <MenuItem Classes="top-nav-item" Header="Skills" />
-          <MenuItem Classes="top-nav-item" Header="Packets" />
-          <MenuItem Classes="top-nav-item" Header="Bank" />
-          <MenuItem Classes="top-nav-item" Header="Logs" />
-          <MenuItem x:Name="PluginsMenuItem" Classes="top-nav-item" Header="Plugins" PointerEntered="TopMenuItem_PointerEntered">
-            <MenuItem Header="View Plugins" />
-          </MenuItem>
-        </Menu>
-      </StackPanel>
-      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" Margin="8,0,0,0" PointerEntered="NonMenuArea_PointerEntered">
-        <Border Classes="toolbar-item-host" Margin="12,0,0,0"><TextBlock Text="Auto" Classes="toolbar-item" /></Border>
-        <Border Classes="toolbar-item-host" Margin="12,0,0,0"><TextBlock Text="Jump" Classes="toolbar-item" /></Border>
-        <Border Classes="toolbar-item-host" Margin="12,0,12,0"><TextBlock Text="+" Classes="toolbar-item" /></Border>
+  <Grid RowDefinitions="Auto,*,Auto">
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Height="25">
+      <Menu x:Name="MainMenuControl" Classes="top-toolbar" Margin="8,0,0,0" />
+
+      <StackPanel x:Name="TopActionsPanel"
+                  Grid.Column="1"
+                  Orientation="Horizontal"
+                  Spacing="0"
+                  Margin="0,0,6,0"
+                  PointerEntered="NonMenuArea_PointerEntered">
+        <ToggleButton x:Name="AutoToggle" Classes="topbar-action" Content="Auto" />
+        <Popup IsOpen="{Binding IsChecked, ElementName=AutoToggle}"
+               Placement="Bottom"
+               PlacementTarget="{Binding ElementName=AutoToggle}"
+               HorizontalOffset="-220"
+               IsLightDismissEnabled="True">
+          <Border x:Name="AutoPanel" Classes="topbar-popup">
+            <StackPanel Spacing="8">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="Attack" Command="{Binding StartAutoAttackCommand}" />
+                <Button Content="Hunt" Command="{Binding StartAutoHuntCommand}" />
+                <Button Content="Stop" Command="{Binding StopAutoAsyncCommand}" />
+              </StackPanel>
+              <TextBlock Text="{Binding SelectedClassString, StringFormat=Class: {0}}" />
+            </StackPanel>
+          </Border>
+        </Popup>
+
+        <ToggleButton x:Name="JumpToggle" Classes="topbar-action" Content="Jump" />
+        <Popup IsOpen="{Binding IsChecked, ElementName=JumpToggle}"
+               Placement="Bottom"
+               PlacementTarget="{Binding ElementName=JumpToggle}"
+               HorizontalOffset="-185"
+               IsLightDismissEnabled="True">
+          <Border x:Name="JumpPanel" Classes="topbar-popup">
+            <StackPanel Spacing="8">
+              <TextBox Watermark="Cell" Text="{Binding SelectedCell}" />
+              <TextBox Watermark="Pad" Text="{Binding SelectedPad}" />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="Current" Command="{Binding GetCurrentCommand}" />
+                <Button Content="Refresh" Command="{Binding UpdateCellsCommand}" />
+                <Button Content="Jump" Command="{Binding JumpToCommand}" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
+        </Popup>
+
+        <Button Classes="topbar-action" Content="+" Command="{Binding ShowBotWindowCommand}" />
       </StackPanel>
     </Grid>
 
     <Grid Grid.Row="1" Background="#000000" PointerEntered="NonMenuArea_PointerEntered">
-      <TextBlock Text="Game content area (Flash-hosted) goes here."
-                 Classes="muted"
-                 HorizontalAlignment="Center"
-                 VerticalAlignment="Center" />
+      <controls:WinFormsFlashHost x:Name="FlashHost" IsVisible="False" />
+      <ProgressBar x:Name="LoadingBar"
+                   Width="150"
+                   Height="8"
+                   IsIndeterminate="True"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
     </Grid>
+
+    <Border Grid.Row="2"
+            Background="{DynamicResource SkuaPageBrush}"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}"
+            BorderThickness="0,1,0,0"
+            Padding="10,4">
+      <StackPanel Orientation="Horizontal" Spacing="16">
+        <TextBlock x:Name="FpsMetricText" Text="FPS: --" />
+        <TextBlock x:Name="WorkingSetMetricText" Text="RAM: --" />
+        <TextBlock x:Name="PrivateMetricText" Text="Private: --" />
+        <TextBlock x:Name="ManagedMetricText" Text="Managed: --" />
+      </StackPanel>
+    </Border>
   </Grid>
 </Window>

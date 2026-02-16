@@ -5,10 +5,13 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
+using Skua.App.Avalonia.Flash;
 using Skua.App.Avalonia.Services;
 using Skua.Core.AppStartup;
 using Skua.Core.Interfaces;
+using Skua.Core.Utils;
 using Skua.Core.ViewModels;
 using System;
 
@@ -25,20 +28,95 @@ public partial class App : Application
     {
         ServiceCollection services = new();
         services.AddCommonServices();
+        services.AddCompiler();
+        services.AddScriptableObjects();
         services.AddSingleton<ISettingsService, SettingsService>();
-        services.AddSingleton<MainViewModel>();
+        services.AddSingleton<IDispatcherService, DispatcherService>();
+        services.AddSingleton<IClipboardService, ClipboardService>();
+        services.AddSingleton<IDialogService, DialogService>();
+        services.AddSingleton<IWindowService, WindowService>();
+        services.AddSingleton<IFileDialogService, FileDialogService>();
+        services.AddSingleton<IThemeService, AvaloniaThemeService>();
+        services.AddSingleton<IHotKeyService, HotKeyService>();
+        services.AddSingleton<ISoundService, SoundService>();
+        services.AddSingleton<IFlashUtil, FlashUtil>();
+        services.AddSingleton<SkuaStartupHandler>();
+        services.AddSkuaMainAppViewModels();
 
         Ioc.Default.ConfigureServices(services.BuildServiceProvider());
         ISettingsService settings = Ioc.Default.GetRequiredService<ISettingsService>();
         settings.SetApplicationVersion();
+        FlashTrustManager.EnsureTrustFile();
+        IClientFilesService clientFiles = Ioc.Default.GetRequiredService<IClientFilesService>();
+        clientFiles.CreateDirectories();
+        clientFiles.CreateFiles();
         ApplyThemeFromManagerSettings(settings);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new Views.MainWindow();
+            desktop.Exit += OnDesktopExit;
         }
 
+        TryInitializeStartupServices();
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static void TryInitializeStartupServices()
+    {
+        try
+        {
+            Ioc.Default.GetRequiredService<IPluginManager>().Initialize();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Startup plugin init failed: {ex.GetType().Name}: {ex.Message}");
+        }
+
+        try
+        {
+            Ioc.Default.GetRequiredService<IHotKeyService>().Reload();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Startup hotkey init failed: {ex.GetType().Name}: {ex.Message}");
+        }
+    }
+
+    private static async void OnDesktopExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        try
+        {
+            Ioc.Default.GetRequiredService<ICaptureProxy>().Stop();
+        }
+        catch (Exception ex) { Console.Error.WriteLine($"Exit capture shutdown failed: {ex.GetType().Name}: {ex.Message}"); }
+
+        try
+        {
+            await ((IAsyncDisposable)Ioc.Default.GetRequiredService<IScriptBoost>()).DisposeAsync();
+            await ((IAsyncDisposable)Ioc.Default.GetRequiredService<IScriptBotStats>()).DisposeAsync();
+            await ((IAsyncDisposable)Ioc.Default.GetRequiredService<IScriptDrop>()).DisposeAsync();
+            await Ioc.Default.GetRequiredService<IScriptManager>().StopScript();
+            await ((IScriptInterfaceManager)Ioc.Default.GetRequiredService<IScriptInterface>()).StopTimerAsync();
+        }
+        catch (Exception ex) { Console.Error.WriteLine($"Exit script cleanup failed: {ex.GetType().Name}: {ex.Message}"); }
+
+        try
+        {
+            Ioc.Default.GetRequiredService<IFlashUtil>().Dispose();
+        }
+        catch (Exception ex) { Console.Error.WriteLine($"Exit flash cleanup failed: {ex.GetType().Name}: {ex.Message}"); }
+
+        try
+        {
+            if (Ioc.Default.GetRequiredService<IHotKeyService>() is IDisposable disposableHotKeys)
+                disposableHotKeys.Dispose();
+        }
+        catch (Exception ex) { Console.Error.WriteLine($"Exit hotkey cleanup failed: {ex.GetType().Name}: {ex.Message}"); }
+
+        WeakReferenceMessenger.Default.Cleanup();
+        WeakReferenceMessenger.Default.Reset();
+        StrongReferenceMessenger.Default.Reset();
     }
 
     private void ApplyThemeFromManagerSettings(ISettingsService settings)
