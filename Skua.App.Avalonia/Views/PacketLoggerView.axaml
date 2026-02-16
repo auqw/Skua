@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.Views.PacketLoggerView">
+  <Grid Margin="8"
+        ColumnDefinitions="*,220"
+        RowDefinitions="*,Auto">
+    <Border Grid.Row="0"
+            Grid.Column="0"
+            Margin="0,0,8,8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <ListBox ItemsSource="{Binding PacketLogs}"
+               SelectionMode="Multiple"
+               BorderThickness="0"
+               Background="Transparent" />
+    </Border>
+
+    <Border Grid.Row="0"
+            Grid.Column="1"
+            Margin="0,0,0,8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ItemsControl ItemsSource="{Binding PacketFilters}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <CheckBox Margin="8,4"
+                        Content="{Binding Content}"
+                        IsChecked="{Binding IsChecked}" />
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </Border>
+
+    <Grid Grid.Row="1"
+          Grid.ColumnSpan="2"
+          ColumnDefinitions="Auto,Auto,Auto,*"
+          Margin="0,0,0,0">
+      <Button Grid.Column="0"
+              Content="Clear Logs"
+              Command="{Binding ClearPacketLogsCommand}" />
+      <Button Grid.Column="1"
+              Margin="8,0,0,0"
+              Content="Clear Filters"
+              Command="{Binding ClearFiltersCommand}" />
+      <Button Grid.Column="2"
+              Margin="8,0,0,0"
+              Content="Save"
+              Command="{Binding SavePacketLogsCommand}" />
+      <CheckBox Grid.Column="3"
+                HorizontalAlignment="Right"
+                Content="Enabled"
+                IsChecked="{Binding IsReceivingPackets}" />
+    </Grid>
+  </Grid>
+</UserControl>

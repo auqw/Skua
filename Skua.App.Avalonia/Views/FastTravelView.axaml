@@ -1,0 +1,82 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.Views.FastTravelView">
+  <Grid Margin="8"
+        RowDefinitions="Auto,Auto,*,Auto"
+        ColumnDefinitions="*,*,Auto">
+    <TextBox Grid.Row="0"
+             Grid.Column="0"
+             Margin="0,0,8,8"
+             Watermark="Description"
+             Text="{Binding Editor.Travel.DescriptionName}" />
+    <TextBox Grid.Row="0"
+             Grid.Column="1"
+             Margin="0,0,8,8"
+             Watermark="Map"
+             Text="{Binding Editor.Travel.MapName}" />
+    <Button Grid.Row="0"
+            Grid.Column="2"
+            Margin="0,0,0,8"
+            Content="Add"
+            Command="{Binding AddFastTravelCommand}" />
+
+    <TextBox Grid.Row="1"
+             Grid.Column="0"
+             Margin="0,0,8,8"
+             Watermark="Cell"
+             Text="{Binding Editor.Travel.Cell}" />
+    <TextBox Grid.Row="1"
+             Grid.Column="1"
+             Margin="0,0,8,8"
+             Watermark="Pad"
+             Text="{Binding Editor.Travel.Pad}" />
+    <Button Grid.Row="1"
+            Grid.Column="2"
+            Margin="0,0,0,8"
+            Content="Save"
+            Command="{Binding SaveFastTravelsCommand}" />
+
+    <Border Grid.Row="2"
+            Grid.ColumnSpan="3"
+            Margin="0,0,0,8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <ListBox ItemsSource="{Binding FastTravelItems}"
+               SelectedIndex="{Binding SelectedIndex}"
+               BorderThickness="0"
+               Background="Transparent">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid Margin="8,6"
+                  ColumnDefinitions="*,Auto,Auto,Auto">
+              <TextBlock Grid.Column="0"
+                         VerticalAlignment="Center"
+                         Text="{Binding DescriptionName}" />
+              <Button Grid.Column="1"
+                      Margin="8,0,0,0"
+                      Content="Go"
+                      Command="{Binding TravelCommand}"
+                      CommandParameter="{Binding}" />
+              <Button Grid.Column="2"
+                      Margin="8,0,0,0"
+                      Content="Edit"
+                      Command="{Binding EditCommand}" />
+              <Button Grid.Column="3"
+                      Margin="8,0,0,0"
+                      Content="Remove"
+                      Command="{Binding RemoveCommand}" />
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Border>
+
+    <StackPanel Grid.Row="3"
+                Grid.ColumnSpan="3"
+                Orientation="Horizontal"
+                Spacing="8">
+      <Button Content="Clear"
+              Command="{Binding ClearFastTravelsCommand}" />
+    </StackPanel>
+  </Grid>
+</UserControl>

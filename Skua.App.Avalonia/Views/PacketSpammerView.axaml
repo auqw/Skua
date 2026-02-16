@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.Views.PacketSpammerView">
+  <Grid Margin="8"
+        ColumnDefinitions="*,150"
+        RowDefinitions="*,Auto,Auto">
+    <Border Grid.Row="0"
+            Grid.Column="0"
+            Margin="0,0,8,8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <ListBox ItemsSource="{Binding Packets}"
+               SelectedIndex="{Binding SelectedIndex}"
+               BorderThickness="0"
+               Background="Transparent" />
+    </Border>
+
+    <StackPanel Grid.Row="0"
+                Grid.Column="1"
+                Spacing="8">
+      <Button Content="Add"
+              Command="{Binding AddPacketCommand}" />
+      <Button Content="Remove"
+              Command="{Binding RemovePacketCommand}" />
+      <Button Content="Clear"
+              Command="{Binding ClearPacketsCommand}" />
+      <Button Content="Load"
+              Command="{Binding LoadSpammerCommand}" />
+      <Button Content="Save"
+              Command="{Binding SaveSpammerCommand}" />
+      <TextBlock Text="Delay (ms)" />
+      <TextBox Text="{Binding SpamDelay}" />
+      <Button Content="Start / Stop"
+              Command="{Binding ToggleSpammerCommand}" />
+      <CheckBox Content="Send to Client"
+                IsChecked="{Binding SendToClient}" />
+    </StackPanel>
+
+    <TextBox Grid.Row="1"
+             Grid.Column="0"
+             Margin="0,0,8,0"
+             Watermark="Packet"
+             Text="{Binding PacketText}" />
+
+    <Button Grid.Row="1"
+            Grid.Column="1"
+            Content="Send"
+            Command="{Binding SendPacketCommand}" />
+  </Grid>
+</UserControl>

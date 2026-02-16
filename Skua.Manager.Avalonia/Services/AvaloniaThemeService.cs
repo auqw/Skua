@@ -3,6 +3,7 @@ using Skua.Core.Interfaces;
 using Skua.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Skua.Manager.Avalonia.Services;
@@ -110,6 +111,7 @@ public class AvaloniaThemeService : IThemeService
                 return;
             _isDarkTheme = value;
             _settingsService.Set("ManagerIsDarkTheme", value);
+            SaveCurrentThemeSnapshot();
             ThemeChanged?.Invoke(SelectedColor);
         }
     }
@@ -172,12 +174,16 @@ public class AvaloniaThemeService : IThemeService
         if (theme is null)
             return;
 
+        if (theme is string themeString && TryApplySerializedTheme(themeString))
+            return;
+
         Color resolved = ResolveAccentColor(theme);
         _primaryColor = resolved;
         _settingsService.Set("ManagerAccentColor", resolved.ToString());
         _colorSelectionValue = FindClosestSelectionKey(resolved);
         if (ActiveScheme == ColorScheme.Primary)
             SetSelectedColorSilently(resolved);
+        SaveCurrentThemeSnapshot();
 
         ThemeChanged?.Invoke(resolved);
         SchemeChanged?.Invoke(ColorScheme.Primary, resolved);
@@ -251,6 +257,7 @@ public class AvaloniaThemeService : IThemeService
         {
             _primaryForegroundColor = color;
             _settingsService.Set("ManagerAccentForegroundColor", color.ToString());
+            SaveCurrentThemeSnapshot();
         }
         else
         {
@@ -263,6 +270,7 @@ public class AvaloniaThemeService : IThemeService
                 _settingsService.Set("ManagerAccentForegroundColor", _primaryForegroundColor.ToString());
                 SetSelectedColorSilently(_primaryColor);
             }
+            SaveCurrentThemeSnapshot();
         }
 
         if (IsColorAdjusted && ActiveScheme == ColorScheme.Primary)
@@ -280,12 +288,75 @@ public class AvaloniaThemeService : IThemeService
         {
             _primaryForegroundColor = ComputeForeground(_primaryColor, GetTargetContrastRatio());
             _settingsService.Set("ManagerAccentForegroundColor", _primaryForegroundColor.ToString());
+            SaveCurrentThemeSnapshot();
             ThemeChanged?.Invoke(_primaryColor);
         }
         else if (forceRefreshWhenOff)
         {
+            SaveCurrentThemeSnapshot();
             ThemeChanged?.Invoke(_primaryColor);
         }
+    }
+
+    private bool TryApplySerializedTheme(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        string[] parts = value.Split(',', StringSplitOptions.TrimEntries);
+        if (parts.Length < 6)
+            return false;
+
+        Color primary = ParseColor(parts[2], _primaryColor);
+        Color primaryForeground = ParseColor(parts[4], _primaryForegroundColor);
+        bool isDark = parts[1].Equals("Dark", StringComparison.OrdinalIgnoreCase);
+
+        bool useColorAdjustment = false;
+        if (parts.Length > 6)
+            bool.TryParse(parts[6], out useColorAdjustment);
+
+        float desiredContrastRatio = 4.5f;
+        if (parts.Length > 7)
+            float.TryParse(parts[7], NumberStyles.Any, CultureInfo.InvariantCulture, out desiredContrastRatio);
+
+        string contrastValue = parts.Length > 8 ? parts[8] : "Medium";
+
+        _isDarkTheme = isDark;
+        _isColorAdjusted = useColorAdjustment;
+        _desiredContrastRatio = desiredContrastRatio <= 0 ? 4.5f : desiredContrastRatio;
+        _contrastValue = string.IsNullOrWhiteSpace(contrastValue) ? "Medium" : contrastValue;
+        _primaryColor = primary;
+        _primaryForegroundColor = useColorAdjustment ? ComputeForeground(primary, GetTargetContrastRatio()) : primaryForeground;
+        _colorSelectionValue = FindClosestSelectionKey(_primaryColor);
+        ActiveScheme = ColorScheme.Primary;
+        SetSelectedColorSilently(_primaryColor);
+
+        _settingsService.Set("ManagerIsDarkTheme", _isDarkTheme);
+        _settingsService.Set("ManagerIsColorAdjusted", _isColorAdjusted);
+        _settingsService.Set("ManagerDesiredContrastRatio", _desiredContrastRatio);
+        _settingsService.Set("ManagerContrastValue", _contrastValue?.ToString() ?? "Medium");
+        _settingsService.Set("ManagerAccentColor", _primaryColor.ToString());
+        _settingsService.Set("ManagerAccentForegroundColor", _primaryForegroundColor.ToString());
+        SaveCurrentThemeSnapshot(parts[0]);
+
+        ThemeChanged?.Invoke(_primaryColor);
+        SchemeChanged?.Invoke(ColorScheme.Primary, _primaryColor);
+        return true;
+    }
+
+    private void SaveCurrentThemeSnapshot(string? name = null)
+    {
+        string themeName = !string.IsNullOrWhiteSpace(name) ? name : "Skua";
+        string baseTheme = IsDarkTheme ? "Dark" : "Light";
+        string serialized = $"{themeName},{baseTheme},{_primaryColor},{_primaryColor},{_primaryForegroundColor},{_primaryForegroundColor}";
+
+        if (IsColorAdjusted)
+        {
+            string ratio = DesiredContrastRatio.ToString(CultureInfo.InvariantCulture);
+            serialized += $",true,{ratio},{ContrastValue},All";
+        }
+
+        _settingsService.Set("CurrentTheme", serialized);
     }
 
     private float GetTargetContrastRatio()

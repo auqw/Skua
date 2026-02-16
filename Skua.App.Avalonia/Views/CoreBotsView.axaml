@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.Views.CoreBotsView">
+  <Grid Margin="8"
+        RowDefinitions="Auto,Auto,*">
+    <Grid Grid.Row="0"
+          ColumnDefinitions="*,Auto,Auto,Auto"
+          Margin="0,0,0,8">
+      <TextBlock Grid.Column="0"
+                 VerticalAlignment="Center"
+                 Text="{Binding CurrentPlayer}" />
+      <Button Grid.Column="1"
+              Margin="8,0,0,0"
+              Content="Load"
+              Command="{Binding LoadCommand}" />
+      <Button Grid.Column="2"
+              Margin="8,0,0,0"
+              Content="Save"
+              Command="{Binding SaveCommand}" />
+      <Button Grid.Column="3"
+              Margin="8,0,0,0"
+              Content="Load Character"
+              Command="{Binding LoadCharacterCommand}" />
+    </Grid>
+
+    <ListBox Grid.Row="1"
+             Margin="0,0,0,8"
+             BorderThickness="0"
+             Background="Transparent"
+             ItemsSource="{Binding CoreBotsTabs}"
+             SelectedItem="{Binding SelectedTab}">
+      <ListBox.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+      </ListBox.ItemsPanel>
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <Border Margin="0,0,8,0"
+                  Padding="10,6"
+                  BorderThickness="1"
+                  BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            <TextBlock Text="{Binding Header}" />
+          </Border>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <Border Grid.Row="2"
+            Padding="8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <ContentControl Content="{Binding SelectedTab.Content}" />
+    </Border>
+  </Grid>
+</UserControl>

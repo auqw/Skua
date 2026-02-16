@@ -54,12 +54,12 @@ public class WindowService : IWindowService
 
         Window window = CreateHostWindow(viewModel, viewModel.Title, viewModel.Width, viewModel.Height);
         window.CanResize = viewModel.CanResize;
-        window.Closed += (_, _) =>
+        window.Closing += (_, e) =>
         {
-            _managedWindows.Remove(key);
-            if (window.DataContext is IDisposable disposable)
-                disposable.Dispose();
-            window.DataContext = null;
+            e.Cancel = true;
+            window.Hide();
+            if (window.DataContext is ObservableRecipient recipient)
+                recipient.IsActive = false;
         };
         _managedWindows[key] = window;
     }
@@ -67,18 +67,32 @@ public class WindowService : IWindowService
     private static Window CreateHostWindow(object viewModel, string title, double width, double height)
     {
         bool hasTemplate = Application.Current?.DataTemplates.Any(t => t.Match(viewModel)) == true;
+        SizeToContent sizeToContent = SizeToContent.Manual;
 
-        return new Window
+        if (width <= 0 && height <= 0)
+            sizeToContent = SizeToContent.WidthAndHeight;
+        else if (width <= 0)
+            sizeToContent = SizeToContent.Width;
+        else if (height <= 0)
+            sizeToContent = SizeToContent.Height;
+
+        Window window = new()
         {
             Title = title,
-            Width = width,
-            Height = height,
             WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            SizeToContent = sizeToContent,
             DataContext = viewModel,
             Content = hasTemplate
                 ? new ContentControl { Content = viewModel }
                 : CreateFallbackContent(title)
         };
+
+        if (width > 0)
+            window.Width = width;
+        if (height > 0)
+            window.Height = height;
+
+        return window;
     }
 
     private static Control CreateFallbackContent(string title) =>
