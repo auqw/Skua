@@ -77,21 +77,20 @@ public class WindowService : IWindowService
             DataContext = viewModel,
             Content = hasTemplate
                 ? new ContentControl { Content = viewModel }
-                : new Border
-                {
-                    Padding = new Thickness(16),
-                    Child = new StackPanel
-                    {
-                        Spacing = 8,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        Children =
-                        {
-                            new TextBlock { Text = "View not ported yet." },
-                            new TextBlock { Text = viewModel.GetType().Name }
-                        }
-                    }
-                }
+                : CreateFallbackContent(title)
         };
     }
+
+    private static Control CreateFallbackContent(string title) =>
+        new Border
+        {
+            Padding = new Thickness(16),
+            Child = new TextBlock
+            {
+                Text = title,
+                FontSize = 16,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left
+            }
+        };
 }

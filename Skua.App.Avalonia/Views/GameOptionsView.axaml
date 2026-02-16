@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:uc="clr-namespace:Skua.App.Avalonia.UserControls"
+             x:Class="Skua.App.Avalonia.Views.GameOptionsView">
+  <Grid RowDefinitions="*,Auto,Auto"
+        Margin="8">
+    <ScrollViewer Grid.Row="0"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+      <ItemsControl ItemsSource="{Binding GameOptions}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <uc:OptionItemUserControl />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+
+    <ComboBox Grid.Row="1"
+              Margin="0,8,0,0"
+              ItemsSource="{Binding ServersList}"
+              SelectedItem="{Binding SelectedServer}" />
+
+    <Grid Grid.Row="2"
+          ColumnDefinitions="Auto,Auto,*,Auto"
+          Margin="0,8,0,0">
+      <Button Grid.Column="0"
+              Margin="0,0,8,0"
+              Content="Reset"
+              Command="{Binding ResetOptionsCommand}" />
+      <Button Grid.Column="1"
+              Margin="0,0,8,0"
+              Content="Default"
+              Command="{Binding ResetDefaultOptionsCommand}" />
+      <Button Grid.Column="3"
+              Content="Save"
+              Command="{Binding SaveOptionsCommand}" />
+    </Grid>
+  </Grid>
+</UserControl>

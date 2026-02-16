@@ -14,11 +14,16 @@ using Skua.Core.Interfaces;
 using Skua.Core.Utils;
 using Skua.Core.ViewModels;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using WinForms = System.Windows.Forms;
 
 namespace Skua.App.Avalonia;
 
 public partial class App : Application
 {
+    private static int _exceptionDialogShown;
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -26,6 +31,8 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        RegisterGlobalExceptionHandlers();
+
         ServiceCollection services = new();
         services.AddCommonServices();
         services.AddCompiler();
@@ -60,6 +67,46 @@ public partial class App : Application
 
         TryInitializeStartupServices();
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static void RegisterGlobalExceptionHandlers()
+    {
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+        {
+            Exception ex = e.ExceptionObject as Exception ?? new Exception("Unknown unhandled exception.");
+            ShowUnhandledException("AppDomain.CurrentDomain.UnhandledException", ex);
+        };
+
+        TaskScheduler.UnobservedTaskException += (_, e) =>
+        {
+            ShowUnhandledException("TaskScheduler.UnobservedTaskException", e.Exception);
+            e.SetObserved();
+        };
+
+    }
+
+    private static void ShowUnhandledException(string source, Exception ex)
+    {
+        if (Interlocked.Exchange(ref _exceptionDialogShown, 1) == 1)
+            return;
+
+        try
+        {
+            string details = $"Unhandled exception source: {source}\r\n\r\n{ex.GetType().FullName}: {ex.Message}\r\n\r\n{ex.StackTrace}";
+            WinForms.MessageBox.Show(
+                details,
+                "Skua Client Exception",
+                WinForms.MessageBoxButtons.OK,
+                WinForms.MessageBoxIcon.Error);
+        }
+        catch
+        {
+            // ignored
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _exceptionDialogShown, 0);
+        }
     }
 
     private static void TryInitializeStartupServices()
