@@ -22,10 +22,14 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.0.10" />
-        <PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.0.10" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
+        <PackageReference Include="Avalonia" Version="11.3.12" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.12" />
+        <PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.3.12" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.12"/>
+        
+        <PackageReference Include="Material.Avalonia" Version="3.13.4"/>
+        <PackageReference Include="Material.Icons" Version="3.0.0-preview7"/>
+        <PackageReference Include="Material.Icons.Avalonia" Version="3.0.0-preview7"/>
     </ItemGroup>
     
     <ItemGroup>
@@ -34,16 +38,16 @@
         <ProjectReference Include="..\Skua.Core.Models\Skua.Core.Models.csproj" />
     </ItemGroup>
     
-    <ItemGroup>
+    <!--<ItemGroup>
         <Reference Include="AxInterop.ShockwaveFlashObjects">
           <HintPath>Assemblies\AxInterop.ShockwaveFlashObjects.dll</HintPath>
         </Reference>
         <Reference Include="Interop.ShockwaveFlashObjects">
           <HintPath>Assemblies\Interop.ShockwaveFlashObjects.dll</HintPath>
         </Reference>
-    </ItemGroup>
+    </ItemGroup>-->
     
-    <ItemGroup>
+    <!--<ItemGroup>
         <Content Include="Assemblies\corehook32.dll" Link="corehook32.dll">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -56,7 +60,7 @@
         <Content Include="Assemblies\coreload64.dll" Link="coreload64.dll">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>
+    </ItemGroup>-->
     
     <ItemGroup>
         <None Include="..\Skua.AS3\skua\bin\skua.swf" Link="skua.swf" Condition="Exists('..\Skua.AS3\skua\bin\skua.swf')">

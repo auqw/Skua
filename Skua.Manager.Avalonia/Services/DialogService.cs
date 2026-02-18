@@ -4,10 +4,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Material.Dialog.ViewModels;
 using Skua.Core.Interfaces;
 using Skua.Core.Models;
-using Skua.Core.ViewModels;
-using Skua.Core.ViewModels.Manager;
+using Skua.Manager.Avalonia.ViewModels;
 using System;
 using System.Linq;
 

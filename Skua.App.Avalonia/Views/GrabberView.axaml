@@ -1,10 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:views="clr-namespace:Skua.App.Avalonia.Views"
-             xmlns:vms="clr-namespace:Skua.Core.ViewModels;assembly=Skua.Core"
+             xmlns:vms="clr-namespace:Skua.App.Avalonia.ViewModels;assembly=Skua.Core"
+             xmlns:grabber="clr-namespace:Skua.App.Avalonia.ViewModels.Grabber"
              x:Class="Skua.App.Avalonia.Views.GrabberView">
   <UserControl.DataTemplates>
-    <DataTemplate DataType="vms:GrabberListViewModel">
+    <DataTemplate DataType="grabber:GrabberListViewModel">
       <views:GrabberListView />
     </DataTemplate>
   </UserControl.DataTemplates>

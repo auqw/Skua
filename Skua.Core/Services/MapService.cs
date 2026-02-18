@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Skua.Core.Interfaces;
-using Skua.Core.ViewModels;
+using Skua.Core.Interfaces.ViewModels;
 using System.Collections.Immutable;
 
 namespace Skua.Core.Services;
@@ -48,7 +48,7 @@ public partial class MapService : ObservableObject, IMapService
             return;
         Task.Run(() =>
         {
-            FastTravelItemViewModel vm = (info as FastTravelItemViewModel)!;
+            IFastTravelItemViewModel vm = (info as IFastTravelItemViewModel)!;
             if (vm.MapName != "tercessuinotlim")
             {
                 Map.Join(UsePrivateRoom ? $"{vm.MapName}-{PrivateRoomNumber}" : vm.MapName, vm.Cell, vm.Pad);

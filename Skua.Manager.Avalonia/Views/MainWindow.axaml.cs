@@ -2,7 +2,7 @@ using Avalonia.Controls;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Messaging;
-using Skua.Core.ViewModels.Manager;
+using Skua.Manager.Avalonia.ViewModels;
 
 namespace Skua.Manager.Avalonia.Views;
 

@@ -6,8 +6,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
-using Skua.Core.ViewModels;
-using Skua.Core.ViewModels.Manager;
+using Skua.Manager.Avalonia.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,7 +65,7 @@ public partial class AccountManagerUserControl : UserControl
 
     private void AddGroup_Click(object? sender, RoutedEventArgs e)
     {
-        InputDialogViewModel inputDialog = new("Create Group", "Enter group name", "Group Name", numericInputOnly: false);
+        InputDialogViewModel inputDialog = new((string)"Create Group", (string)"Enter group name", (string)"Group Name", (bool)false);
         bool? result = _dialogService.ShowDialog(inputDialog, "Create Group");
         if (result == true && !string.IsNullOrWhiteSpace(inputDialog.DialogTextInput))
             _viewModel.AddGroup(inputDialog.DialogTextInput.Trim());
@@ -146,7 +145,7 @@ public partial class AccountManagerUserControl : UserControl
             return;
         }
 
-        InputDialogViewModel inputDialog = new("Add Tags to Selected", "Enter tags (comma-separated)", "Tags", numericInputOnly: false);
+        InputDialogViewModel inputDialog = new((string)"Add Tags to Selected", (string)"Enter tags (comma-separated)", (string)"Tags", (bool)false);
         bool? result = _dialogService.ShowDialog(inputDialog, "Add Tags");
         if (result != true)
             return;
@@ -170,7 +169,7 @@ public partial class AccountManagerUserControl : UserControl
     public void EditAccountTags(AccountItemViewModel account)
     {
         string existingTags = string.Join(", ", account.Tags);
-        InputDialogViewModel inputDialog = new("Edit Tags", "Enter tags (comma-separated)", "Tags", numericInputOnly: false)
+        InputDialogViewModel inputDialog = new((string)"Edit Tags", (string)"Enter tags (comma-separated)", (string)"Tags", (bool)false)
         {
             DialogTextInput = existingTags
         };

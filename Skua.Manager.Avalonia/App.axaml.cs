@@ -1,5 +1,4 @@
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
@@ -12,8 +11,9 @@ using Skua.Core.AppStartup;
 using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.Services;
-using Skua.Core.ViewModels.Manager;
+using Skua.Manager.Avalonia.FromCore.AppStartup;
 using Skua.Manager.Avalonia.Services;
+using Skua.Manager.Avalonia.ViewModels;
 using System;
 
 namespace Skua.Manager.Avalonia;
