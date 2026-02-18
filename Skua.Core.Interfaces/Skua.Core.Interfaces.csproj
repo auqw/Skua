@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Caseless.Fody" Version="1.9.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
   </ItemGroup>
 
   <ItemGroup>

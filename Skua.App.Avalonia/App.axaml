@@ -1,21 +1,33 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:fluent="clr-namespace:Avalonia.Themes.Fluent;assembly=Avalonia.Themes.Fluent"
-             xmlns:vms="clr-namespace:Skua.Core.ViewModels;assembly=Skua.Core"
+             xmlns:material="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:vms="clr-namespace:Skua.App.Avalonia.ViewModels"
              xmlns:views="clr-namespace:Skua.App.Avalonia.Views"
              xmlns:uc="clr-namespace:Skua.App.Avalonia.UserControls"
+             xmlns:scriptRepo="clr-namespace:Skua.App.Avalonia.ViewModels.ScriptRepo"
+             xmlns:plugins="clr-namespace:Skua.App.Avalonia.ViewModels.Plugins"
+             xmlns:grabber="clr-namespace:Skua.App.Avalonia.ViewModels.Grabber"
+             xmlns:runtime="clr-namespace:Skua.App.Avalonia.ViewModels.Runtime"
+             xmlns:fastTravel="clr-namespace:Skua.App.Avalonia.ViewModels.FastTravel"
+             xmlns:advancedSkills="clr-namespace:Skua.App.Avalonia.ViewModels.AdvancedSkills"
+             xmlns:packets="clr-namespace:Skua.App.Avalonia.ViewModels.Packets"
+             xmlns:options="clr-namespace:Skua.App.Avalonia.ViewModels.Options"
+             xmlns:coreBotsOptions="clr-namespace:Skua.App.Avalonia.ViewModels.CoreBotsOptions"
+             xmlns:theme="clr-namespace:Skua.App.Avalonia.ViewModels.Theme"
+             xmlns:hotKeys="clr-namespace:Skua.App.Avalonia.ViewModels.HotKeys"
+             xmlns:appLogs="clr-namespace:Skua.App.Avalonia.ViewModels.AppLogs"
              x:Class="Skua.App.Avalonia.App"
              RequestedThemeVariant="Default">
+  
   <Application.Styles>
-    <FluentTheme>
-      <FluentTheme.Palettes>
-        <fluent:ColorPaletteResources x:Key="Light" Accent="#C9479A" />
-        <fluent:ColorPaletteResources x:Key="Dark" Accent="#C9479A" />
-      </FluentTheme.Palettes>
-    </FluentTheme>
+    <material:MaterialTheme BaseTheme="Dark" PrimaryColor="BlueGrey" SecondaryColor="Red"/>
+    <materialIcons:MaterialIconStyles />
+    
     <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
     <StyleInclude Source="/Themes/ClientStyles.axaml" />
   </Application.Styles>
+  
   <TrayIcon.Icons>
     <TrayIcons>
       <TrayIcon Icon="/Assets/SkuaIcon.ico"
@@ -32,6 +44,7 @@
       </TrayIcon>
     </TrayIcons>
   </TrayIcon.Icons>
+  
   <Application.DataTemplates>
     <DataTemplate DataType="vms:BotWindowViewModel">
       <Grid ColumnDefinitions="210,*"
@@ -66,31 +79,31 @@
     <DataTemplate DataType="vms:ScriptLoaderViewModel">
       <views:ScriptLoaderView />
     </DataTemplate>
-    <DataTemplate DataType="vms:ScriptRepoViewModel">
+    <DataTemplate DataType="scriptRepo:ScriptRepoViewModel">
       <views:ScriptRepoView />
     </DataTemplate>
-    <DataTemplate DataType="vms:PluginsViewModel">
+    <DataTemplate DataType="plugins:PluginsViewModel">
       <views:PluginsView />
     </DataTemplate>
     <DataTemplate DataType="vms:LoaderViewModel">
       <views:LoaderView />
     </DataTemplate>
-    <DataTemplate DataType="vms:GrabberViewModel">
+    <DataTemplate DataType="grabber:GrabberViewModel">
       <views:GrabberView />
     </DataTemplate>
-    <DataTemplate DataType="vms:RuntimeHelpersViewModel">
+    <DataTemplate DataType="runtime:RuntimeHelpersViewModel">
       <views:RuntimeHelpersView />
     </DataTemplate>
-    <DataTemplate DataType="vms:NotifyDropViewModel">
+    <DataTemplate DataType="runtime:NotifyDropViewModel">
       <views:NotifyDropView />
     </DataTemplate>
-    <DataTemplate DataType="vms:FastTravelViewModel">
+    <DataTemplate DataType="fastTravel:FastTravelViewModel">
       <views:FastTravelView />
     </DataTemplate>
     <DataTemplate DataType="vms:CurrentDropsViewModel">
       <views:CurrentDropsView />
     </DataTemplate>
-    <DataTemplate DataType="vms:JunkItemsViewModel">
+    <DataTemplate DataType="runtime:JunkItemsViewModel">
       <views:JunkItemsView />
     </DataTemplate>
     <DataTemplate DataType="vms:ConsoleViewModel">
@@ -99,52 +112,52 @@
     <DataTemplate DataType="vms:ScriptStatsViewModel">
       <views:ScriptStatsView />
     </DataTemplate>
-    <DataTemplate DataType="vms:AdvancedSkillsViewModel">
+    <DataTemplate DataType="advancedSkills:AdvancedSkillsViewModel">
       <views:AdvancedSkillsView />
     </DataTemplate>
-    <DataTemplate DataType="vms:PacketSpammerViewModel">
+    <DataTemplate DataType="packets:PacketSpammerViewModel">
       <views:PacketSpammerView />
     </DataTemplate>
-    <DataTemplate DataType="vms:PacketLoggerViewModel">
+    <DataTemplate DataType="packets:PacketLoggerViewModel">
       <views:PacketLoggerView />
     </DataTemplate>
-    <DataTemplate DataType="vms:PacketInterceptorViewModel">
+    <DataTemplate DataType="packets:PacketInterceptorViewModel">
       <views:PacketInterceptorView />
     </DataTemplate>
-    <DataTemplate DataType="vms:GameOptionsViewModel">
+    <DataTemplate DataType="options:GameOptionsViewModel">
       <views:GameOptionsView />
     </DataTemplate>
-    <DataTemplate DataType="vms:ApplicationOptionsViewModel">
+    <DataTemplate DataType="options:ApplicationOptionsViewModel">
       <views:ApplicationOptionsView />
     </DataTemplate>
-    <DataTemplate DataType="vms:CoreBotsViewModel">
+    <DataTemplate DataType="coreBotsOptions:CoreBotsViewModel">
       <views:CoreBotsView />
     </DataTemplate>
-    <DataTemplate DataType="vms:CBOLoadoutViewModel">
+    <DataTemplate DataType="coreBotsOptions:CBOLoadoutViewModel">
       <views:CBOLoadoutView />
     </DataTemplate>
-    <DataTemplate DataType="vms:CBOClassSelectViewModel">
+    <DataTemplate DataType="coreBotsOptions:CBOClassSelectViewModel">
       <views:CBOClassSelectView />
     </DataTemplate>
-    <DataTemplate DataType="vms:CBOClassEquipmentViewModel">
+    <DataTemplate DataType="coreBotsOptions:CBOClassEquipmentViewModel">
       <views:CBOClassEquipmentView />
     </DataTemplate>
-    <DataTemplate DataType="vms:CBOptionsViewModel">
+    <DataTemplate DataType="coreBotsOptions:CBOptionsViewModel">
       <views:CBOptionsView />
     </DataTemplate>
-    <DataTemplate DataType="vms:CBOOtherOptionsViewModel">
+    <DataTemplate DataType="coreBotsOptions:CBOOtherOptionsViewModel">
       <views:CBOOtherOptionsView />
     </DataTemplate>
-    <DataTemplate DataType="vms:ApplicationThemesViewModel">
+    <DataTemplate DataType="theme:ApplicationThemesViewModel">
       <views:ApplicationThemesView />
     </DataTemplate>
-    <DataTemplate DataType="vms:HotKeysViewModel">
+    <DataTemplate DataType="hotKeys:HotKeysViewModel">
       <views:HotKeysView />
     </DataTemplate>
-    <DataTemplate DataType="vms:LogsViewModel">
+    <DataTemplate DataType="appLogs:LogsViewModel">
       <views:LogsView />
     </DataTemplate>
-    <DataTemplate DataType="vms:LogTabViewModel">
+    <DataTemplate DataType="appLogs:LogTabViewModel">
       <uc:LogTabUserControl />
     </DataTemplate>
     <DataTemplate DataType="vms:BotControlViewModelBase">

@@ -1,6 +1,9 @@
-﻿using Skua.Core.ViewModels;
+﻿
+
+using Skua.Core.Interfaces.ViewModels;
+using Skua.Core.Models;
 
 namespace Skua.Core.Messaging;
 
-public sealed record RemoveFastTravelMessage(FastTravelItemViewModel FastTravel);
-public sealed record EditFastTravelMessage(FastTravelItemViewModel FastTravel);
+public sealed record RemoveFastTravelMessage(IFastTravelItemViewModel FastTravel);
+public sealed record EditFastTravelMessage(IFastTravelItemViewModel FastTravel);

@@ -34,16 +34,16 @@
   </Style>
 
   <Style Selector="MenuItem.top-nav-item">
-    <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
-    <Setter Property="Padding" Value="10,2" />
+    <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="MaxHeight" Value="25" />
     <Setter Property="VerticalAlignment" Value="Center" />
     <Setter Property="Background" Value="Transparent" />
-    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="FontSize" Value="15" />
   </Style>
 
   <Style Selector="MenuItem.top-nav-item /template/ Border#PART_Presenter">
     <Setter Property="Background" Value="Transparent" />
-    <Setter Property="CornerRadius" Value="4" />
   </Style>
 
   <Style Selector="MenuItem.top-nav-item:pointerover">
@@ -92,7 +92,7 @@
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="CornerRadius" Value="4" />
-    <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
     <Setter Property="VerticalAlignment" Value="Center" />
   </Style>
 
@@ -108,7 +108,7 @@
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="CornerRadius" Value="4" />
-    <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
     <Setter Property="VerticalAlignment" Value="Center" />
   </Style>
 

@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Skua.Core.Interfaces;
-using Skua.Core.ViewModels;
+using Skua.Core.Interfaces.ViewModels;
 
 namespace Skua.Core.Options;
 
@@ -78,12 +78,12 @@ public class OptionContainer : ObservableObject, IOptionContainer
     {
         SetDefaults();
         Load();
-        _dialogService.ShowDialog<OptionContainerViewModel>(new(this), SaveOptions);
+        _dialogService.ShowDialog(this, SaveOptions);
     }
 
-    private void SaveOptions(OptionContainerViewModel vm)
+    private void SaveOptions(IOptionContainerViewModel vm)
     {
-        foreach (OptionContainerItemViewModel optionViewModel in vm.Options)
+        foreach (IOptionContainerItemViewModel optionViewModel in vm.Options)
             Set(optionViewModel.Option, optionViewModel.Type.IsEnum ? optionViewModel.SelectedValue : optionViewModel.Value);
     }
 
