@@ -5,6 +5,7 @@ using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.Models.Items;
 using Skua.Core.Models.Skills;
+using Skua.Shared.Avalonia.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

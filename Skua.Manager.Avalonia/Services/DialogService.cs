@@ -6,10 +6,13 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Material.Dialog.ViewModels;
 using Skua.Core.Interfaces;
+using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Models;
 using Skua.Manager.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.Dialogs;
 using System;
 using System.Linq;
+using CustomDialogViewModel = Skua.Shared.Avalonia.ViewModels.Dialogs.CustomDialogViewModel;
 
 namespace Skua.Manager.Avalonia.Services;
 
@@ -26,6 +29,11 @@ public class DialogService : IDialogService
         bool? result = ShowDialogInternal(viewModel, viewModel.GetType().Name);
         callback(viewModel);
         return result;
+    }
+
+    public void ShowDialog(IOptionContainer optionContainer, Action<IOptionContainerViewModel> callback)
+    {
+        throw new NotImplementedException();
     }
 
     public void ShowMessageBox(string message, string caption)
@@ -46,6 +54,11 @@ public class DialogService : IDialogService
         string clicked = ShowButtonsDialog(caption, message, actualButtons);
         int index = Array.IndexOf(actualButtons, clicked);
         return index < 0 ? DialogResult.Cancelled : new DialogResult(clicked, index);
+    }
+
+    public IInputDialogViewModel CreateInputDialog(string title, string dialogHint)
+    {
+        throw new NotImplementedException();
     }
 
     private bool? ShowDialogInternal<TViewModel>(TViewModel viewModel, string title) where TViewModel : class

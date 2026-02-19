@@ -13,9 +13,9 @@ using Skua.App.Avalonia.ViewModels.Options;
 using Skua.App.Avalonia.ViewModels.Packets;
 using Skua.App.Avalonia.ViewModels.Plugins;
 using Skua.App.Avalonia.ViewModels.Runtime;
-using Skua.App.Avalonia.ViewModels.ScriptRepo;
-using Skua.App.Avalonia.ViewModels.Theme;
 using Skua.Core.Interfaces;
+using Skua.Shared.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.ScriptRepo;
 using System;
 using System.Collections.Generic;
 

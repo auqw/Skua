@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Skua.Shared.Avalonia.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 

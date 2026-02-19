@@ -5,11 +5,14 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Skua.Core.Interfaces;
+using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Messaging;
 using Skua.Core.Models;
 using Skua.Core.Models.Servers;
 using Skua.Core.Utils;
-using Skua.Manager.Avalonia.FromCore.AppStartup;
+using Skua.Shared.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.Dialogs;
+using Skua.Shared.Avalonia.ViewModels.ScriptRepo;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -54,9 +57,9 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
     private readonly IFileDialogService _fileService;
 
     // Collections
-    public RangedObservableCollection<AccountItemViewModel> Accounts { get; }
-    public RangedObservableCollection<AccountItemViewModel> FilteredAccounts { get; } = new();
-    public RangedObservableCollection<GroupItemViewModel> Groups { get; } = new();
+    public RangedObservableCollection<IAccountItemViewModel> Accounts { get; }
+    public RangedObservableCollection<IAccountItemViewModel> FilteredAccounts { get; } = new();
+    public RangedObservableCollection<IGroupItemViewModel> Groups { get; } = new();
 
     // Account Properties
     [ObservableProperty]
@@ -148,7 +151,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         string displayName = string.IsNullOrWhiteSpace(DisplayNameInput) ? username : DisplayNameInput.Trim();
 
         // Check if account with this username already exists
-        AccountItemViewModel? existingAccount = Accounts.FirstOrDefault(a => a.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+        IAccountItemViewModel? existingAccount = Accounts.FirstOrDefault(a => a.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
 
         if (existingAccount != null)
         {
@@ -185,7 +188,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         // TODO manage ids for sync in the future
 
         _syncThemes = _settingsService.Get("syncTheme", false);
-        foreach (AccountItemViewModel acc in Accounts)
+        foreach (IAccountItemViewModel acc in Accounts)
         {
             if (acc.UseCheck)
             {
@@ -199,7 +202,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
     public async Task StartAllAccounts()
     {
         _syncThemes = _settingsService.Get("syncTheme", false);
-        foreach (AccountItemViewModel acc in Accounts)
+        foreach (IAccountItemViewModel acc in Accounts)
         {
             _LaunchAcc(acc.Username, acc.Password, acc.DisplayName);
             await Task.Delay(1000);
@@ -209,14 +212,14 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
     [RelayCommand]
     public async Task RemoveAccounts()
     {
-        List<AccountItemViewModel> toRemove = new();
-        foreach (AccountItemViewModel acc in Accounts)
+        List<IAccountItemViewModel> toRemove = new();
+        foreach (IAccountItemViewModel acc in Accounts)
         {
             if (acc.UseCheck)
                 toRemove.Add(acc);
         }
 
-        foreach (AccountItemViewModel acc in toRemove)
+        foreach (IAccountItemViewModel acc in toRemove)
             _RemoveAccount(acc);
 
         _SaveAccounts();
@@ -225,7 +228,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
     [RelayCommand]
     private void DeselectAll()
     {
-        foreach (AccountItemViewModel account in Accounts)
+        foreach (IAccountItemViewModel account in Accounts)
         {
             account.UseCheck = false;
         }
@@ -234,24 +237,24 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
     [RelayCommand]
     private void SelectAll()
     {
-        foreach (AccountItemViewModel account in Accounts)
+        foreach (IAccountItemViewModel account in Accounts)
         {
             account.UseCheck = false;
         }
 
-        foreach (AccountItemViewModel account in FilteredAccounts)
+        foreach (IAccountItemViewModel account in FilteredAccounts)
         {
             account.UseCheck = true;
         }
     }
 
-    private void _RemoveAccount(AccountItemViewModel account)
+    private void _RemoveAccount(IAccountItemViewModel account)
     {
         if (account.UseCheck)
             SelectedAccountQuant--;
 
         // Remove account from all groups
-        foreach (GroupItemViewModel group in Groups.ToList())
+        foreach (IGroupItemViewModel group in Groups.ToList())
         {
             if (group.Accounts.Contains(account))
             {
@@ -275,7 +278,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
             recipient.SelectedAccountQuant--;
     }
 
-    private void _StartAccount(AccountItemViewModel account, bool withScript)
+    private void _StartAccount(IAccountItemViewModel account, bool withScript)
     {
         _syncThemes = _settingsService.Get("syncTheme", false);
 
@@ -288,7 +291,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         _LaunchAcc(account.Username, account.Password, account.DisplayName, withScript);
     }
 
-    private async void _StartGroup(GroupItemViewModel group, bool withScript)
+    private async void _StartGroup(IGroupItemViewModel group, bool withScript)
     {
         _syncThemes = _settingsService.Get("syncTheme", false);
 
@@ -298,7 +301,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
             return;
         }
 
-        foreach (AccountItemViewModel account in group.Accounts)
+        foreach (IAccountItemViewModel account in group.Accounts)
         {
             _LaunchAcc(account.Username, account.Password, account.DisplayName, withScript);
             await Task.Delay(1000);
@@ -366,7 +369,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         _SaveGroups();
     }
 
-    public void AddAccountToGroup(AccountItemViewModel account, GroupItemViewModel group)
+    public void AddAccountToGroup(IAccountItemViewModel account, IGroupItemViewModel group)
     {
         if (!group.Accounts.Contains(account))
         {
@@ -375,7 +378,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         }
     }
 
-    private void _RemoveGroup(GroupItemViewModel group)
+    private void _RemoveGroup(IGroupItemViewModel group)
     {
         if (Groups.Contains(group))
         {
@@ -384,7 +387,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         }
     }
 
-    private void _RenameGroup(GroupItemViewModel group)
+    private void _RenameGroup(IGroupItemViewModel group)
     {
         InputDialogViewModel inputDialogViewModel = new(
             "Rename Group", "Enter new group name", "Group Name", numericInputOnly: false)
@@ -413,7 +416,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         }
     }
 
-    private void _RemoveAccountFromGroup(GroupItemViewModel group, AccountItemViewModel account)
+    private void _RemoveAccountFromGroup(IGroupItemViewModel group, IAccountItemViewModel account)
     {
         if (group.Accounts.Contains(account))
         {
@@ -431,7 +434,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         AllTags.Clear();
         Dictionary<string, int> tagCounts = new(StringComparer.OrdinalIgnoreCase);
 
-        foreach (AccountItemViewModel account in Accounts)
+        foreach (IAccountItemViewModel account in Accounts)
         {
             foreach (string tag in account.Tags)
             {
@@ -489,7 +492,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         }
 
         // Filter uses OR logic: shows accounts that have ANY of the selected tags
-        IEnumerable<AccountItemViewModel> filtered = Accounts.Where(a =>
+        IEnumerable<IAccountItemViewModel> filtered = Accounts.Where(a =>
             a.Tags.Any(t => _selectedTagFilters.Contains(t))
         );
 
@@ -526,7 +529,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
     private void _SaveAccounts()
     {
         Dictionary<string, AccountData> accs = new(StringComparer.OrdinalIgnoreCase);
-        foreach (AccountItemViewModel account in Accounts)
+        foreach (IAccountItemViewModel account in Accounts)
         {
             accs[account.Username] = new AccountData
             {
@@ -570,7 +573,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         List<GroupData> groupsData = Groups.Select(g => new GroupData
         {
             Name = g.Name,
-            Accounts = g.Accounts.Select<AccountItemViewModel, string>(a => a.Username).ToList()
+            Accounts = g.Accounts.Select<IAccountItemViewModel, string>(a => a.Username).ToList()
         }).ToList();
 
         _settingsService.Set("AccountGroups", groupsData);
@@ -604,7 +607,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
                     {
                         if (!string.IsNullOrEmpty(username))
                         {
-                            AccountItemViewModel? account = Accounts.FirstOrDefault(a => a.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+                            IAccountItemViewModel? account = Accounts.FirstOrDefault(a => a.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
                             if (account != null && !group.Accounts.Contains(account))
                             {
                                 group.Accounts.Add(account);
@@ -727,7 +730,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
 
     private void RefreshAccountDisplayNames()
     {
-        foreach (AccountItemViewModel account in Accounts)
+        foreach (IAccountItemViewModel account in Accounts)
         {
             account.RefreshDisplayName();
         }

@@ -1,4 +1,5 @@
 ﻿using Skua.App.Avalonia.ViewModels.Options;
+using Skua.Shared.Avalonia.ViewModels.Options;
 
 namespace Skua.App.Avalonia.ViewModels.CoreBotsOptions.Options;
 

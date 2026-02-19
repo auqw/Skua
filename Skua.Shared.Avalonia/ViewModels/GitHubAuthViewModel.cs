@@ -4,11 +4,8 @@ using Newtonsoft.Json;
 using Skua.Core.Interfaces;
 using Skua.Core.Models.GitHub;
 using Skua.Core.Utils;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace Skua.App.Avalonia.ViewModels;
+namespace Skua.Shared.Avalonia.ViewModels;
 
 public partial class GitHubAuthViewModel : BotControlViewModelBase
 {

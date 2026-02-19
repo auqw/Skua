@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Manager.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.Options;
 using System;
 using System.Collections.Generic;
 

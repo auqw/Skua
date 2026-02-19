@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Messaging;
+using Skua.Shared.Avalonia.ViewModels;
 
 namespace Skua.App.Avalonia.ViewModels.AdvancedSkills;
 

@@ -7,6 +7,7 @@ using Skua.Core.Interfaces;
 using Skua.Core.Models;
 using Skua.Core.Models.Servers;
 using Skua.Core.Utils;
+using Skua.Shared.Avalonia.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;

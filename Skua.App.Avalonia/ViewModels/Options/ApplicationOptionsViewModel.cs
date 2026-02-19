@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Skua.Shared.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.Options;
+using System.Collections.Generic;
 
 namespace Skua.App.Avalonia.ViewModels.Options;
 

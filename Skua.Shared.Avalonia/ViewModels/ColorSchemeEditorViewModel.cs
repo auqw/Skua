@@ -2,7 +2,7 @@
 using Skua.Core.Interfaces;
 using Skua.Core.Models;
 
-namespace Skua.App.Avalonia.ViewModels.Theme;
+namespace Skua.Shared.Avalonia.ViewModels;
 
 public class ColorSchemeEditorViewModel : BotControlViewModelBase
 {

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Skua.App.Avalonia.ViewModels.Options;
 using Skua.Core.Interfaces;
+using Skua.Shared.Avalonia.ViewModels.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;

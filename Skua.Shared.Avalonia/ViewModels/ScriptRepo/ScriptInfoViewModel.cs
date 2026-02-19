@@ -5,9 +5,8 @@ using Skua.Core.Messaging;
 using Skua.Core.Models;
 using Skua.Core.Models.GitHub;
 using System.Collections.ObjectModel;
-using System.IO;
 
-namespace Skua.App.Avalonia.ViewModels.ScriptRepo;
+namespace Skua.Shared.Avalonia.ViewModels.ScriptRepo;
 
 public partial class ScriptInfoViewModel : ObservableObject
 {

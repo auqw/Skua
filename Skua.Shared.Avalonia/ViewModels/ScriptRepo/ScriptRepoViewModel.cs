@@ -5,12 +5,8 @@ using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.Models.GitHub;
 using Skua.Core.Utils;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Skua.App.Avalonia.ViewModels.ScriptRepo;
+namespace Skua.Shared.Avalonia.ViewModels.ScriptRepo;
 
 public partial class ScriptRepoViewModel : BotControlViewModelBase
 {

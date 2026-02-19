@@ -3,9 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using Skua.Core.Interfaces;
 using Skua.Core.Utils;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
-namespace Skua.App.Avalonia.ViewModels;
+namespace Skua.Shared.Avalonia.ViewModels;
 
 public class ChangeLogsViewModel : BotControlViewModelBase
 {

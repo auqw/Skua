@@ -1,8 +1,6 @@
 ﻿using Skua.Core.Models;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Skua.App.Avalonia.ViewModels.Dialogs;
+namespace Skua.Shared.Avalonia.ViewModels.Dialogs;
 
 public class CustomDialogViewModel : DialogViewModelBase
 {

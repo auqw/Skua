@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Skua.App.Avalonia.ViewModels;
+namespace Skua.Shared.Avalonia.ViewModels;
 
 public class TabItemViewModel : ObservableObject
 {

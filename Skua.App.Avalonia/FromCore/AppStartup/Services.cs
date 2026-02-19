@@ -13,8 +13,6 @@ using Skua.App.Avalonia.ViewModels.Options;
 using Skua.App.Avalonia.ViewModels.Packets;
 using Skua.App.Avalonia.ViewModels.Plugins;
 using Skua.App.Avalonia.ViewModels.Runtime;
-using Skua.App.Avalonia.ViewModels.ScriptRepo;
-using Skua.App.Avalonia.ViewModels.Theme;
 using Skua.Core.GameProxy;
 using Skua.Core.Interfaces;
 using Skua.Core.Interfaces.Services;
@@ -24,6 +22,8 @@ using Skua.Core.Scripts;
 using Skua.Core.Scripts.Helpers;
 using Skua.Core.Services;
 using Skua.Core.Skills;
+using Skua.Shared.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.ScriptRepo;
 using System.Collections.Generic;
 
 namespace Skua.App.Avalonia.FromCore.AppStartup;

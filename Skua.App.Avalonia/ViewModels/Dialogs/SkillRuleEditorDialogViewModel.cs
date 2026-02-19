@@ -1,4 +1,5 @@
 ﻿using Skua.App.Avalonia.ViewModels.AdvancedSkills;
+using Skua.Shared.Avalonia.ViewModels.Dialogs;
 
 namespace Skua.App.Avalonia.ViewModels.Dialogs;
 
