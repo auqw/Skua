@@ -2,6 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Skua.Core.Interfaces;
 using Skua.Core.Services;
 using Skua.Manager.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.ScriptRepo;
 
 namespace Skua.Manager.Avalonia.FromCore.AppStartup;
 

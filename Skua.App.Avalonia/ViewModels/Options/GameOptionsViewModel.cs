@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Skua.Core.Interfaces;
 using Skua.Core.Models.Servers;
+using Skua.Shared.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.Options;
 using System.Collections.Generic;
 
 namespace Skua.App.Avalonia.ViewModels.Options;

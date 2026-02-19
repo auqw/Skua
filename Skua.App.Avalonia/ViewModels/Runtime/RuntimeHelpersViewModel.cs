@@ -1,4 +1,6 @@
-﻿namespace Skua.App.Avalonia.ViewModels.Runtime;
+﻿using Skua.Shared.Avalonia.ViewModels;
+
+namespace Skua.App.Avalonia.ViewModels.Runtime;
 
 public class RuntimeHelpersViewModel : BotControlViewModelBase
 {

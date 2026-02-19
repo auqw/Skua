@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Skua.Core.Interfaces;
 using Skua.Core.Utils;
+using Skua.Shared.Avalonia.ViewModels;
 using System.Collections.Immutable;
 using System.Threading.Tasks;
 

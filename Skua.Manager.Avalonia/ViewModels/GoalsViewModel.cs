@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Skua.Core.Interfaces;
 using Skua.Core.Models.GitHub;
 using Skua.Core.Utils;
+using Skua.Shared.Avalonia.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

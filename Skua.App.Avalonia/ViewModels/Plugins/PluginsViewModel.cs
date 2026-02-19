@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.Utils;
+using Skua.Shared.Avalonia.ViewModels;
 using System.Linq;
 
 namespace Skua.App.Avalonia.ViewModels.Plugins;

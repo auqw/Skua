@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
 
-namespace Skua.App.Avalonia.ViewModels.Options;
+namespace Skua.Shared.Avalonia.ViewModels.Options;
 
 public class DisplayOptionItemViewModel<TDisplay> : DisplayOptionItemViewModelBase
 {

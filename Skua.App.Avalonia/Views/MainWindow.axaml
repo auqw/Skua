@@ -11,7 +11,7 @@
         WindowStartupLocation="CenterScreen"
         
         Title="{Binding Title}"
-        Icon="/Assets/SkuaIcon.ico"
+        Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
         
         SystemDecorations="None"
         ExtendClientAreaToDecorationsHint="True"
@@ -47,7 +47,7 @@
           Background="{DynamicResource PrimaryHueMidBrush}"
           CornerRadius="15"/>
               
-        <Image Source="/Assets/SkuaImage.png" 
+        <Image Source="avares://Skua.Shared.Avalonia/Assets/SkuaImage.png" 
                Width="32" Height="32"
                VerticalAlignment="Center"/>
       </Grid>

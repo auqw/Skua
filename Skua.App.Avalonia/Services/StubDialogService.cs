@@ -2,6 +2,7 @@ using Skua.App.Avalonia.ViewModels.Dialogs;
 using Skua.Core.Interfaces;
 using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Models;
+using Skua.Shared.Avalonia.ViewModels.Dialogs;
 using System;
 
 namespace Skua.App.Avalonia.Services;

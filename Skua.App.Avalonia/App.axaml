@@ -5,7 +5,6 @@
              xmlns:vms="clr-namespace:Skua.App.Avalonia.ViewModels"
              xmlns:views="clr-namespace:Skua.App.Avalonia.Views"
              xmlns:uc="clr-namespace:Skua.App.Avalonia.UserControls"
-             xmlns:scriptRepo="clr-namespace:Skua.App.Avalonia.ViewModels.ScriptRepo"
              xmlns:plugins="clr-namespace:Skua.App.Avalonia.ViewModels.Plugins"
              xmlns:grabber="clr-namespace:Skua.App.Avalonia.ViewModels.Grabber"
              xmlns:runtime="clr-namespace:Skua.App.Avalonia.ViewModels.Runtime"
@@ -14,9 +13,10 @@
              xmlns:packets="clr-namespace:Skua.App.Avalonia.ViewModels.Packets"
              xmlns:options="clr-namespace:Skua.App.Avalonia.ViewModels.Options"
              xmlns:coreBotsOptions="clr-namespace:Skua.App.Avalonia.ViewModels.CoreBotsOptions"
-             xmlns:theme="clr-namespace:Skua.App.Avalonia.ViewModels.Theme"
              xmlns:hotKeys="clr-namespace:Skua.App.Avalonia.ViewModels.HotKeys"
              xmlns:appLogs="clr-namespace:Skua.App.Avalonia.ViewModels.AppLogs"
+             xmlns:scriptRepo="clr-namespace:Skua.Shared.Avalonia.ViewModels.ScriptRepo;assembly=Skua.Shared.Avalonia"
+             xmlns:viewModels="clr-namespace:Skua.Shared.Avalonia.ViewModels;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.App.Avalonia.App"
              RequestedThemeVariant="Default">
   
@@ -30,7 +30,7 @@
   
   <TrayIcon.Icons>
     <TrayIcons>
-      <TrayIcon Icon="/Assets/SkuaIcon.ico"
+      <TrayIcon Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
                 ToolTipText="Skua"
                 Clicked="TrayIcon_Clicked">
         <TrayIcon.Menu>
@@ -148,7 +148,7 @@
     <DataTemplate DataType="coreBotsOptions:CBOOtherOptionsViewModel">
       <views:CBOOtherOptionsView />
     </DataTemplate>
-    <DataTemplate DataType="theme:ApplicationThemesViewModel">
+    <DataTemplate DataType="viewModels:ApplicationThemesViewModel">
       <views:ApplicationThemesView />
     </DataTemplate>
     <DataTemplate DataType="hotKeys:HotKeysViewModel">
@@ -160,7 +160,7 @@
     <DataTemplate DataType="appLogs:LogTabViewModel">
       <uc:LogTabUserControl />
     </DataTemplate>
-    <DataTemplate DataType="vms:BotControlViewModelBase">
+    <DataTemplate DataType="viewModels:BotControlViewModelBase">
       <Border Padding="10"
               Background="{DynamicResource SkuaPageBrush}"
               BorderBrush="{DynamicResource SkuaNavHoverBrush}"

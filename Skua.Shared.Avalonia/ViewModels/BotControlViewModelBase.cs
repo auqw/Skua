@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Skua.Core.Interfaces;
 
-namespace Skua.App.Avalonia.ViewModels;
+namespace Skua.Shared.Avalonia.ViewModels;
 
 public class BotControlViewModelBase : ObservableRecipient, IManagedWindow
 {

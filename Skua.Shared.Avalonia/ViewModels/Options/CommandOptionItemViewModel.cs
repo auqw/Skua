@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using System;
 
-namespace Skua.App.Avalonia.ViewModels.Options;
+namespace Skua.Shared.Avalonia.ViewModels.Options;
 
 public class CommandOptionItemViewModel<TDisplay> : CommandOptionItemViewModel
 {

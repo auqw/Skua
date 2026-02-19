@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Skua.Core.Interfaces;
 using Skua.Core.Models.Quests;
 using Skua.Core.Utils;
+using Skua.Shared.Avalonia.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

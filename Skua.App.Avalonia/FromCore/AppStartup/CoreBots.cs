@@ -5,6 +5,8 @@ using Skua.App.Avalonia.ViewModels.CoreBotsOptions;
 using Skua.App.Avalonia.ViewModels.CoreBotsOptions.Options;
 using Skua.App.Avalonia.ViewModels.Options;
 using Skua.Core.Interfaces;
+using Skua.Shared.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.Options;
 using System;
 using System.Collections.Generic;
 

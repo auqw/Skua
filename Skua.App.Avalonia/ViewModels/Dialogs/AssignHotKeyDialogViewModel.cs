@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Skua.Core.Models;
+using Skua.Shared.Avalonia.ViewModels.Dialogs;
 
 namespace Skua.App.Avalonia.ViewModels.Dialogs;
 

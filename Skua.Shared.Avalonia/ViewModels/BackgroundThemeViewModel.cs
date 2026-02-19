@@ -4,12 +4,8 @@ using Skua.Core.Interfaces;
 using Skua.Core.Models;
 using Skua.Core.Services;
 using Skua.Core.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 
-namespace Skua.App.Avalonia.ViewModels.Theme;
+namespace Skua.Shared.Avalonia.ViewModels;
 
 public class BackgroundThemeViewModel : ObservableObject
 {

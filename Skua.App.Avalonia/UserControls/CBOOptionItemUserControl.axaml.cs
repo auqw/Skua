@@ -3,6 +3,7 @@ using Avalonia.Data;
 using Skua.App.Avalonia.ViewModels.CoreBotsOptions.Options;
 using Skua.App.Avalonia.ViewModels.Options;
 using Skua.App.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.Options;
 
 namespace Skua.App.Avalonia.UserControls;
 

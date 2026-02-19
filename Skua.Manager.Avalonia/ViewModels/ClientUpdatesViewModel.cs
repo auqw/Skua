@@ -6,6 +6,7 @@ using Skua.Core.Messaging;
 using Skua.Core.Models;
 using Skua.Core.Models.GitHub;
 using Skua.Core.Utils;
+using Skua.Shared.Avalonia.ViewModels;
 using System;
 using System.IO;
 using System.Linq;

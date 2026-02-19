@@ -6,6 +6,7 @@ using Skua.App.Avalonia.ViewModels.Options;
 using Skua.Core.Interfaces;
 using Skua.Core.Scripts;
 using Skua.Core.Utils;
+using Skua.Shared.Avalonia.ViewModels.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;

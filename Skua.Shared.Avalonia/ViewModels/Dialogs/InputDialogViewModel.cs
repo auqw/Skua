@@ -1,6 +1,6 @@
 ﻿using Skua.Core.Interfaces.ViewModels;
 
-namespace Skua.App.Avalonia.ViewModels.Dialogs;
+namespace Skua.Shared.Avalonia.ViewModels.Dialogs;
 
 public class InputDialogViewModel : DialogViewModelBase, IInputDialogViewModel
 {

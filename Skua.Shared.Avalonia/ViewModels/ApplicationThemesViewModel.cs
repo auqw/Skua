@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Skua.Core.Interfaces;
 
-namespace Skua.App.Avalonia.ViewModels.Theme;
+namespace Skua.Shared.Avalonia.ViewModels;
 
 public class ApplicationThemesViewModel : BotControlViewModelBase
 {

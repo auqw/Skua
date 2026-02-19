@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Skua.Core.Interfaces;
 using Skua.Core.Utils;
+using Skua.Shared.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
