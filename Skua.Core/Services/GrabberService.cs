@@ -338,12 +338,159 @@ public class GrabberService : IGrabberService
 
     public Task BuyItems(IList<object>? objects, IProgress<string> progress, CancellationToken token)
     {
-        throw new NotImplementedException();
+        return BuyItemsImpl(objects, progress, token);
     }
 
     public Task SellItem(IList<object>? objects, IProgress<string> progress, CancellationToken token)
     {
-        throw new NotImplementedException();
+        return SellItemImpl(objects, progress, token);
+    }
+
+    private static async Task BuyItemsImpl(IList<object>? objects, IProgress<string> progress, CancellationToken token)
+    {
+        if (objects is null || objects.Count == 0)
+        {
+            progress.Report("No items found/selected.");
+            return;
+        }
+
+        IDialogService dialogService = Ioc.Default.GetService<IDialogService>()!;
+        IScriptShop shop = Ioc.Default.GetService<IScriptShop>()!;
+        IScriptPlayer player = Ioc.Default.GetService<IScriptPlayer>()!;
+
+        List<ShopItem> items = objects.Cast<ShopItem>().ToList();
+        if (items.Count == 1)
+        {
+            ShopItem item = items[0];
+            if (item is { Coins: true, Cost: > 0 })
+            {
+                WarnAcPurchase(progress, dialogService);
+                return;
+            }
+
+            progress.Report($"Buying {item.Name}, input quantity...");
+            IInputDialogViewModel dialog = dialogService.CreateInputDialog($"Buying {item.Name}", $"Buy quantity (Cost: {item.Cost} {(item.Coins ? "AC" : "Gold")})");
+            if (dialogService.ShowDialog(dialog) != true)
+            {
+                progress.Report("Cancelled.");
+                return;
+            }
+
+            if (!int.TryParse(dialog.DialogTextInput, out int quantity))
+                return;
+
+            quantity = Math.Clamp(quantity, 1, item.MaxStack);
+            int totalCost = item.Cost * quantity;
+            if (!item.Coins && totalCost > player.Gold)
+            {
+                progress.Report($"Not enough gold. Total: {totalCost:#,0}");
+                dialogService.ShowMessageBox(
+                    $"Not enough gold to buy {quantity} {item.Name}.\r\nTotal: {totalCost:#,0}\r\nNeeded: {totalCost - player.Gold:#,0}",
+                    "Not enough gold");
+                return;
+            }
+
+            try
+            {
+                await Task.Run(() => shop.BuyItem(item.ID, item.ShopItemID, quantity), token);
+                progress.Report($"Bought {quantity} {item.Name}");
+            }
+            catch
+            {
+                if (token.IsCancellationRequested)
+                    progress.Report("Task cancelled.");
+            }
+
+            return;
+        }
+
+        if (items.Any(i => i.Coins && i.Cost > 0))
+        {
+            WarnAcPurchase(progress, dialogService);
+            return;
+        }
+
+        int totalGoldCost = items.Where(i => !i.Coins).Sum(i => i.Cost);
+        if (totalGoldCost > player.Gold)
+        {
+            progress.Report($"Not enough gold. Total: {totalGoldCost:#,0}");
+            dialogService.ShowMessageBox(
+                $"Not enough gold to buy the {items.Count} items.\r\nTotal: {totalGoldCost:#,0}\r\nNeeded: {totalGoldCost - player.Gold:#,0}",
+                "Not enough gold");
+            return;
+        }
+
+        try
+        {
+            for (int index = 0; index < items.Count; index++)
+            {
+                ShopItem item = items[index];
+                await Task.Run(() => shop.BuyItem(item.ID), token);
+                progress.Report($"Bought {item.Name}");
+                if (index != items.Count - 1)
+                    await Task.Delay(1000, token);
+            }
+        }
+        catch
+        {
+            if (token.IsCancellationRequested)
+                progress.Report("Task cancelled.");
+        }
+    }
+
+    private static async Task SellItemImpl(IList<object>? objects, IProgress<string> progress, CancellationToken token)
+    {
+        IDialogService dialogService = Ioc.Default.GetService<IDialogService>()!;
+        if (objects is null || objects.Count == 0)
+        {
+            progress.Report("No items found/selected.");
+            return;
+        }
+
+        if (objects.Count > 1)
+        {
+            progress.Report("Warning");
+            dialogService.ShowMessageBox($"ATTENTION - {objects.Count} items selected!\nPlease sell 1 item at a time to prevent losses.", "Selling item - Warning");
+            return;
+        }
+
+        InventoryItem item = objects.Cast<InventoryItem>().First();
+        if (item.Equipped)
+        {
+            dialogService.ShowMessageBox("Cannot sell equipped item.", "Sell item");
+            return;
+        }
+
+        progress.Report($"Selling {item.Name}, input quantity...");
+        IScriptShop shop = Ioc.Default.GetService<IScriptShop>()!;
+        try
+        {
+            int maxQty = item.Category == ItemCategory.Class ? 1 : item.Quantity;
+            IInputDialogViewModel dialog = dialogService.CreateInputDialog($"Selling {item.Name}", $"Sell quantity (Currently has: {maxQty})");
+            if (dialogService.ShowDialog(dialog) != true)
+            {
+                progress.Report("Cancelled.");
+                return;
+            }
+
+            if (!int.TryParse(dialog.DialogTextInput, out int quantity))
+                return;
+
+            quantity = Math.Clamp(quantity, 1, maxQty);
+            await Task.Run(() => shop.SellItem(item.ID, quantity), token);
+            progress.Report($"Sold {quantity} {item.Name}");
+        }
+        catch
+        {
+            if (token.IsCancellationRequested)
+                progress.Report("Task cancelled.");
+        }
+    }
+
+    private static void WarnAcPurchase(IProgress<string> progress, IDialogService dialogService)
+    {
+        progress.Report("AC item - Cancelled");
+        dialogService.ShowMessageBox("Don't use this to buy AC items that aren't 0 AC.", "AC Item");
     }
 
     /*public async Task BuyItems(IList<object>? objects, IProgress<string> progress, CancellationToken token)
