@@ -44,7 +44,7 @@ internal class MainMenu
         windowService.RegisterManagedWindow("Junk Items", s.GetRequiredService<JunkItemsViewModel>());
 
         windowService.RegisterManagedWindow("Loader", s.GetRequiredService<LoaderViewModel>());
-        //windowService.RegisterManagedWindow("Grabber", s.GetRequiredService<GrabberViewModel>());
+        windowService.RegisterManagedWindow("Grabber", s.GetRequiredService<GrabberViewModel>());
         windowService.RegisterManagedWindow("Stats", s.GetRequiredService<ScriptStatsViewModel>());
         windowService.RegisterManagedWindow("Console", s.GetRequiredService<ConsoleViewModel>());
 
