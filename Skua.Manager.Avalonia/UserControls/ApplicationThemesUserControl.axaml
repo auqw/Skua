@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cp="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.ColorPicker"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:sharedSettings="clr-namespace:Skua.Shared.Avalonia.Controls.Settings;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.Manager.Avalonia.UserControls.ApplicationThemesUserControl"
              d:DesignWidth="900"
              d:DesignHeight="600"
@@ -35,47 +36,24 @@
 
                     <Grid ColumnDefinitions="220,1,*">
                         <StackPanel Grid.Column="0" Spacing="6">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Dark Mode" />
-                                <ToggleSwitch Grid.Column="1"
-                                              VerticalAlignment="Center"
-                                              OnContent=""
-                                              OffContent=""
-                                              IsChecked="{Binding ThemeService.IsDarkTheme}" />
-                            </Grid>
+                            <sharedSettings:LabeledToggleRow Label="Dark Mode"
+                                                             IsChecked="{Binding ThemeService.IsDarkTheme}" />
 
-                            <Grid ColumnDefinitions="*,Auto">
-                                <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Color Adjustment" />
-                                <ToggleSwitch x:Name="ColorAdjustToggle"
-                                              Grid.Column="1"
-                                              VerticalAlignment="Center"
-                                              OnContent=""
-                                              OffContent=""
-                                              IsChecked="{Binding ThemeService.IsColorAdjusted}" />
-                            </Grid>
+                            <sharedSettings:LabeledToggleRow Label="Color Adjustment"
+                                                             IsChecked="{Binding ThemeService.IsColorAdjusted}" />
 
                             <Border Margin="0,2,0,2"
                                     Height="1"
                                     Background="{DynamicResource SkuaBorderBrush}" />
 
-                            <StackPanel IsVisible="{Binding #ColorAdjustToggle.IsChecked}" Spacing="6">
+                            <StackPanel IsVisible="{Binding ThemeService.IsColorAdjusted}" Spacing="6">
                                 <TextBlock FontWeight="SemiBold" Text="Advanced Color Adjustment" />
                                 <TextBlock Margin="0,2,0,0" Text="Desired Contrast Ratio" />
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <Slider x:Name="ContrastRatioSlider"
-                                            Grid.Column="0"
-                                            Margin="0,0,8,0"
-                                            Minimum="1"
-                                            Maximum="21"
-                                            TickFrequency="0.1"
-                                            IsSnapToTickEnabled="True"
-                                            Value="{Binding ThemeService.DesiredContrastRatio}" />
-                                    <TextBlock Grid.Column="1"
-                                               Width="54"
-                                               HorizontalAlignment="Right"
-                                               VerticalAlignment="Center"
-                                               Text="{Binding #ContrastRatioSlider.Value, StringFormat={}{0:0.0}:1}" />
-                                </Grid>
+                                <sharedSettings:SliderValueRow Minimum="1"
+                                                               Maximum="21"
+                                                               TickFrequency="0.1"
+                                                               IsSnapToTickEnabled="True"
+                                                               Value="{Binding ThemeService.DesiredContrastRatio}" />
 
                                 <TextBlock Margin="0,2,0,0" Text="Contrast" />
                                 <ComboBox ItemsSource="{Binding ThemeService.ContrastValues}"
