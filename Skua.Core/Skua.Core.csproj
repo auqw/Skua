@@ -9,6 +9,7 @@
     <Platforms>AnyCPU;x64;x86</Platforms>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <LangVersion>latest</LangVersion>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
     
     <!-- Performance optimizations -->
     <TieredCompilation>true</TieredCompilation>
