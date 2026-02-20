@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Skua.Core.ViewModels.Manager;
+using Skua.Manager.Avalonia.ViewModels;
 
 namespace Skua.Manager.Avalonia.UserControls;
 

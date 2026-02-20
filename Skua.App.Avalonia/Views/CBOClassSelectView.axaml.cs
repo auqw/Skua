@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.VisualTree;
-using Skua.Core.ViewModels;
+using Skua.App.Avalonia.ViewModels.CoreBotsOptions;
 
 namespace Skua.App.Avalonia.Views;
 

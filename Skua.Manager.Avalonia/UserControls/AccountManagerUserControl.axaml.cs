@@ -1,13 +1,13 @@
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Interfaces;
+using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Messaging;
-using Skua.Core.ViewModels;
-using Skua.Core.ViewModels.Manager;
+using Skua.Manager.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,7 +66,7 @@ public partial class AccountManagerUserControl : UserControl
 
     private void AddGroup_Click(object? sender, RoutedEventArgs e)
     {
-        InputDialogViewModel inputDialog = new("Create Group", "Enter group name", "Group Name", numericInputOnly: false);
+        InputDialogViewModel inputDialog = new((string)"Create Group", (string)"Enter group name", (string)"Group Name", (bool)false);
         bool? result = _dialogService.ShowDialog(inputDialog, "Create Group");
         if (result == true && !string.IsNullOrWhiteSpace(inputDialog.DialogTextInput))
             _viewModel.AddGroup(inputDialog.DialogTextInput.Trim());
@@ -84,14 +84,14 @@ public partial class AccountManagerUserControl : UserControl
 
     private async void StartSelectedWithScript_Click(object? sender, RoutedEventArgs e)
     {
-        List<AccountItemViewModel> selected = _viewModel.Accounts.Where(a => a.UseCheck).ToList();
+        List<IAccountItemViewModel> selected = _viewModel.Accounts.Where(a => a.UseCheck).ToList();
         if (selected.Count == 0)
         {
             _dialogService.ShowMessageBox("No accounts selected", "Start Selected With Script");
             return;
         }
 
-        foreach (AccountItemViewModel account in selected)
+        foreach (IAccountItemViewModel account in selected)
         {
             WeakReferenceMessenger.Default.Send(new StartAccountMessage(account, true));
             await Task.Delay(1000);
@@ -100,7 +100,7 @@ public partial class AccountManagerUserControl : UserControl
 
     private void AddSelectedToGroup_Click(object? sender, RoutedEventArgs e)
     {
-        List<AccountItemViewModel> selected = _viewModel.Accounts.Where(a => a.UseCheck).ToList();
+        List<IAccountItemViewModel> selected = _viewModel.Accounts.Where(a => a.UseCheck).ToList();
         if (selected.Count == 0)
         {
             _dialogService.ShowMessageBox("No accounts selected", "Add to Group");
@@ -111,7 +111,7 @@ public partial class AccountManagerUserControl : UserControl
         bool? result = _dialogService.ShowDialog(dialogVm, "Add to Group");
         if (result == true && dialogVm.SelectedGroup != null)
         {
-            foreach (AccountItemViewModel account in selected)
+            foreach (IAccountItemViewModel account in selected)
                 _viewModel.AddAccountToGroup(account, dialogVm.SelectedGroup);
         }
     }
@@ -139,14 +139,14 @@ public partial class AccountManagerUserControl : UserControl
 
     private void AddTagsToSelected()
     {
-        List<AccountItemViewModel> selected = _viewModel.Accounts.Where(a => a.UseCheck).ToList();
+        List<IAccountItemViewModel> selected = _viewModel.Accounts.Where(a => a.UseCheck).ToList();
         if (selected.Count == 0)
         {
             _dialogService.ShowMessageBox("No accounts selected", "Add Tags");
             return;
         }
 
-        InputDialogViewModel inputDialog = new("Add Tags to Selected", "Enter tags (comma-separated)", "Tags", numericInputOnly: false);
+        InputDialogViewModel inputDialog = new((string)"Add Tags to Selected", (string)"Enter tags (comma-separated)", (string)"Tags", (bool)false);
         bool? result = _dialogService.ShowDialog(inputDialog, "Add Tags");
         if (result != true)
             return;
@@ -167,10 +167,10 @@ public partial class AccountManagerUserControl : UserControl
         _viewModel.ApplyTagFilter();
     }
 
-    public void EditAccountTags(AccountItemViewModel account)
+    public void EditAccountTags(IAccountItemViewModel account)
     {
         string existingTags = string.Join(", ", account.Tags);
-        InputDialogViewModel inputDialog = new("Edit Tags", "Enter tags (comma-separated)", "Tags", numericInputOnly: false)
+        InputDialogViewModel inputDialog = new((string)"Edit Tags", (string)"Enter tags (comma-separated)", (string)"Tags", (bool)false)
         {
             DialogTextInput = existingTags
         };
@@ -193,7 +193,7 @@ public partial class AccountManagerUserControl : UserControl
         _viewModel.ApplyTagFilter();
     }
 
-    private void AddAccountToGroup(AccountItemViewModel account)
+    private void AddAccountToGroup(IAccountItemViewModel account)
     {
         SelectGroupDialogViewModel dialogVm = new(_viewModel.Groups);
         bool? result = _dialogService.ShowDialog(dialogVm, "Add to Group");

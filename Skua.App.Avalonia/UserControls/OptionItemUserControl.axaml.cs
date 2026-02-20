@@ -1,7 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Input;
-using Skua.Core.ViewModels;
+using Skua.App.Avalonia.ViewModels.Options;
+using Skua.App.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.Options;
 using System;
 
 namespace Skua.App.Avalonia.UserControls;

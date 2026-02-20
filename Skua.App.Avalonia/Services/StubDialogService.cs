@@ -1,5 +1,8 @@
+using Skua.App.Avalonia.ViewModels.Dialogs;
 using Skua.Core.Interfaces;
+using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Models;
+using Skua.Shared.Avalonia.ViewModels.Dialogs;
 using System;
 
 namespace Skua.App.Avalonia.Services;
@@ -21,6 +24,11 @@ public class StubDialogService : IDialogService
         throw new NotImplementedException();
     }
 
+    public void ShowDialog(IOptionContainer optionContainer, Action<IOptionContainerViewModel> callback)
+    {
+        throw new NotImplementedException();
+    }
+
     public void ShowMessageBox(string message, string caption)
     {
         throw new NotImplementedException();
@@ -34,5 +42,10 @@ public class StubDialogService : IDialogService
     public DialogResult ShowMessageBox(string message, string caption, params string[] buttons)
     {
         throw new NotImplementedException();
+    }
+
+    public IInputDialogViewModel CreateInputDialog(string title, string dialogHint)
+    {
+        return new InputDialogViewModel(title, dialogHint);
     }
 }

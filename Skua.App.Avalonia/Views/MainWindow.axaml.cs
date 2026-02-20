@@ -5,9 +5,10 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.App.Avalonia.Services;
+using Skua.App.Avalonia.ViewModels;
+using Skua.App.Avalonia.ViewModels.MainMenu;
 using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
-using Skua.Core.ViewModels;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -38,12 +39,17 @@ public partial class MainWindow : Window
         _options = Ioc.Default.GetRequiredService<IScriptOption>();
         _startup = Ioc.Default.GetRequiredService<SkuaStartupHandler>();
         _metricsTimer = new DispatcherTimer(MetricRefreshInterval, DispatcherPriority.Background, (_, _) => UpdateMetrics());
-
+        
         DataContext = _mainViewModel;
         ConfigureTopActions();
         ConfigureMainMenu();
         RegisterMessages();
         RegisterLifecycleHandlers();
+        
+        TitleBar.PointerPressed += (_, e) => BeginMoveDrag(e);
+        MinimizeButton.Click += (_, _) => WindowState = WindowState.Minimized;
+        MaximizeButton.Click += (_, _) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        CloseButton.Click += (_, _) => Close();
     }
 
     private void ConfigureTopActions()

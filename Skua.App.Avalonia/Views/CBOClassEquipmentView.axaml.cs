@@ -1,5 +1,5 @@
 using Avalonia.Controls;
-using Skua.Core.ViewModels;
+using Skua.App.Avalonia.ViewModels.CoreBotsOptions;
 
 namespace Skua.App.Avalonia.Views;
 

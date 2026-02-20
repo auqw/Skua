@@ -1,5 +1,5 @@
 using Avalonia.Controls;
-using Skua.Core.ViewModels;
+using Skua.App.Avalonia.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 

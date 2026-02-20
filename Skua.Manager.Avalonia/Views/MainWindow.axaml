@@ -9,7 +9,7 @@
         Width="800"
         Height="500"
         WindowStartupLocation="CenterScreen"
-        Icon="/Assets/SkuaIcon.ico">
+        Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico">
 
     <Grid>
         <Grid.RowDefinitions>
