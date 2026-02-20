@@ -5,7 +5,7 @@
              xmlns:managerVms="clr-namespace:Skua.Manager.Avalonia.ViewModels"
              xmlns:conv="clr-namespace:Skua.Manager.Avalonia.Converters"
              xmlns:uc="clr-namespace:Skua.Manager.Avalonia.UserControls"
-             xmlns:viewModels="clr-namespace:Skua.Shared.Avalonia.ViewModels;assembly=Skua.Shared.Avalonia"
+             xmlns:sharedVms="clr-namespace:Skua.Shared.Avalonia.ViewModels;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.Manager.Avalonia.App"
              RequestedThemeVariant="Default">
     <Application.Resources>
@@ -59,13 +59,13 @@
         <DataTemplate DataType="managerVms:ManagerOptionsViewModel">
             <uc:ManagerOptionsUserControl />
         </DataTemplate>
-        <DataTemplate DataType="viewModels:ApplicationThemesViewModel">
+        <DataTemplate DataType="sharedVms:ApplicationThemesViewModel">
             <uc:ApplicationThemesUserControl />
         </DataTemplate>
-        <DataTemplate DataType="viewModels:AboutViewModel">
+        <DataTemplate DataType="sharedVms:AboutViewModel">
             <uc:AboutUserControl />
         </DataTemplate>
-        <DataTemplate DataType="viewModels:ChangeLogsViewModel">
+        <DataTemplate DataType="sharedVms:ChangeLogsViewModel">
             <uc:ChangeLogsUserControl />
         </DataTemplate>
     </Application.DataTemplates>

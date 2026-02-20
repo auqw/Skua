@@ -232,122 +232,12 @@
                                       IsVisible="{Binding !ShowGridView}"
                                       VerticalScrollBarVisibility="Auto">
                             <ScrollViewer.ContextMenu>
-                                <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                                    <MenuItem Header="Start Selected" Command="{Binding StartAccountsCommand}">
-                                        <MenuItem.Icon>
-                                            <materialIcons:MaterialIcon Kind="PlayCircleOutline" Width="14" Height="14" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Start Selected With Script" Click="StartSelectedWithScript_Click">
-                                        <MenuItem.Icon>
-                                            <materialIcons:MaterialIcon Kind="ScriptTextPlayOutline" Width="14" Height="14" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <Separator />
-                                    <MenuItem Header="Add Tags to Selected" Click="AddTagsToSelected_Click">
-                                        <MenuItem.Icon>
-                                            <materialIcons:MaterialIcon Kind="Tag" Width="14" Height="14" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Add Selected to Group" Click="AddSelectedToGroup_Click">
-                                        <MenuItem.Icon>
-                                            <materialIcons:MaterialIcon Kind="AccountMultiplePlus" Width="14" Height="14" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <Separator />
-                                    <MenuItem Header="Deselect All" Command="{Binding DeselectAllCommand}">
-                                        <MenuItem.Icon>
-                                            <materialIcons:MaterialIcon Kind="CheckboxBlankOutline" Width="14" Height="14" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                </ContextMenu>
+                                <uc:SelectedAccountsContextMenu />
                             </ScrollViewer.ContextMenu>
                             <ItemsControl ItemsSource="{Binding FilteredAccounts}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Classes="account-row"
-                                                BorderBrush="{DynamicResource SkuaBorderBrush}"
-                                                BorderThickness="0"
-                                                Padding="6,5"
-                                                Margin="0,0,0,1"
-                                                PointerPressed="AccountBorder_PointerPressed">
-                                            <Border.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Start" Command="{Binding StartCommand}">
-                                                        <MenuItem.Icon>
-                                                            <materialIcons:MaterialIcon Kind="PlayCircleOutline" Width="14" Height="14" />
-                                                        </MenuItem.Icon>
-                                                    </MenuItem>
-                                                    <MenuItem Header="Start With Script" Command="{Binding StartWithScriptCommand}">
-                                                        <MenuItem.Icon>
-                                                            <materialIcons:MaterialIcon Kind="ScriptTextPlayOutline" Width="14" Height="14" />
-                                                        </MenuItem.Icon>
-                                                    </MenuItem>
-                                                    <Separator />
-                                                    <MenuItem Header="Edit Tags" Command="{Binding AddTagsCommand}">
-                                                        <MenuItem.Icon>
-                                                            <materialIcons:MaterialIcon Kind="Tag" Width="14" Height="14" />
-                                                        </MenuItem.Icon>
-                                                    </MenuItem>
-                                                    <MenuItem Header="Add to Group" Command="{Binding AddToGroupCommand}">
-                                                        <MenuItem.Icon>
-                                                            <materialIcons:MaterialIcon Kind="AccountMultiplePlus" Width="14" Height="14" />
-                                                        </MenuItem.Icon>
-                                                    </MenuItem>
-                                                    <Separator />
-                                                    <MenuItem Header="Remove" Command="{Binding RemoveCommand}">
-                                                        <MenuItem.Icon>
-                                                            <materialIcons:MaterialIcon Kind="DeleteOutline" Width="14" Height="14" />
-                                                        </MenuItem.Icon>
-                                                    </MenuItem>
-                                                </ContextMenu>
-                                            </Border.ContextMenu>
-
-                                            <Grid ColumnDefinitions="Auto,*,Auto" MinHeight="26">
-                                                <CheckBox Grid.Column="0"
-                                                          IsChecked="{Binding UseCheck}"
-                                                          VerticalAlignment="Center"
-                                                          Margin="0,0,6,0" />
-
-                                                <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding DisplayOrUsername}"
-                                                               VerticalAlignment="Center"
-                                                               FontWeight="SemiBold" />
-                                                    <ItemsControl ItemsSource="{Binding Tags}"
-                                                                  IsVisible="{Binding DataContext.ShowTags, RelativeSource={RelativeSource AncestorType=UserControl}}">
-                                                        <ItemsControl.ItemsPanel>
-                                                            <ItemsPanelTemplate>
-                                                                <WrapPanel Orientation="Horizontal" />
-                                                            </ItemsPanelTemplate>
-                                                        </ItemsControl.ItemsPanel>
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <Border BorderBrush="{DynamicResource SkuaAccentBrush}"
-                                                                        BorderThickness="1"
-                                                                        CornerRadius="7"
-                                                                        Padding="3,1"
-                                                                        Margin="0,0,2,1"
-                                                                        Background="{DynamicResource SkuaSurfaceAltBrush}">
-                                                                    <TextBlock Text="{Binding}" />
-                                                                </Border>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                    </ItemsControl>
-                                                </StackPanel>
-
-                                                <Button Grid.Column="2"
-                                                        Command="{Binding RemoveCommand}"
-                                                        Classes="danger-icon"
-                                                        Width="24"
-                                                        Height="24"
-                                                        Padding="0"
-                                                        Margin="4,0,0,0"
-                                                        VerticalAlignment="Center"
-                                                        ToolTip.Tip="Remove">
-                                                    <materialIcons:MaterialIcon Kind="DeleteOutline" Width="14" Height="14" Foreground="{DynamicResource SkuaAccentBrush}" />
-                                                </Button>
-                                            </Grid>
-                                        </Border>
+                                        <uc:AccountListRow />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -357,35 +247,7 @@
                                       IsVisible="{Binding ShowGridView}"
                                       VerticalScrollBarVisibility="Auto">
                             <ScrollViewer.ContextMenu>
-                                <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                                    <MenuItem Header="Start Selected" Command="{Binding StartAccountsCommand}">
-                                        <MenuItem.Icon>
-                                            <materialIcons:MaterialIcon Kind="PlayCircleOutline" Width="14" Height="14" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Start Selected With Script" Click="StartSelectedWithScript_Click">
-                                        <MenuItem.Icon>
-                                            <materialIcons:MaterialIcon Kind="ScriptTextPlayOutline" Width="14" Height="14" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <Separator />
-                                    <MenuItem Header="Add Tags to Selected" Click="AddTagsToSelected_Click">
-                                        <MenuItem.Icon>
-                                            <materialIcons:MaterialIcon Kind="Tag" Width="14" Height="14" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Add Selected to Group" Click="AddSelectedToGroup_Click">
-                                        <MenuItem.Icon>
-                                            <materialIcons:MaterialIcon Kind="AccountMultiplePlus" Width="14" Height="14" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <Separator />
-                                    <MenuItem Header="Deselect All" Command="{Binding DeselectAllCommand}">
-                                        <MenuItem.Icon>
-                                            <materialIcons:MaterialIcon Kind="CheckboxBlankOutline" Width="14" Height="14" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                </ContextMenu>
+                                <uc:SelectedAccountsContextMenu />
                             </ScrollViewer.ContextMenu>
                             <ItemsControl ItemsSource="{Binding FilteredAccounts}">
                                 <ItemsControl.ItemsPanel>
@@ -395,79 +257,7 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Classes="account-row"
-                                                BorderBrush="{DynamicResource SkuaBorderBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="4"
-                                                Padding="5"
-                                                Margin="2"
-                                                PointerReleased="AccountBorder_PointerReleased">
-                                            <Border.ContextMenu>
-                                                <ContextMenu>
-                                                    <MenuItem Header="Start" Command="{Binding StartCommand}">
-                                                        <MenuItem.Icon>
-                                                            <materialIcons:MaterialIcon Kind="PlayCircleOutline" Width="14" Height="14" />
-                                                        </MenuItem.Icon>
-                                                    </MenuItem>
-                                                    <MenuItem Header="Start With Script" Command="{Binding StartWithScriptCommand}">
-                                                        <MenuItem.Icon>
-                                                            <materialIcons:MaterialIcon Kind="ScriptTextPlayOutline" Width="14" Height="14" />
-                                                        </MenuItem.Icon>
-                                                    </MenuItem>
-                                                    <Separator />
-                                                    <MenuItem Header="Edit Tags" Command="{Binding AddTagsCommand}">
-                                                        <MenuItem.Icon>
-                                                            <materialIcons:MaterialIcon Kind="Tag" Width="14" Height="14" />
-                                                        </MenuItem.Icon>
-                                                    </MenuItem>
-                                                    <MenuItem Header="Add to Group" Command="{Binding AddToGroupCommand}">
-                                                        <MenuItem.Icon>
-                                                            <materialIcons:MaterialIcon Kind="AccountMultiplePlus" Width="14" Height="14" />
-                                                        </MenuItem.Icon>
-                                                    </MenuItem>
-                                                    <Separator />
-                                                    <MenuItem Header="Remove" Command="{Binding RemoveCommand}">
-                                                        <MenuItem.Icon>
-                                                            <materialIcons:MaterialIcon Kind="DeleteOutline" Width="14" Height="14" />
-                                                        </MenuItem.Icon>
-                                                    </MenuItem>
-                                                </ContextMenu>
-                                            </Border.ContextMenu>
-                                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*">
-                                                <CheckBox Grid.Row="0"
-                                                          Grid.Column="0"
-                                                          IsChecked="{Binding UseCheck}"
-                                                          VerticalAlignment="Center"
-                                                          Margin="0,0,4,0" />
-                                                <TextBlock Grid.Row="0"
-                                                           Grid.Column="1"
-                                                           Text="{Binding DisplayOrUsername}"
-                                                           FontWeight="SemiBold"
-                                                           TextTrimming="CharacterEllipsis" />
-                                                <ItemsControl Grid.Row="2"
-                                                              Grid.Column="1"
-                                                              Margin="0,4,0,0"
-                                                              ItemsSource="{Binding Tags}"
-                                                              IsVisible="{Binding DataContext.ShowTags, RelativeSource={RelativeSource AncestorType=UserControl}}">
-                                                    <ItemsControl.ItemsPanel>
-                                                        <ItemsPanelTemplate>
-                                                            <WrapPanel />
-                                                        </ItemsPanelTemplate>
-                                                    </ItemsControl.ItemsPanel>
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <Border BorderBrush="{DynamicResource SkuaAccentBrush}"
-                                                                    BorderThickness="1"
-                                                                    CornerRadius="7"
-                                                                    Padding="3,1"
-                                                                    Margin="0,0,2,1">
-                                                                <TextBlock Text="{Binding}" FontSize="10" />
-                                                            </Border>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
-                                            </Grid>
-                                        </Border>
+                                        <uc:AccountGridTile />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -546,47 +336,7 @@
                                     <ItemsControl ItemsSource="{Binding Accounts}" Margin="0,6,0,0">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Border BorderBrush="{DynamicResource SkuaBorderBrush}"
-                                                        BorderThickness="1"
-                                                        CornerRadius="4"
-                                                        Padding="5"
-                                                        Margin="0,0,0,4">
-                                                    <Grid ColumnDefinitions="*,Auto">
-                                                        <StackPanel Grid.Column="0" Spacing="2">
-                                                            <TextBlock Text="{Binding DisplayOrUsername}" FontSize="12" />
-                                                            <ItemsControl ItemsSource="{Binding Tags}">
-                                                                <ItemsControl.ItemsPanel>
-                                                                    <ItemsPanelTemplate>
-                                                                        <WrapPanel />
-                                                                    </ItemsPanelTemplate>
-                                                                </ItemsControl.ItemsPanel>
-                                                                <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <Border BorderBrush="{DynamicResource SkuaAccentBrush}"
-                                                                                BorderThickness="1"
-                                                                                CornerRadius="7"
-                                                                                Padding="3,1"
-                                                                                Margin="0,0,2,1">
-                                                                            <TextBlock Text="{Binding}" FontSize="10" />
-                                                                        </Border>
-                                                                    </DataTemplate>
-                                                                </ItemsControl.ItemTemplate>
-                                                            </ItemsControl>
-                                                        </StackPanel>
-
-                                                        <Button Grid.Column="1"
-                                                                Classes="danger-icon"
-                                                                Margin="5,0,0,0"
-                                                                Width="24"
-                                                                Height="24"
-                                                                Padding="0"
-                                                                Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                                Click="RemoveAccountFromGroup_Click"
-                                                                ToolTip.Tip="Remove from group">
-                                                            <materialIcons:MaterialIcon Kind="DeleteOutline" Width="14" Height="14" Foreground="{DynamicResource SkuaAccentBrush}" />
-                                                        </Button>
-                                                    </Grid>
-                                                </Border>
+                                                <uc:GroupAccountRow />
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>

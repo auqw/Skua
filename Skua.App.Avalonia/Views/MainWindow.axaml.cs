@@ -254,9 +254,9 @@ public partial class MainWindow : Window
         double managedMb = GC.GetTotalMemory(false) / (1024d * 1024d);
         int fps = _options.SetFPS;
 
-        FpsMetricText.Text = $"FPS: {fps}";
-        WorkingSetMetricText.Text = $"RAM: {workingSetMb:0.0} MB";
-        PrivateMetricText.Text = $"Private: {privateMb:0.0} MB";
-        ManagedMetricText.Text = $"Managed: {managedMb:0.0} MB";
+        MetricsStrip.FpsText = $"FPS: {fps}";
+        MetricsStrip.WorkingSetText = $"RAM: {workingSetMb:0.0} MB";
+        MetricsStrip.PrivateText = $"Private: {privateMb:0.0} MB";
+        MetricsStrip.ManagedText = $"Managed: {managedMb:0.0} MB";
     }
 }

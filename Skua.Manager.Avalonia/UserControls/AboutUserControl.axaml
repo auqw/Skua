@@ -2,43 +2,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+             xmlns:sharedContent="clr-namespace:Skua.Shared.Avalonia.Controls.Content;assembly=Skua.Shared.Avalonia"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="Skua.Manager.Avalonia.UserControls.AboutUserControl"
              d:DesignWidth="900"
              d:DesignHeight="600"
              mc:Ignorable="d">
-    <Grid Margin="8" RowDefinitions="Auto,*">
-        <Border Grid.Row="0"
-                Classes="card">
-            <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
-                <StackPanel Spacing="2">
-                    <TextBlock Text="About Skua"
-                               FontSize="14"
-                               FontWeight="SemiBold" />
-                    <TextBlock Text="Project info and links"
-                               FontSize="11"
-                               Foreground="{DynamicResource SkuaMutedTextBrush}" />
+    <sharedContent:MarkdownCard Title="About Skua"
+                                Subtitle="Project info and links"
+                                Markdown="{Binding MarkdownDoc}">
+        <sharedContent:MarkdownCard.HeaderActions>
+            <Button Command="{Binding NavigateCommand}"
+                    CommandParameter="https://github.com/auqw/Skua">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <materialIcons:MaterialIcon Kind="Github" Width="14" Height="14" />
+                    <TextBlock Text="GitHub" />
                 </StackPanel>
-                <Button Grid.Column="1"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="https://github.com/auqw/Skua">
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <materialIcons:MaterialIcon Kind="Github" Width="14" Height="14" />
-                        <TextBlock Text="GitHub" />
-                    </StackPanel>
-                </Button>
-            </Grid>
-        </Border>
-
-        <Border Grid.Row="1"
-                Margin="0,8,0,0"
-                Classes="card"
-                Padding="0">
-            <md:MarkdownScrollViewer Markdown="{Binding MarkdownDoc}"
-                                     Margin="8"
-                                     VerticalAlignment="Stretch"
-                                     HorizontalAlignment="Stretch" />
-        </Border>
-    </Grid>
+            </Button>
+        </sharedContent:MarkdownCard.HeaderActions>
+    </sharedContent:MarkdownCard>
 </UserControl>

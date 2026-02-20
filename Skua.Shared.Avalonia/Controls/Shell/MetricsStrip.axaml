@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.Shared.Avalonia.Controls.Shell.MetricsStrip"
+             x:Name="Root">
+    <Border Background="{DynamicResource SkuaPageBrush}"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}"
+            BorderThickness="0,1,0,0"
+            Padding="10,4">
+        <StackPanel Orientation="Horizontal" Spacing="16">
+            <TextBlock Text="{Binding FpsText, ElementName=Root}" />
+            <TextBlock Text="{Binding WorkingSetText, ElementName=Root}" />
+            <TextBlock Text="{Binding PrivateText, ElementName=Root}" />
+            <TextBlock Text="{Binding ManagedText, ElementName=Root}" />
+        </StackPanel>
+    </Border>
+</UserControl>
