@@ -1,6 +1,5 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:Skua.App.Avalonia.Controls"
         x:Class="Skua.App.Avalonia.Views.MainWindow"
         Width="1280"
         Height="780"
@@ -63,7 +62,7 @@
     </Grid>
 
     <Grid Grid.Row="1" Background="#000000" PointerEntered="NonMenuArea_PointerEntered">
-      <controls:WinFormsFlashHost x:Name="FlashHost" IsVisible="False" />
+      <!--<controls:WinFormsFlashHost x:Name="FlashHost" IsVisible="False" />-->
       <ProgressBar x:Name="LoadingBar"
                    Width="150"
                    Height="8"
