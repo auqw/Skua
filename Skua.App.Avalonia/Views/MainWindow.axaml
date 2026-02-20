@@ -5,7 +5,6 @@
         xmlns:controls="clr-namespace:Skua.App.Avalonia.Controls"
         xmlns:sharedShell="clr-namespace:Skua.Shared.Avalonia.Controls.Shell;assembly=Skua.Shared.Avalonia"
         x:Class="Skua.App.Avalonia.Views.MainWindow"
-        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         
         mc:Ignorable="d" d:DesignWidth="948" d:DesignHeight="600"
         Width="948" Height="600"
@@ -23,67 +22,15 @@
   
   <Grid RowDefinitions="Auto,*">
     
-    <!-- Custom Titlebar -->
-    <Grid Row="0"
-          Name="TitleBar"
-          Height="32"
-          Background="{DynamicResource SkuaPageBrush}"
-          >
-          
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto"/>
-        <ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="Auto"/>
-      </Grid.ColumnDefinitions>
-          
-      <!--  Icon  -->
-      <Grid Column="0"
-            Width="30"
-            Height="30"
-            Margin="6,0"
-            HorizontalAlignment="Center">
-              
-        <Border
-          Width="30"
-          Height="30"
-          Background="{DynamicResource PrimaryHueMidBrush}"
-          CornerRadius="15"/>
-              
-        <Image Source="avares://Skua.Shared.Avalonia/Assets/SkuaImage.png" 
-               Width="32" Height="32"
-               VerticalAlignment="Center"/>
-      </Grid>
-          
-      <!--  Title  -->
-      <Viewbox Grid.Column="1"
-               Margin="6,0,0,0"
-               HorizontalAlignment="Left">
-        <TextBlock Text="{Binding Title}" 
-                   Foreground="{DynamicResource PrimaryHueMidBrush}"/>
-      </Viewbox>
-          
-      <!--  System Buttons  -->
-      <StackPanel Grid.Column="2" 
-                  Orientation="Horizontal">
-        <Button Name="MinimizeButton" 
-                Classes="titlebar flat"
-                Foreground="{DynamicResource PrimaryHueMidBrush}"
-                Content="{materialIcons:MaterialIconExt Kind=WindowMinimize, IconSize=12}"/>
-        <Button Name="MaximizeButton" 
-                Classes="titlebar flat"
-                Foreground="{DynamicResource PrimaryHueMidBrush}"
-                Content="{materialIcons:MaterialIconExt Kind=WindowMaximize, IconSize=12}"/>
-        <Button Name="CloseButton" 
-                Classes="titlebar flat"
-                Foreground="{DynamicResource PrimaryHueMidBrush}"
-                Content="{materialIcons:MaterialIconExt Kind=WindowClose, IconSize=12}"/>
-      </StackPanel>
-    </Grid>
+    <sharedShell:WindowTitleBar Grid.Row="0"
+                                x:Name="TitleBar"
+                                TitleText="{Binding Title}" />
       
-    <Grid Row="1"
+    <Grid Grid.Row="1"
       RowDefinitions="Auto,*,Auto">
       
       <Grid Grid.Row="0" ColumnDefinitions="*,Auto"
+            Background="{DynamicResource SkuaSurfaceAltBrush}"
             Height="25"
             >
         

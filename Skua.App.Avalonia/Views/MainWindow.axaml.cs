@@ -47,10 +47,6 @@ public partial class MainWindow : Window
         RegisterMessages();
         RegisterLifecycleHandlers();
         
-        TitleBar.PointerPressed += (_, e) => BeginMoveDrag(e);
-        MinimizeButton.Click += (_, _) => WindowState = WindowState.Minimized;
-        MaximizeButton.Click += (_, _) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-        CloseButton.Click += (_, _) => Close();
     }
 
     private void ConfigureTopActions()
