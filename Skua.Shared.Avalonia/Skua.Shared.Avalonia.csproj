@@ -9,7 +9,7 @@
     <ItemGroup>
       <PackageReference Include="Avalonia" />
       <PackageReference Include="Avalonia.Controls.ColorPicker" />
-      <PackageReference Include="Markdown.Avalonia" />
+      <PackageReference Include="Avalonia.Themes.Fluent" />
       <PackageReference Include="Material.Icons.Avalonia" />
     </ItemGroup>
 

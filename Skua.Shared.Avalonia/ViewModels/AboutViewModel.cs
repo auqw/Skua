@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
+using Avalonia.Threading;
 using Skua.Core.Interfaces;
 using Skua.Core.Utils;
 
@@ -51,13 +52,16 @@ public class AboutViewModel : BotControlViewModelBase
 
     private async Task GetAboutContent()
     {
+        string markdown;
         try
         {
-            MarkdownDoc = await ValidatedHttpExtensions.GetStringAsync(HttpClients.GitHubRaw, "auqw/Skua/refs/heads/master/readme.md").ConfigureAwait(false);
+            markdown = await ValidatedHttpExtensions.GetStringAsync(HttpClients.GitHubRaw, "auqw/Skua/refs/heads/master/readme.md").ConfigureAwait(false);
         }
         catch
         {
-            MarkdownDoc = "### No content found. Please check your internet connection.";
+            markdown = "### No content found. Please check your internet connection.";
         }
+
+        Dispatcher.UIThread.Post(() => MarkdownDoc = markdown);
     }
 }

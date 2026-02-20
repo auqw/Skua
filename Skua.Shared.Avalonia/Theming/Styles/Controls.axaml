@@ -7,7 +7,7 @@
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="CornerRadius" Value="4" />
-    <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
     <Setter Property="VerticalAlignment" Value="Center" />
   </Style>
 
@@ -23,7 +23,7 @@
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="CornerRadius" Value="4" />
-    <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
     <Setter Property="VerticalAlignment" Value="Center" />
   </Style>
 
