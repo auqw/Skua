@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
+             x:Class="Skua.Manager.Avalonia.UserControls.LauncherProcessRow"
+             x:Name="Root">
+    <Border Margin="0,2"
+            Classes="process-row"
+            Padding="8,4"
+            BorderBrush="{DynamicResource SkuaBorderBrush}"
+            BorderThickness="0,0,0,1">
+        <Grid ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <TextBlock Text="{Binding AccountName}"
+                           FontSize="14"
+                           FontWeight="SemiBold" />
+                <TextBlock Text="{Binding ProcessId, StringFormat=PID: {0}}"
+                           FontSize="11"
+                           Foreground="{DynamicResource SkuaMutedTextBrush}" />
+            </StackPanel>
+            <sharedControls:IconTextButton Grid.Column="1"
+                                           Classes="hover-stop"
+                                           Width="64"
+                                           Height="28"
+                                           Command="{Binding StopCommand, ElementName=Root}"
+                                           CommandParameter="{Binding}"
+                                           IconKind="StopCircleOutline"
+                                           Text="Stop"
+                                           Margin="8,0,0,0" />
+        </Grid>
+    </Border>
+</UserControl>
