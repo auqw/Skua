@@ -177,7 +177,7 @@ public static class Services
         services.AddSingleton<PluginsViewModel>();
 
         services.AddSingleton<HotKeysViewModel>();
-        //services.AddSingleton(Core.AppStartup.HotKeys.CreateHotKeys);
+        // Hotkey command map is registered in App startup for this app host.
 
         services.AddSingleton(CoreBots.CreateViewModel);
         services.AddSingleton(CoreBots.CreateOptions);

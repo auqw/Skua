@@ -13,5 +13,6 @@
     <PackageVersion Include="Material.Avalonia.Dialogs" Version="3.13.4" />
     <PackageVersion Include="Material.Icons" Version="3.0.0-preview7" />
     <PackageVersion Include="Material.Icons.Avalonia" Version="3.0.0-preview7" />
+    <PackageVersion Include="CoreHook" Version="1.0.4" />
   </ItemGroup>
 </Project>
