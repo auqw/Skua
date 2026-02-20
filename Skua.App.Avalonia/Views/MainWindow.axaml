@@ -41,9 +41,7 @@
 
         <StackPanel x:Name="TopActionsPanel"
                     Grid.Column="1"
-                    Orientation="Horizontal"
-                    
-                    PointerEntered="NonMenuArea_PointerEntered">
+                    Orientation="Horizontal">
           
           <ToggleButton x:Name="AutoToggle" Classes="topbar-action flat" Content="Auto" />
           <Popup x:Name="AutoPopup"
@@ -92,7 +90,7 @@
         </StackPanel>
       </Grid>
 
-      <Grid Grid.Row="1" Background="#000000" PointerEntered="NonMenuArea_PointerEntered">
+      <Grid Grid.Row="1" Background="#000000">
         <controls:WinFormsFlashHost x:Name="FlashHost" IsVisible="False" />
         <ProgressBar x:Name="LoadingBar"
                      Width="150"

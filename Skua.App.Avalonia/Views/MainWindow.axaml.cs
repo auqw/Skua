@@ -13,7 +13,6 @@ using Skua.Core.Messaging;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Skua.App.Avalonia.Views;
 
@@ -28,7 +27,6 @@ public partial class MainWindow : Window
     private readonly MainViewModel _mainViewModel;
     private MenuItem? _pluginsMenuItem;
     private readonly DispatcherTimer _metricsTimer;
-    private MenuItem[] _hoverMenus = [];
     private bool _isFlashLoaded;
 
     public MainWindow()
@@ -147,21 +145,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private void TopMenuItem_PointerEntered(object? sender, PointerEventArgs e)
-    {
-        if (sender is not MenuItem hovered || !hovered.HasSubMenu)
-            return;
-
-        foreach (MenuItem item in _hoverMenus)
-            item.IsSubMenuOpen = ReferenceEquals(item, hovered);
-    }
-
-    private void NonMenuArea_PointerEntered(object? sender, PointerEventArgs e)
-    {
-        foreach (MenuItem item in _hoverMenus)
-            item.IsSubMenuOpen = false;
-    }
-
     private void MainMenuItemsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         BuildMainMenu();
@@ -170,7 +153,6 @@ public partial class MainWindow : Window
     private void PluginsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         BuildPluginsMenuItems();
-        RefreshHoverMenus();
     }
 
     private void BuildMainMenu()
@@ -181,10 +163,8 @@ public partial class MainWindow : Window
 
         _pluginsMenuItem = new MenuItem { Header = "Plugins" };
         _pluginsMenuItem.Classes.Add("top-nav-item");
-        _pluginsMenuItem.PointerEntered += TopMenuItem_PointerEntered;
         MainMenuControl.Items.Add(_pluginsMenuItem);
         BuildPluginsMenuItems();
-        RefreshHoverMenus();
     }
 
     private void BuildPluginsMenuItems()
@@ -195,14 +175,6 @@ public partial class MainWindow : Window
         _pluginsMenuItem.Items.Clear();
         foreach (MainMenuItemViewModel plugin in _mainMenuVm.Plugins)
             _pluginsMenuItem.Items.Add(CreateSubMenuItem(plugin));
-    }
-
-    private void RefreshHoverMenus()
-    {
-        _hoverMenus = MainMenuControl.Items
-            .OfType<MenuItem>()
-            .Where(x => x.HasSubMenu)
-            .ToArray();
     }
 
     private MenuItem CreateMainMenuItem(MainMenuItemViewModel item)
@@ -218,8 +190,6 @@ public partial class MainWindow : Window
         {
             foreach (MainMenuItemViewModel child in item.SubItems)
                 menuItem.Items.Add(CreateSubMenuItem(child));
-
-            menuItem.PointerEntered += TopMenuItem_PointerEntered;
         }
 
         return menuItem;
