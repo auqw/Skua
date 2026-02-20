@@ -1,22 +1,23 @@
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
+using Avalonia.Threading;
 using Skua.Core.Interfaces;
 using Skua.Core.Utils;
-using System.Diagnostics;
 
 namespace Skua.Shared.Avalonia.ViewModels;
 
 public class ChangeLogsViewModel : BotControlViewModelBase
 {
     private string _markDownContent = "Loading content...";
+    private readonly IProcessService _processService;
 
-    public ChangeLogsViewModel() : base("Change Logs", 460, 500)
+    public ChangeLogsViewModel(IProcessService processService) : base("Change Logs", 460, 500)
     {
+        _processService = processService;
         _markDownContent = string.Empty;
 
         Task.Run(async () => await GetChangeLogsContent());
 
-        OpenDonationLink = new RelayCommand(() => Ioc.Default.GetRequiredService<IProcessService>().OpenLink("https://ko-fi.com/sharpthenightmare"));
+        OpenDonationLink = new RelayCommand(OpenDonation);
         NavigateCommand = new RelayCommand<string>(NavigateToUrl);
     }
 
@@ -30,14 +31,17 @@ public class ChangeLogsViewModel : BotControlViewModelBase
 
     private async Task GetChangeLogsContent()
     {
+        string markdown;
         try
         {
-            MarkdownDoc = await ValidatedHttpExtensions.GetStringAsync(HttpClients.GitHubRaw, "auqw/Skua/refs/heads/master/changelogs.md").ConfigureAwait(false);
+            markdown = await ValidatedHttpExtensions.GetStringAsync(HttpClients.GitHubRaw, "auqw/Skua/refs/heads/master/changelogs.md").ConfigureAwait(false);
         }
         catch
         {
-            MarkdownDoc = "### No content found. Please check your internet connection.";
+            markdown = "### No content found. Please check your internet connection.";
         }
+
+        Dispatcher.UIThread.Post(() => MarkdownDoc = markdown);
     }
 
     private void NavigateToUrl(string? url)
@@ -49,12 +53,24 @@ public class ChangeLogsViewModel : BotControlViewModelBase
         {
             if (url.StartsWith("./"))
             {
-                Process.Start(new ProcessStartInfo($"https://github.com/auqw/Skua/blob/master/{url.Substring(2)}") { UseShellExecute = true });
+                _processService.OpenLink($"https://github.com/auqw/Skua/blob/master/{url.Substring(2)}");
             }
             else
             {
-                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                _processService.OpenLink(url);
             }
+        }
+        catch
+        {
+            /* ignored */
+        }
+    }
+
+    private void OpenDonation()
+    {
+        try
+        {
+            _processService.OpenLink("https://ko-fi.com/sharpthenightmare");
         }
         catch
         {
