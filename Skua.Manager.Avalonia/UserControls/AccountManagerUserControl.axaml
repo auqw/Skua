@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.Manager.Avalonia.UserControls.AccountManagerUserControl"
              d:DesignWidth="800"
              d:DesignHeight="600"
@@ -53,14 +54,13 @@
                          Margin="3,0"
                          Watermark="Display Name (optional)"
                          Text="{Binding DisplayNameInput}" />
-                <Button Grid.Column="3"
-                        Margin="3,0"
-                        Width="34"
-                        Height="24"
-                        Command="{Binding AddAccountCommand}"
-                        ToolTip.Tip="Add account">
-                    <materialIcons:MaterialIcon Kind="Check" Width="14" Height="14" />
-                </Button>
+                <sharedControls:IconButton Grid.Column="3"
+                                           Margin="3,0"
+                                           Width="34"
+                                           Height="24"
+                                           Command="{Binding AddAccountCommand}"
+                                           IconKind="Check"
+                                           ToolTip.Tip="Add account" />
                 <Button Grid.Column="4"
                         Width="34"
                         Height="24"
