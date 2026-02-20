@@ -25,6 +25,9 @@
     <materialIcons:MaterialIconStyles />
     
     <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Controls.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Navigation.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Containers.axaml" />
     <StyleInclude Source="/Themes/ClientStyles.axaml" />
   </Application.Styles>
   

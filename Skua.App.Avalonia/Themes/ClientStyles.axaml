@@ -85,43 +85,6 @@
     <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
 
-  <Style Selector="Button.topbar-action">
-    <Setter Property="Height" Value="25" />
-    <Setter Property="MinWidth" Value="34" />
-    <Setter Property="Padding" Value="10,0" />
-    <Setter Property="Background" Value="Transparent" />
-    <Setter Property="BorderThickness" Value="0" />
-    <Setter Property="CornerRadius" Value="4" />
-    <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
-    <Setter Property="VerticalAlignment" Value="Center" />
-  </Style>
-
-  <Style Selector="Button.topbar-action:pointerover">
-    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
-    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-  </Style>
-
-  <Style Selector="ToggleButton.topbar-action">
-    <Setter Property="Height" Value="25" />
-    <Setter Property="MinWidth" Value="50" />
-    <Setter Property="Padding" Value="10,0" />
-    <Setter Property="Background" Value="Transparent" />
-    <Setter Property="BorderThickness" Value="0" />
-    <Setter Property="CornerRadius" Value="4" />
-    <Setter Property="Foreground" Value="{DynamicResource PrimaryHueMidBrush}" />
-    <Setter Property="VerticalAlignment" Value="Center" />
-  </Style>
-
-  <Style Selector="ToggleButton.topbar-action:pointerover">
-    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
-    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-  </Style>
-
-  <Style Selector="ToggleButton.topbar-action:checked">
-    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
-    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-  </Style>
-
   <Style Selector="Border.topbar-popup">
     <Setter Property="MinWidth" Value="280" />
     <Setter Property="Padding" Value="10" />
