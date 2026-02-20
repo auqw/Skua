@@ -1,7 +1,10 @@
 using Skua.Core.Interfaces;
+using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Models;
-using Skua.Core.ViewModels;
-using Skua.Core.ViewModels.Manager;
+using Skua.App.Avalonia.ViewModels;
+using Skua.App.Avalonia.ViewModels.AdvancedSkills;
+using Skua.App.Avalonia.ViewModels.Dialogs;
+using Skua.Shared.Avalonia.ViewModels.Dialogs;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -20,8 +23,19 @@ public class DialogService : IDialogService
     public bool? ShowDialog<TViewModel>(TViewModel viewModel, Action<TViewModel> callback) where TViewModel : class
     {
         bool? result = ShowDialogInternal(viewModel, viewModel.GetType().Name);
-        callback(viewModel);
+        callback?.Invoke(viewModel);
         return result;
+    }
+
+    public void ShowDialog(IOptionContainer optionContainer, Action<IOptionContainerViewModel> callback)
+    {
+        OptionContainerViewModel vm = new(optionContainer);
+        callback?.Invoke(vm);
+    }
+
+    public IInputDialogViewModel CreateInputDialog(string title, string dialogHint)
+    {
+        return new InputDialogViewModel(title, dialogHint);
     }
 
     public void ShowMessageBox(string message, string caption)
@@ -53,7 +67,6 @@ public class DialogService : IDialogService
         return viewModel switch
         {
             InputDialogViewModel input => ShowInputDialog(input, title),
-            SelectGroupDialogViewModel selectGroup => ShowSelectGroupDialog(selectGroup, title),
             AssignHotKeyDialogViewModel hotKey => ShowAssignHotKeyDialog(hotKey, title),
             SkillRuleEditorDialogViewModel skillRules => ShowSkillRuleEditorDialog(skillRules, title),
             MessageBoxDialogViewModel messageBox => ShowMessageBoxInternal(messageBox.Message, messageBox.Title, messageBox.YesAndNo),
@@ -111,55 +124,6 @@ public class DialogService : IDialogService
 
         form.Controls.Add(label);
         form.Controls.Add(input);
-        form.Controls.Add(ok);
-        form.Controls.Add(cancel);
-        form.AcceptButton = ok;
-        form.CancelButton = cancel;
-
-        form.ShowDialog();
-        return result;
-    }
-
-    private static bool? ShowSelectGroupDialog(SelectGroupDialogViewModel vm, string title)
-    {
-        using WinForms.Form form = CreateForm(title, 420, 150);
-
-        WinForms.Label label = new()
-        {
-            AutoSize = true,
-            Text = "Select group",
-            Location = new Point(12, 14)
-        };
-
-        WinForms.ComboBox combo = new()
-        {
-            DropDownStyle = WinForms.ComboBoxStyle.DropDownList,
-            Bounds = new Rectangle(12, 36, 392, 24),
-            DataSource = vm.Groups.ToList(),
-            DisplayMember = nameof(GroupItemViewModel.Name)
-        };
-
-        if (vm.SelectedGroup is not null)
-            combo.SelectedItem = vm.SelectedGroup;
-
-        WinForms.Button ok = CreateButton("OK", 240, 76);
-        WinForms.Button cancel = CreateButton("Cancel", 324, 76);
-
-        bool? result = null;
-        ok.Click += (_, _) =>
-        {
-            vm.SelectedGroup = combo.SelectedItem as GroupItemViewModel;
-            result = vm.SelectedGroup is not null;
-            form.Close();
-        };
-        cancel.Click += (_, _) =>
-        {
-            result = false;
-            form.Close();
-        };
-
-        form.Controls.Add(label);
-        form.Controls.Add(combo);
         form.Controls.Add(ok);
         form.Controls.Add(cancel);
         form.AcceptButton = ok;

@@ -16,16 +16,16 @@
     <Application.Styles>
         <FluentTheme>
             <FluentTheme.Palettes>
-                <fluent:ColorPaletteResources x:Key="Light" Accent="#C9479A" />
-                <fluent:ColorPaletteResources x:Key="Dark" Accent="#C9479A" />
+                <fluent:ColorPaletteResources x:Key="Light" Accent="#7D9AA9" />
+                <fluent:ColorPaletteResources x:Key="Dark" Accent="#7D9AA9" />
             </FluentTheme.Palettes>
         </FluentTheme>
         <materialIcons:MaterialIconStyles />
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
+        <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Theme.axaml" />
         <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Controls.axaml" />
         <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Navigation.axaml" />
         <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Containers.axaml" />
-        <StyleInclude Source="/Themes/CustomStyles.axaml" />
     </Application.Styles>
     <TrayIcon.Icons>
         <TrayIcons>

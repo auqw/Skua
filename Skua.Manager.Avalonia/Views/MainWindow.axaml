@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sharedShell="clr-namespace:Skua.Shared.Avalonia.Controls.Shell;assembly=Skua.Shared.Avalonia"
         x:Class="Skua.Manager.Avalonia.Views.MainWindow"
         d:DesignWidth="800"
         d:DesignHeight="500"
@@ -9,16 +10,25 @@
         Width="800"
         Height="500"
         WindowStartupLocation="CenterScreen"
-        Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico">
+        Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
+        SystemDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="32">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <sharedShell:WindowTitleBar Grid.Row="0"
+                                    x:Name="TitleBar"
+                                    TitleText="{Binding Title}" />
+
         <!-- Tab Navigation -->
-        <Border Grid.Row="0"
+        <Border Grid.Row="1"
                 Margin="4,4,4,1"
                 Padding="3"
                 Classes="card">
@@ -47,7 +57,7 @@
         </Border>
 
         <!-- Content Area -->
-        <Border Grid.Row="1"
+        <Border Grid.Row="2"
                 Margin="4,2,4,4"
                 Padding="3"
                 Classes="card">
