@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <ItemGroup>

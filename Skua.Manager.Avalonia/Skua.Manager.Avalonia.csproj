@@ -15,14 +15,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.3.12" />
-    <PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.3.12" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.12" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.12" />
-    <PackageReference Include="Markdown.Avalonia" Version="11.0.2" />
-    <PackageReference Include="Material.Avalonia" Version="3.13.4" />
-    <PackageReference Include="Material.Avalonia.Dialogs" Version="3.13.4" />
-    <PackageReference Include="Material.Icons.Avalonia" Version="3.0.0-preview7" />
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Controls.ColorPicker" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Markdown.Avalonia" />
+    <PackageReference Include="Material.Avalonia" />
+    <PackageReference Include="Material.Avalonia.Dialogs" />
+    <PackageReference Include="Material.Icons.Avalonia" />
   </ItemGroup>
 
   <ItemGroup>
