@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:uc="clr-namespace:Skua.Manager.Avalonia.UserControls"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
              xmlns:sharedSettings="clr-namespace:Skua.Shared.Avalonia.Controls.Settings;assembly=Skua.Shared.Avalonia"
@@ -219,59 +220,11 @@
                             </StackPanel>
                         </ToggleButton>
 
-                        <Popup IsOpen="{Binding IsFilterPopupOpen}"
-                               Placement="Bottom"
-                               IsLightDismissEnabled="True"
-                               PlacementTarget="{Binding #FilterPopupAnchor}">
-                            <Border BorderBrush="{DynamicResource SkuaBorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="4"
-                                    Background="{DynamicResource SkuaSurfaceBrush}"
-                                    Padding="8"
-                                    Width="260"
-                                    MaxHeight="330">
-                                <Grid RowDefinitions="Auto,Auto,*,Auto">
-                                    <TextBlock Grid.Row="0"
-                                               Text="Filter by Tags"
-                                               FontWeight="SemiBold"
-                                               Margin="0,0,0,3" />
-
-                                    <TextBox Grid.Row="1"
-                                             Watermark="Search tags..."
-                                             Text="{Binding TagSearchText}"
-                                             Margin="0,0,0,3" />
-
-                                    <ScrollViewer Grid.Row="2"
-                                                  VerticalScrollBarVisibility="Auto"
-                                                  HorizontalScrollBarVisibility="Disabled">
-                                        <ItemsControl ItemsSource="{Binding FilteredTags}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <CheckBox Margin="0,2"
-                                                              IsChecked="{Binding IsSelected}">
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding Name}" />
-                                                            <TextBlock Text="{Binding Count, StringFormat= ({0})}"
-                                                                       FontSize="11"
-                                                                       Foreground="{DynamicResource SkuaMutedTextBrush}" />
-                                                        </StackPanel>
-                                                    </CheckBox>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </ScrollViewer>
-
-                                    <Button Grid.Row="3"
-                                            Margin="0,6,0,0"
-                                            Command="{Binding ClearTagFiltersCommand}">
-                                        <StackPanel Orientation="Horizontal" Spacing="4">
-                                            <materialIcons:MaterialIcon Kind="Broom" Width="14" Height="14" />
-                                            <TextBlock Text="Clear All" />
-                                        </StackPanel>
-                                    </Button>
-                                </Grid>
-                            </Border>
-                        </Popup>
+                        <uc:AccountTagFilterPopup IsOpen="{Binding IsFilterPopupOpen}"
+                                                  Anchor="{Binding #FilterPopupAnchor}"
+                                                  TagSearchText="{Binding TagSearchText}"
+                                                  FilteredTags="{Binding FilteredTags}"
+                                                  ClearCommand="{Binding ClearTagFiltersCommand}" />
                     </Grid>
 
                     <Grid Grid.Row="1">
