@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="Skua.Shared.Avalonia.Controls.Theming.ThemeLibraryPanel">
+  <StackPanel Spacing="8">
+    <TextBlock FontWeight="SemiBold" Text="Theme Library" />
+
+    <TextBlock Text="Presets" Opacity="0.8" />
+    <ItemsControl ItemsSource="{Binding ThemeService.Presets}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <UniformGrid Rows="1" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Button Margin="3"
+                  Command="{Binding DataContext.SetCurrentThemeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                  CommandParameter="{Binding}"
+                  Content="{Binding}" />
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+    <TextBlock Margin="0,4,0,0" Text="User Themes" Opacity="0.8" />
+    <ItemsControl ItemsSource="{Binding ThemeService.UserThemes}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Grid Margin="3" ColumnDefinitions="*,Auto">
+            <Button Grid.Column="0"
+                    Command="{Binding DataContext.SetCurrentThemeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding}"
+                    Content="{Binding}" />
+            <Button Grid.Column="1"
+                    Width="34"
+                    Margin="4,0,0,0"
+                    Command="{Binding DataContext.RemoveThemeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding}">
+              <materialIcons:MaterialIcon Kind="DeleteOutline" Width="14" Height="14" Foreground="{DynamicResource SkuaAccentBrush}" />
+            </Button>
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </StackPanel>
+</UserControl>
