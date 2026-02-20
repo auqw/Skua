@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:Skua.App.Avalonia.Controls"
+        xmlns:sharedShell="clr-namespace:Skua.Shared.Avalonia.Controls.Shell;assembly=Skua.Shared.Avalonia"
         x:Class="Skua.App.Avalonia.Views.MainWindow"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         
@@ -105,7 +106,7 @@
                  HorizontalOffset="-220"
                  IsLightDismissEnabled="True">
             
-            <Border x:Name="AutoPanel" Classes="topbar-popup">
+            <sharedShell:TopbarPopupPanel x:Name="AutoPanel">
               <StackPanel Spacing="8">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                   <Button x:Name="AutoAttackButton" Content="Attack" />
@@ -114,7 +115,7 @@
                 </StackPanel>
                 <TextBlock x:Name="AutoClassText" />
               </StackPanel>
-            </Border>
+            </sharedShell:TopbarPopupPanel>
             
           </Popup>
 
@@ -126,7 +127,7 @@
                  HorizontalOffset="-185"
                  IsLightDismissEnabled="True">
             
-            <Border x:Name="JumpPanel" Classes="topbar-popup">
+            <sharedShell:TopbarPopupPanel x:Name="JumpPanel">
               <StackPanel Spacing="8">
                 <TextBox x:Name="JumpCellTextBox" Watermark="Cell" />
                 <TextBox x:Name="JumpPadTextBox" Watermark="Pad" />
@@ -136,7 +137,7 @@
                   <Button x:Name="JumpGoButton" Content="Jump" />
                 </StackPanel>
               </StackPanel>
-            </Border>
+            </sharedShell:TopbarPopupPanel>
             
           </Popup>
 
@@ -154,19 +155,8 @@
                      VerticalAlignment="Center"/>
       </Grid>
 
-      <Border Grid.Row="2"
-              Background="{DynamicResource SkuaPageBrush}"
-              BorderBrush="{DynamicResource SkuaNavHoverBrush}"
-              BorderThickness="0,1,0,0"
-              Padding="10,4">
-        
-        <StackPanel Orientation="Horizontal" Spacing="16">
-          <TextBlock x:Name="FpsMetricText" Text="FPS: --" />
-          <TextBlock x:Name="WorkingSetMetricText" Text="RAM: --" />
-          <TextBlock x:Name="PrivateMetricText" Text="Private: --" />
-          <TextBlock x:Name="ManagedMetricText" Text="Managed: --" />
-        </StackPanel>
-      </Border>
+      <sharedShell:MetricsStrip x:Name="MetricsStrip"
+                                Grid.Row="2" />
     </Grid>
     
   </Grid>

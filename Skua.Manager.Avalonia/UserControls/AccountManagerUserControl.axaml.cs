@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
@@ -72,17 +71,12 @@ public partial class AccountManagerUserControl : UserControl
             _viewModel.AddGroup(inputDialog.DialogTextInput.Trim());
     }
 
-    private void AddTagsToSelected_Click(object? sender, RoutedEventArgs e)
-    {
-        AddTagsToSelected();
-    }
-
     private void BulkAddTags_Click(object? sender, RoutedEventArgs e)
     {
-        AddTagsToSelected();
+        AddTagsToSelectedAction();
     }
 
-    private async void StartSelectedWithScript_Click(object? sender, RoutedEventArgs e)
+    public async Task StartSelectedWithScriptAsync()
     {
         List<IAccountItemViewModel> selected = _viewModel.Accounts.Where(a => a.UseCheck).ToList();
         if (selected.Count == 0)
@@ -98,7 +92,7 @@ public partial class AccountManagerUserControl : UserControl
         }
     }
 
-    private void AddSelectedToGroup_Click(object? sender, RoutedEventArgs e)
+    public void AddSelectedToGroupAction()
     {
         List<IAccountItemViewModel> selected = _viewModel.Accounts.Where(a => a.UseCheck).ToList();
         if (selected.Count == 0)
@@ -118,7 +112,7 @@ public partial class AccountManagerUserControl : UserControl
 
     private void BulkAddToGroup_Click(object? sender, RoutedEventArgs e)
     {
-        AddSelectedToGroup_Click(sender, e);
+        AddSelectedToGroupAction();
     }
 
     private void OpenBulkActionsMenu_Click(object? sender, RoutedEventArgs e)
@@ -127,17 +121,7 @@ public partial class AccountManagerUserControl : UserControl
             contextMenu.Open(BulkActionsAnchor);
     }
 
-    private void RemoveAccountFromGroup_Click(object? sender, RoutedEventArgs e)
-    {
-        if (sender is Button button &&
-            button.DataContext is AccountItemViewModel account &&
-            button.Tag is GroupItemViewModel group)
-        {
-            WeakReferenceMessenger.Default.Send(new RemoveAccountFromGroupMessage(group, account));
-        }
-    }
-
-    private void AddTagsToSelected()
+    public void AddTagsToSelectedAction()
     {
         List<IAccountItemViewModel> selected = _viewModel.Accounts.Where(a => a.UseCheck).ToList();
         if (selected.Count == 0)
@@ -201,49 +185,4 @@ public partial class AccountManagerUserControl : UserControl
             _viewModel.AddAccountToGroup(account, dialogVm.SelectedGroup);
     }
 
-    private void AccountBorder_PointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-            return;
-
-        HandleAccountCardToggle(sender, e.Source);
-        e.Handled = true;
-    }
-
-    private void AccountBorder_PointerReleased(object? sender, PointerReleasedEventArgs e)
-    {
-        if (e.InitialPressMouseButton != MouseButton.Left)
-            return;
-
-        HandleAccountCardToggle(sender, e.Source);
-        e.Handled = true;
-    }
-
-    private static void HandleAccountCardToggle(object? sender, object? source)
-    {
-        if (sender is not Border border || border.DataContext is not AccountItemViewModel account)
-            return;
-
-        if (IsFromInteractiveControl(source, border))
-            return;
-
-        account.ToggleSelectionCommand.Execute(null);
-    }
-
-    private static bool IsFromInteractiveControl(object? source, Border boundary)
-    {
-        if (source is not global::Avalonia.StyledElement sourceElement)
-            return false;
-
-        global::Avalonia.StyledElement? current = sourceElement;
-        while (current is not null && !ReferenceEquals(current, boundary))
-        {
-            if (current is Button || current is MenuItem || current is CheckBox)
-                return true;
-
-            current = current.Parent;
-        }
-
-        return false;
-    }
 }

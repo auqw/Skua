@@ -2,51 +2,31 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+             xmlns:sharedContent="clr-namespace:Skua.Shared.Avalonia.Controls.Content;assembly=Skua.Shared.Avalonia"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="Skua.Manager.Avalonia.UserControls.ChangeLogsUserControl"
              d:DesignWidth="900"
              d:DesignHeight="600"
              mc:Ignorable="d">
-    <Grid Margin="8" RowDefinitions="Auto,*">
-        <Border Grid.Row="0"
-                Classes="card">
-            <Grid ColumnDefinitions="*,Auto,Auto" VerticalAlignment="Center">
-                <StackPanel Spacing="2">
-                    <TextBlock Text="Change Logs"
-                               FontSize="14"
-                               FontWeight="SemiBold" />
-                    <TextBlock Text="Latest manager and client changes"
-                               FontSize="11"
-                               Foreground="{DynamicResource SkuaMutedTextBrush}" />
-                </StackPanel>
-                <Button Grid.Column="1"
-                        Margin="0,0,8,0"
-                        Command="{Binding NavigateCommand}"
+    <sharedContent:MarkdownCard Title="Change Logs"
+                                Subtitle="Latest manager and client changes"
+                                Markdown="{Binding MarkdownDoc}">
+        <sharedContent:MarkdownCard.HeaderActions>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Command="{Binding NavigateCommand}"
                         CommandParameter="https://github.com/auqw/Skua/blob/master/changelogs.md">
                     <StackPanel Orientation="Horizontal" Spacing="4">
                         <materialIcons:MaterialIcon Kind="FileDocumentOutline" Width="14" Height="14" />
                         <TextBlock Text="Open File" />
                     </StackPanel>
                 </Button>
-                <Button Grid.Column="2"
-                        Command="{Binding OpenDonationLink}">
+                <Button Command="{Binding OpenDonationLink}">
                     <StackPanel Orientation="Horizontal" Spacing="4">
                         <materialIcons:MaterialIcon Kind="HeartOutline" Width="14" Height="14" />
                         <TextBlock Text="Donate" />
                     </StackPanel>
                 </Button>
-            </Grid>
-        </Border>
-
-        <Border Grid.Row="1"
-                Margin="0,8,0,0"
-                Classes="card"
-                Padding="0">
-            <md:MarkdownScrollViewer Markdown="{Binding MarkdownDoc}"
-                                     Margin="8"
-                                     VerticalAlignment="Stretch"
-                                     HorizontalAlignment="Stretch" />
-        </Border>
-    </Grid>
+            </StackPanel>
+        </sharedContent:MarkdownCard.HeaderActions>
+    </sharedContent:MarkdownCard>
 </UserControl>

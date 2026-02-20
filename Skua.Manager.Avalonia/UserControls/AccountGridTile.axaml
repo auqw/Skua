@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:managerUc="clr-namespace:Skua.Manager.Avalonia.UserControls"
+             xmlns:uc="clr-namespace:Skua.Manager.Avalonia.UserControls"
+             x:Class="Skua.Manager.Avalonia.UserControls.AccountGridTile"
+             mc:Ignorable="d"
+             d:DesignWidth="220"
+             d:DesignHeight="80">
+    <Border Classes="account-row"
+            BorderBrush="{DynamicResource SkuaBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="4"
+            Padding="5"
+            Margin="2"
+            PointerReleased="Border_PointerReleased">
+        <Border.ContextMenu>
+            <uc:AccountItemContextMenu />
+        </Border.ContextMenu>
+        <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+            <CheckBox Grid.Row="0"
+                      Grid.Column="0"
+                      IsChecked="{Binding UseCheck}"
+                      VerticalAlignment="Center"
+                      Margin="0,0,4,0" />
+            <TextBlock Grid.Row="0"
+                       Grid.Column="1"
+                       Text="{Binding DisplayOrUsername}"
+                       FontWeight="SemiBold"
+                       TextTrimming="CharacterEllipsis" />
+            <ItemsControl Grid.Row="2"
+                          Grid.Column="1"
+                          Margin="0,4,0,0"
+                          ItemsSource="{Binding Tags}"
+                          IsVisible="{Binding DataContext.ShowTags, RelativeSource={RelativeSource AncestorType=managerUc:AccountManagerUserControl}}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="{DynamicResource SkuaAccentBrush}"
+                                BorderThickness="1"
+                                CornerRadius="7"
+                                Padding="3,1"
+                                Margin="0,0,2,1">
+                            <TextBlock Text="{Binding}" FontSize="10" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Border>
+</UserControl>

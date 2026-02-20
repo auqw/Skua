@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="Skua.Manager.Avalonia.UserControls.GroupAccountRow"
+             mc:Ignorable="d"
+             d:DesignWidth="520"
+             d:DesignHeight="62">
+    <Border BorderBrush="{DynamicResource SkuaBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="4"
+            Padding="5"
+            Margin="0,0,0,4">
+        <Grid ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0" Spacing="2">
+                <TextBlock Text="{Binding DisplayOrUsername}" FontSize="12" />
+                <ItemsControl ItemsSource="{Binding Tags}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{DynamicResource SkuaAccentBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="7"
+                                    Padding="3,1"
+                                    Margin="0,0,2,1">
+                                <TextBlock Text="{Binding}" FontSize="10" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <Button Grid.Column="1"
+                    Classes="danger-icon"
+                    Margin="5,0,0,0"
+                    Width="24"
+                    Height="24"
+                    Padding="0"
+                    Click="RemoveButton_Click"
+                    ToolTip.Tip="Remove from group">
+                <materialIcons:MaterialIcon Kind="DeleteOutline" Width="14" Height="14" Foreground="{DynamicResource SkuaAccentBrush}" />
+            </Button>
+        </Grid>
+    </Border>
+</UserControl>
