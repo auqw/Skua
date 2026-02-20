@@ -1,0 +1,25 @@
+<Project>
+  <Target Name="AvaloniaStats" />
+
+  <Target Name="ValidateAvaloniaArchitecture" BeforeTargets="ResolveReferences">
+    <ItemGroup Condition="'$(MSBuildProjectName)' == 'Skua.Manager.Avalonia'">
+      <_ForbiddenManagerRefs
+        Include="@(ProjectReference)"
+        Condition="'%(ProjectReference.Filename)' == 'Skua.App.Avalonia'" />
+    </ItemGroup>
+
+    <Error
+      Condition="'$(MSBuildProjectName)' == 'Skua.Manager.Avalonia' and '@(_ForbiddenManagerRefs)' != ''"
+      Text="Architecture violation: Skua.Manager.Avalonia must not reference Skua.App.Avalonia." />
+
+    <ItemGroup Condition="'$(MSBuildProjectName)' == 'Skua.Shared.Avalonia'">
+      <_ForbiddenSharedRefs
+        Include="@(ProjectReference)"
+        Condition="$([System.String]::Copy('%(ProjectReference.Filename)').Contains('.App.')) Or $([System.String]::Copy('%(ProjectReference.Filename)').StartsWith('Skua.Manager'))" />
+    </ItemGroup>
+
+    <Error
+      Condition="'$(MSBuildProjectName)' == 'Skua.Shared.Avalonia' and '@(_ForbiddenSharedRefs)' != ''"
+      Text="Architecture violation: Skua.Shared.Avalonia must not reference app/manager projects. Found: @(_ForbiddenSharedRefs->'%(Filename)', ', ')." />
+  </Target>
+</Project>
