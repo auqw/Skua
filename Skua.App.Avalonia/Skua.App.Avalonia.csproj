@@ -2,20 +2,14 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFramework>net10.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <UseWindowsForms>true</UseWindowsForms>
         <ApplicationIcon>../Skua.Shared.Avalonia/Assets/SkuaIcon.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
-    
-    <ItemGroup>
-        <Compile Remove="Controls/WinFormsFlashHost.cs"/>
-        <Compile Remove="Flash/FlashUtil.cs"/>
-        <Compile Remove="Services/DialogService.cs"/>
-        <Compile Remove="Services/FileDialogService.cs"/>
-    </ItemGroup>
     
     <ItemGroup>
         <PackageReference Include="Avalonia" />
@@ -26,6 +20,7 @@
         <PackageReference Include="Material.Avalonia" />
         <PackageReference Include="Material.Icons" />
         <PackageReference Include="Material.Icons.Avalonia" />
+        <PackageReference Include="CoreHook" />
     </ItemGroup>
     
     <ItemGroup>
@@ -35,16 +30,16 @@
         <ProjectReference Include="..\Skua.Shared.Avalonia\Skua.Shared.Avalonia.csproj" />
     </ItemGroup>
     
-    <!--<ItemGroup>
+    <ItemGroup>
         <Reference Include="AxInterop.ShockwaveFlashObjects">
           <HintPath>Assemblies\AxInterop.ShockwaveFlashObjects.dll</HintPath>
         </Reference>
         <Reference Include="Interop.ShockwaveFlashObjects">
           <HintPath>Assemblies\Interop.ShockwaveFlashObjects.dll</HintPath>
         </Reference>
-    </ItemGroup>-->
+    </ItemGroup>
     
-    <!--<ItemGroup>
+    <ItemGroup>
         <Content Include="Assemblies\corehook32.dll" Link="corehook32.dll">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -57,7 +52,7 @@
         <Content Include="Assemblies\coreload64.dll" Link="coreload64.dll">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>-->
+    </ItemGroup>
     
     <ItemGroup>
         <None Include="..\Skua.AS3\skua\bin\skua.swf" Link="skua.swf" Condition="Exists('..\Skua.AS3\skua\bin\skua.swf')">
