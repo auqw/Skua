@@ -1,6 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:uc="clr-namespace:Skua.App.Avalonia.UserControls"
+             xmlns:sharedOptions="clr-namespace:Skua.Shared.Avalonia.Controls.Options;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.App.Avalonia.Views.ApplicationOptionsView">
   <ScrollViewer Margin="8"
                 HorizontalScrollBarVisibility="Disabled"
@@ -8,7 +8,7 @@
     <ItemsControl ItemsSource="{Binding ApplicationOptions}">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
-          <uc:OptionItemUserControl />
+          <sharedOptions:OptionItemControl />
         </DataTemplate>
       </ItemsControl.ItemTemplate>
     </ItemsControl>

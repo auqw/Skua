@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
+             xmlns:sharedSettings="clr-namespace:Skua.Shared.Avalonia.Controls.Settings;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.Manager.Avalonia.UserControls.AccountManagerUserControl"
              d:DesignWidth="800"
              d:DesignHeight="600"
@@ -657,18 +658,7 @@
                           Margin="0,0,4,0">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding ., Converter={StaticResource ServerMembershipTextConverter}}" FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
-                                <TextBlock Text=" - " FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
-                                <TextBlock Text="{Binding ., Converter={StaticResource ServerPingTextConverter}}" FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
-                                <StackPanel Orientation="Horizontal" IsVisible="{Binding Online}" Spacing="4">
-                                    <TextBlock Text=" - " FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
-                                    <TextBlock Text="{Binding PlayerCount}" FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
-                                    <TextBlock Text="/" FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
-                                    <TextBlock Text="{Binding MaxPlayers}" FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
-                                </StackPanel>
-                            </StackPanel>
+                            <sharedSettings:ServerStatusInline Server="{Binding .}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -691,38 +681,11 @@
             </Grid>
         </Border>
 
-        <Border Grid.Row="3"
-                BorderBrush="{DynamicResource SkuaBorderBrush}"
-                BorderThickness="1"
-                CornerRadius="4"
-                Padding="5">
-            <Grid ColumnDefinitions="*,Auto,Auto,Auto" VerticalAlignment="Center">
-                <TextBlock Grid.Column="0"
-                           VerticalAlignment="Center"
-                           Text="{Binding ScriptPath, FallbackValue=No script selected}"
-                           TextTrimming="CharacterEllipsis"
-                           Margin="0,0,4,0" />
-                <Button Grid.Column="1"
-                        Command="{Binding OpenGetScriptsCommand}"
-                        Margin="0,0,4,0">
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <materialIcons:MaterialIcon Kind="Magnify" Width="14" Height="14" />
-                        <TextBlock Text="Search" />
-                    </StackPanel>
-                </Button>
-                <Button Grid.Column="2"
-                        Command="{Binding ChangeScriptPathCommand}"
-                        Margin="0,0,4,0">
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <materialIcons:MaterialIcon Kind="FolderOpenOutline" Width="14" Height="14" />
-                        <TextBlock Text="Browse" />
-                    </StackPanel>
-                </Button>
-                <CheckBox Grid.Column="3"
-                          Content="Auto-start"
-                          IsChecked="{Binding StartWithScript}" />
-            </Grid>
-        </Border>
+        <sharedSettings:ScriptPickerRow Grid.Row="3"
+                                        ScriptPath="{Binding ScriptPath}"
+                                        SearchCommand="{Binding OpenGetScriptsCommand}"
+                                        BrowseCommand="{Binding ChangeScriptPathCommand}"
+                                        AutoStart="{Binding StartWithScript}" />
     </Grid>
 
 </UserControl>

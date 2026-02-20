@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
+             xmlns:sharedSettings="clr-namespace:Skua.Shared.Avalonia.Controls.Settings;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.Manager.Avalonia.UserControls.ClientUpdatesUserControl"
              d:DesignWidth="900"
              d:DesignHeight="600"
@@ -34,18 +35,9 @@
         <ListBox Grid.Row="2" ItemsSource="{Binding Releases}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderBrush="{DynamicResource SkuaBorderBrush}" BorderThickness="0,0,0,1" Padding="8">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Spacing="2">
-                                <TextBlock Text="{Binding Info.Name}" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding Info.Version}" FontSize="12" Foreground="{DynamicResource SkuaMutedTextBrush}" />
-                            </StackPanel>
-                            <sharedControls:IconTextButton Grid.Column="1"
-                                                           Command="{Binding DownloadCommand}"
-                                                           IconKind="Download"
-                                                           Text="Download" />
-                        </Grid>
-                    </Border>
+                    <sharedSettings:ReleaseItemRow ReleaseName="{Binding Info.Name}"
+                                                   Version="{Binding Info.Version}"
+                                                   DownloadCommand="{Binding DownloadCommand}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
