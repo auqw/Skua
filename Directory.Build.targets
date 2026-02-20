@@ -12,6 +12,16 @@
       Condition="'$(MSBuildProjectName)' == 'Skua.Manager.Avalonia' and '@(_ForbiddenManagerRefs)' != ''"
       Text="Architecture violation: Skua.Manager.Avalonia must not reference Skua.App.Avalonia." />
 
+    <ItemGroup Condition="'$(MSBuildProjectName)' == 'Skua.App.Avalonia'">
+      <_ForbiddenAppRefs
+        Include="@(ProjectReference)"
+        Condition="'%(ProjectReference.Filename)' == 'Skua.Manager.Avalonia'" />
+    </ItemGroup>
+
+    <Error
+      Condition="'$(MSBuildProjectName)' == 'Skua.App.Avalonia' and '@(_ForbiddenAppRefs)' != ''"
+      Text="Architecture violation: Skua.App.Avalonia must not reference Skua.Manager.Avalonia." />
+
     <ItemGroup Condition="'$(MSBuildProjectName)' == 'Skua.Shared.Avalonia'">
       <_ForbiddenSharedRefs
         Include="@(ProjectReference)"
