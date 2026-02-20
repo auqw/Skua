@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.Shared.Avalonia.Controls.Settings.SliderValueRow"
+             x:Name="Root">
+  <Grid ColumnDefinitions="*,Auto">
+    <Slider Grid.Column="0"
+            Margin="0,0,8,0"
+            Minimum="{Binding Minimum, ElementName=Root}"
+            Maximum="{Binding Maximum, ElementName=Root}"
+            TickFrequency="{Binding TickFrequency, ElementName=Root}"
+            IsSnapToTickEnabled="{Binding IsSnapToTickEnabled, ElementName=Root}"
+            Value="{Binding Value, ElementName=Root, Mode=TwoWay}" />
+    <TextBlock Grid.Column="1"
+               Width="54"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"
+               Text="{Binding Value, ElementName=Root, StringFormat={}{0:0.0}:1}" />
+  </Grid>
+</UserControl>

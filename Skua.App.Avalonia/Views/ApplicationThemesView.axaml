@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:cp="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.ColorPicker"
+             xmlns:sharedSettings="clr-namespace:Skua.Shared.Avalonia.Controls.Settings;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.App.Avalonia.Views.ApplicationThemesView">
   <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
@@ -31,54 +32,27 @@
           <Grid ColumnDefinitions="220,1,*">
             <StackPanel Grid.Column="0"
                         Spacing="6">
-              <Grid ColumnDefinitions="*,Auto">
-                <TextBlock Grid.Column="0"
-                           VerticalAlignment="Center"
-                           Text="Dark Mode" />
-                <ToggleSwitch Grid.Column="1"
-                              VerticalAlignment="Center"
-                              OnContent=""
-                              OffContent=""
-                              IsChecked="{Binding ThemeService.IsDarkTheme}" />
-              </Grid>
+              <sharedSettings:LabeledToggleRow Label="Dark Mode"
+                                               IsChecked="{Binding ThemeService.IsDarkTheme}" />
 
-              <Grid ColumnDefinitions="*,Auto">
-                <TextBlock Grid.Column="0"
-                           VerticalAlignment="Center"
-                           Text="Color Adjustment" />
-                <ToggleSwitch x:Name="ColorAdjustToggle"
-                              Grid.Column="1"
-                              VerticalAlignment="Center"
-                              OnContent=""
-                              OffContent=""
-                              IsChecked="{Binding ThemeService.IsColorAdjusted}" />
-              </Grid>
+              <sharedSettings:LabeledToggleRow Label="Color Adjustment"
+                                               IsChecked="{Binding ThemeService.IsColorAdjusted}" />
 
               <Border Margin="0,2,0,2"
                       Height="1"
                       Background="{DynamicResource SkuaNavHoverBrush}" />
 
-              <StackPanel IsVisible="{Binding #ColorAdjustToggle.IsChecked}"
+              <StackPanel IsVisible="{Binding ThemeService.IsColorAdjusted}"
                           Spacing="6">
                 <TextBlock FontWeight="SemiBold"
                            Text="Advanced Color Adjustment" />
                 <TextBlock Margin="0,2,0,0"
                            Text="Desired Contrast Ratio" />
-                <Grid ColumnDefinitions="*,Auto">
-                  <Slider x:Name="ContrastRatioSlider"
-                          Grid.Column="0"
-                          Margin="0,0,8,0"
-                          Minimum="1"
-                          Maximum="21"
-                          TickFrequency="0.1"
-                          IsSnapToTickEnabled="True"
-                          Value="{Binding ThemeService.DesiredContrastRatio}" />
-                  <TextBlock Grid.Column="1"
-                             Width="54"
-                             HorizontalAlignment="Right"
-                             VerticalAlignment="Center"
-                             Text="{Binding #ContrastRatioSlider.Value, StringFormat={}{0:0.0}:1}" />
-                </Grid>
+                <sharedSettings:SliderValueRow Minimum="1"
+                                               Maximum="21"
+                                               TickFrequency="0.1"
+                                               IsSnapToTickEnabled="True"
+                                               Value="{Binding ThemeService.DesiredContrastRatio}" />
 
                 <TextBlock Margin="0,2,0,0"
                            Text="Contrast" />
