@@ -32,6 +32,7 @@
                        FontWeight="SemiBold" />
             <Button Grid.Column="1"
                     Classes="skua-button"
+                    MinHeight="28"
                     Click="KillAll_Click"
                     Padding="10,6">
                 <StackPanel Orientation="Horizontal" Spacing="4">
