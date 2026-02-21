@@ -8,9 +8,11 @@
               DataContext="{Binding ToPickupDropsViewModel}"
               ColumnDefinitions="Auto,Auto,*">
           <Button Grid.Column="0"
+                  Classes="skua-button"
                   Content="Toggle"
                   Command="{Binding ToggleDropsCommand}" />
           <Button Grid.Column="1"
+                  Classes="skua-button"
                   Margin="8,0,0,0"
                   Content="Notify"
                   Command="{Binding OpenNotifyDropCommand}" />
@@ -24,10 +26,12 @@
                    Watermark="Add items separated by |"
                    Text="{Binding AddDropInput}" />
           <Button Grid.Column="1"
+                  Classes="skua-button"
                   Margin="8,0,0,0"
                   Content="Add"
                   Command="{Binding AddDropCommand}" />
           <Button Grid.Column="2"
+                  Classes="skua-button"
                   Margin="8,0,0,0"
                   Content="Clear"
                   Command="{Binding RemoveAllDropsCommand}" />
@@ -46,6 +50,7 @@
         </Border>
 
         <Button Grid.Row="3"
+                Classes="skua-button"
                 DataContext="{Binding ToPickupDropsViewModel}"
                 Margin="0,8,0,0"
                 HorizontalAlignment="Right"
@@ -68,6 +73,7 @@
                    Watermark="Reward ID"
                    Text="{Binding RewardIdInput}" />
           <Button Grid.Column="2"
+                  Classes="skua-button"
                   Margin="8,0,0,0"
                   Content="Add"
                   Command="{Binding AddQuestCommand}" />
@@ -89,9 +95,11 @@
               ColumnDefinitions="Auto,Auto,*"
               Margin="0,8,0,0">
           <Button Grid.Column="0"
+                  Classes="skua-button"
                   Content="Remove Selected"
                   Click="RemoveSelectedQuests_Click" />
           <Button Grid.Column="1"
+                  Classes="skua-button"
                   Margin="8,0,0,0"
                   Content="Clear All"
                   Command="{Binding RemoveAllQuestsCommand}" />
@@ -103,11 +111,14 @@
       <StackPanel Margin="8"
                   Spacing="8"
                   DataContext="{Binding BoostsViewModel}">
-        <Button Content="Toggle Boosts"
+        <Button Classes="skua-button"
+                Content="Toggle Boosts"
                 Command="{Binding ToggleBoostsCommand}" />
-        <Button Content="Find Boost IDs (Inventory)"
+        <Button Classes="skua-button"
+                Content="Find Boost IDs (Inventory)"
                 Click="BoostIdsInventory_Click" />
-        <Button Content="Find Boost IDs (Include Bank)"
+        <Button Classes="skua-button"
+                Content="Find Boost IDs (Include Bank)"
                 Click="BoostIdsBank_Click" />
       </StackPanel>
     </TabItem>

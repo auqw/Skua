@@ -7,15 +7,20 @@
                 Orientation="Horizontal"
                 Spacing="8"
                 Margin="0,0,0,8">
-      <Button Content="Refresh"
+      <Button Classes="skua-button"
+              Content="Refresh"
               Command="{Binding RefreshCommand}" />
-      <Button Content="Mark Junk"
+      <Button Classes="skua-button"
+              Content="Mark Junk"
               Command="{Binding MarkAsJunkCommand}" />
-      <Button Content="Unmark"
+      <Button Classes="skua-button"
+              Content="Unmark"
               Command="{Binding UnmarkAsJunkCommand}" />
-      <Button Content="Unmark All"
+      <Button Classes="skua-button"
+              Content="Unmark All"
               Command="{Binding UnmarkAllJunkCommand}" />
-      <Button Content="Sell All"
+      <Button Classes="skua-button"
+              Content="Sell All"
               Command="{Binding SellAllJunkCommand}" />
     </StackPanel>
 

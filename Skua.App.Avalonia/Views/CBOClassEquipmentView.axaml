@@ -5,6 +5,7 @@
         ColumnDefinitions="*,*">
     <Button Grid.Row="0"
             Grid.ColumnSpan="2"
+            Classes="skua-button"
             Margin="0,0,0,8"
             Content="Refresh Inventory"
             Command="{Binding RefreshInventoryCommand}" />

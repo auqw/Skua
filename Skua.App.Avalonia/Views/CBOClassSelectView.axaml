@@ -6,6 +6,7 @@
         Margin="0">
     <Button Grid.Row="0"
             Grid.ColumnSpan="2"
+            Classes="skua-button"
             Margin="0,0,0,8"
             Content="Reload Classes"
             Command="{Binding ReloadClassesCommand}" />

@@ -8,9 +8,9 @@
     <Grid Grid.Row="1"
           Margin="0,8,0,0"
           ColumnDefinitions="*,*,*">
-      <Button Grid.Column="0" Margin="0,0,4,0" Content="Clear" Command="{Binding ClearLogCommand}" />
-      <Button Grid.Column="1" Margin="4,0,4,0" Content="Copy" Command="{Binding CopyLogCommand}" />
-      <Button Grid.Column="2" Margin="4,0,0,0" Content="Save" Command="{Binding SaveLogCommand}" />
+      <Button Grid.Column="0" Classes="skua-button" Margin="0,0,4,0" Content="Clear" Command="{Binding ClearLogCommand}" />
+      <Button Grid.Column="1" Classes="skua-button" Margin="4,0,4,0" Content="Copy" Command="{Binding CopyLogCommand}" />
+      <Button Grid.Column="2" Classes="skua-button" Margin="4,0,0,0" Content="Save" Command="{Binding SaveLogCommand}" />
     </Grid>
   </Grid>
 </UserControl>

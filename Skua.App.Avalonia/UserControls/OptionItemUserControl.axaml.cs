@@ -75,6 +75,7 @@ public partial class OptionItemUserControl : UserControl
             MinWidth = 64,
             Margin = new global::Avalonia.Thickness(8, 0, 0, 0)
         };
+        button.Classes.Add("skua-button");
         if (vm is CommandOptionItemViewModel commandVm)
         {
             button.Click += (_, _) => commandVm.Command.Execute(textBox.Text ?? string.Empty);
@@ -118,6 +119,7 @@ public partial class OptionItemUserControl : UserControl
             Content = vm.Content,
             MinWidth = 96
         };
+        button.Classes.Add("skua-button");
         if (vm is CommandOptionItemViewModel commandVm)
         {
             button.Click += (_, _) => commandVm.Command.Execute(textBox.Text ?? string.Empty);
@@ -141,6 +143,7 @@ public partial class OptionItemUserControl : UserControl
             Margin = new global::Avalonia.Thickness(6, 4),
             HorizontalAlignment = global::Avalonia.Layout.HorizontalAlignment.Stretch
         };
+        button.Classes.Add("skua-button");
 
         if (vm is CommandOptionItemViewModel commandVm)
             button.Command = commandVm.Command;

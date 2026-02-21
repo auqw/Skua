@@ -20,6 +20,7 @@
                          VerticalAlignment="Center"
                          Text="{Binding KeyGesture}" />
               <Button Grid.Column="2"
+                      Classes="skua-button"
                       Content="Edit"
                       Command="{Binding EditHotKeyCommand}" />
             </Grid>
