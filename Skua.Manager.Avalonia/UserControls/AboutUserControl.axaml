@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sharedContent="clr-namespace:Skua.Shared.Avalonia.Controls.Content;assembly=Skua.Shared.Avalonia"
-             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.Manager.Avalonia.UserControls.AboutUserControl"
              d:DesignWidth="900"
              d:DesignHeight="600"
@@ -12,13 +12,11 @@
                                 Subtitle="Project info and links"
                                 Markdown="{Binding MarkdownDoc}">
         <sharedContent:MarkdownCard.HeaderActions>
-            <Button Command="{Binding NavigateCommand}"
-                    CommandParameter="https://github.com/auqw/Skua">
-                <StackPanel Orientation="Horizontal" Spacing="4">
-                    <materialIcons:MaterialIcon Kind="Github" Width="14" Height="14" />
-                    <TextBlock Text="GitHub" />
-                </StackPanel>
-            </Button>
+            <sharedControls:IconTextButton Command="{Binding NavigateCommand}"
+                                           CommandParameter="https://github.com/auqw/Skua"
+                                           Height="30"
+                                           IconKind="Github"
+                                           Text="GitHub" />
         </sharedContent:MarkdownCard.HeaderActions>
     </sharedContent:MarkdownCard>
 </UserControl>

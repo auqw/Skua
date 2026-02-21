@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
              xmlns:sharedTheming="clr-namespace:Skua.Shared.Avalonia.Controls.Theming;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.Manager.Avalonia.UserControls.ApplicationThemesUserControl"
              d:DesignWidth="900"
@@ -17,15 +18,13 @@
                              Margin="0,0,8,0"
                              Watermark="Theme Name"
                              Text="{Binding ThemeSettings.ThemeName, Mode=TwoWay}" />
-                    <Button Grid.Row="0"
-                            Grid.Column="1"
-                            Margin="0,0,0,0"
-                            Command="{Binding ThemeSettings.SaveThemeCommand}">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <materialIcons:MaterialIcon Kind="ContentSaveOutline" Width="14" Height="14" />
-                            <TextBlock Text="Save" />
-                        </StackPanel>
-                    </Button>
+                    <sharedControls:IconTextButton Grid.Row="0"
+                                                   Grid.Column="1"
+                                                   Margin="0,0,0,0"
+                                                   Height="30"
+                                                   Command="{Binding ThemeSettings.SaveThemeCommand}"
+                                                   IconKind="ContentSaveOutline"
+                                                   Text="Save" />
                 </Grid>
             </Border>
 
