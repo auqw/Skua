@@ -1,0 +1,132 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Root"
+             Background="{DynamicResource SkuaPageBrush}"
+             x:Class="Skua.Shared.Avalonia.Controls.ScriptRepo.ScriptRepoControl">
+    <Border Padding="1"
+            Background="{DynamicResource SkuaPageBrush}">
+        <Grid RowDefinitions="Auto,Auto,*,Auto"
+              RowSpacing="8">
+            <TextBox Grid.Row="0"
+                     Height="22"
+                     Padding="6,0"
+                     VerticalContentAlignment="Center"
+                     Watermark="Search"
+                     Text="{Binding SearchText, Mode=TwoWay}" />
+
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="Auto,Auto,Auto,Auto,*"
+                  ColumnSpacing="8">
+                <Button Grid.Column="0"
+                        Content="Refresh"
+                        Command="{Binding RefreshScriptsCommand}" />
+                <Button Grid.Column="1"
+                        Content="Download All"
+                        Command="{Binding DownloadAllCommand}" />
+                <Button Grid.Column="2"
+                        Content="Update All"
+                        Command="{Binding UpdateAllCommand}" />
+                <Button Grid.Column="3"
+                        Content="Open Scripts Folder"
+                        Command="{Binding OpenScriptFolderCommand}" />
+            </Grid>
+
+            <Grid Grid.Row="2"
+                  ColumnDefinitions="*">
+                <ListBox ItemsSource="{Binding FilteredScripts}"
+                         SelectedItem="{Binding SelectedItem}"
+                         BorderThickness="0"
+                         Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="0,6,0,6"
+                                    BorderBrush="{DynamicResource SkuaBorderBrush}"
+                                    BorderThickness="0,0,0,1">
+                                <Grid ColumnDefinitions="*,Auto"
+                                      RowDefinitions="Auto,Auto,Auto,Auto"
+                                      ColumnSpacing="10"
+                                      RowSpacing="4">
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Text="{Binding FileName}"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource SkuaAccentBrush}" />
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Text="{Binding Info.Description}"
+                                               Opacity="0.85"
+                                               TextWrapping="Wrap" />
+                                    <ItemsControl Grid.Row="2"
+                                                  Grid.Column="0"
+                                                  ItemsSource="{Binding InfoTags}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Margin="0,0,6,4"
+                                                        Padding="6,2"
+                                                        BorderThickness="1"
+                                                        BorderBrush="{DynamicResource SkuaAccentBrush}"
+                                                        CornerRadius="10">
+                                                    <TextBlock Text="{Binding}"
+                                                               Foreground="{DynamicResource SkuaAccentBrush}" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <TextBlock Grid.Row="3"
+                                               Grid.Column="0"
+                                               Foreground="{DynamicResource SkuaMutedTextBrush}"
+                                               Text="{Binding ScriptPath, StringFormat='Path: {0}', TargetNullValue='Path: '}" />
+
+                                    <StackPanel Grid.RowSpan="4"
+                                                Grid.Column="1"
+                                                Spacing="6"
+                                                VerticalAlignment="Top"
+                                                Width="70">
+                                        <Button Content="Start"
+                                                IsVisible="{Binding #Root.DataContext.ShowStartButton}"
+                                                Command="{Binding StartScriptCommand}"
+                                                CommandParameter="{Binding .}"
+                                                IsEnabled="{Binding Downloaded}" />
+                                        <Button Content="Load"
+                                                Command="{Binding LoadScriptCommand}"
+                                                CommandParameter="{Binding .}"
+                                                IsEnabled="{Binding Downloaded}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+
+            <Border Grid.Row="3"
+                    Padding="8,6"
+                    Background="{DynamicResource SkuaSurfaceAltBrush}"
+                    BorderBrush="{DynamicResource SkuaAccentBrush}"
+                    BorderThickness="1"
+                    CornerRadius="7">
+                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*"
+                      ColumnSpacing="12">
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding ScriptQuantity, StringFormat='Scripts: {0}'}" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding DownloadedQuantity, StringFormat='Downloaded: {0}'}" />
+                    <TextBlock Grid.Column="2"
+                               Text="{Binding OutdatedQuantity, StringFormat='Outdated: {0}'}" />
+                    <TextBlock Grid.Column="3"
+                               Text="{Binding BotScriptQuantity, StringFormat='Local list: {0}'}" />
+                    <TextBlock Grid.Column="4"
+                               HorizontalAlignment="Right"
+                               Foreground="{DynamicResource SkuaMutedTextBrush}"
+                               Text="{Binding ProgressReportMessage}"
+                               TextTrimming="CharacterEllipsis" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

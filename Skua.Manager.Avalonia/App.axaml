@@ -6,6 +6,8 @@
              xmlns:conv="clr-namespace:Skua.Manager.Avalonia.Converters"
              xmlns:uc="clr-namespace:Skua.Manager.Avalonia.UserControls"
              xmlns:sharedVms="clr-namespace:Skua.Shared.Avalonia.ViewModels;assembly=Skua.Shared.Avalonia"
+             xmlns:scriptRepo="clr-namespace:Skua.Shared.Avalonia.ViewModels.ScriptRepo;assembly=Skua.Shared.Avalonia"
+             xmlns:sharedScriptRepo="clr-namespace:Skua.Shared.Avalonia.Controls.ScriptRepo;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.Manager.Avalonia.App"
              RequestedThemeVariant="Default">
     <Application.Resources>
@@ -67,6 +69,9 @@
         </DataTemplate>
         <DataTemplate DataType="sharedVms:ChangeLogsViewModel">
             <uc:ChangeLogsUserControl />
+        </DataTemplate>
+        <DataTemplate DataType="scriptRepo:ScriptRepoViewModel">
+            <sharedScriptRepo:ScriptRepoControl />
         </DataTemplate>
     </Application.DataTemplates>
 </Application>

@@ -16,6 +16,7 @@
              xmlns:hotKeys="clr-namespace:Skua.App.Avalonia.ViewModels.HotKeys"
              xmlns:appLogs="clr-namespace:Skua.App.Avalonia.ViewModels.AppLogs"
              xmlns:scriptRepo="clr-namespace:Skua.Shared.Avalonia.ViewModels.ScriptRepo;assembly=Skua.Shared.Avalonia"
+             xmlns:sharedScriptRepo="clr-namespace:Skua.Shared.Avalonia.Controls.ScriptRepo;assembly=Skua.Shared.Avalonia"
              xmlns:viewModels="clr-namespace:Skua.Shared.Avalonia.ViewModels;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.App.Avalonia.App"
              RequestedThemeVariant="Default">
@@ -83,7 +84,7 @@
       <views:ScriptLoaderView />
     </DataTemplate>
     <DataTemplate DataType="scriptRepo:ScriptRepoViewModel">
-      <views:ScriptRepoView />
+      <sharedScriptRepo:ScriptRepoControl />
     </DataTemplate>
     <DataTemplate DataType="plugins:PluginsViewModel">
       <views:PluginsView />

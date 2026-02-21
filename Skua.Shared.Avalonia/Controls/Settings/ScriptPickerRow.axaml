@@ -8,11 +8,17 @@
           CornerRadius="4"
           Padding="5">
     <Grid ColumnDefinitions="*,Auto,Auto,Auto" VerticalAlignment="Center">
-      <TextBlock Grid.Column="0"
-                 VerticalAlignment="Center"
-                 Text="{Binding ScriptPath, ElementName=Root, FallbackValue=No script selected}"
-                 TextTrimming="CharacterEllipsis"
-                 Margin="0,0,4,0" />
+      <Border Grid.Column="0"
+              Background="{DynamicResource SkuaSurfaceAltBrush}"
+              BorderBrush="{DynamicResource SkuaBorderBrush}"
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="8,4"
+              Margin="0,0,4,0">
+        <TextBlock VerticalAlignment="Center"
+                   Text="{Binding ScriptPath, ElementName=Root, FallbackValue=No script selected}"
+                   TextTrimming="CharacterEllipsis" />
+      </Border>
       <buttonControls:IconTextButton Grid.Column="1"
                                      Margin="0,0,4,0"
                                      Command="{Binding SearchCommand, ElementName=Root}"
