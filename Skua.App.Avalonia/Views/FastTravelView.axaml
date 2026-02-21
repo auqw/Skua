@@ -16,6 +16,7 @@
              Text="{Binding Editor.Travel.MapName}" />
     <Button Grid.Row="0"
             Grid.Column="2"
+            Classes="skua-button"
             Margin="0,0,0,8"
             Content="Add"
             Command="{Binding AddFastTravelCommand}" />
@@ -32,6 +33,7 @@
              Text="{Binding Editor.Travel.Pad}" />
     <Button Grid.Row="1"
             Grid.Column="2"
+            Classes="skua-button"
             Margin="0,0,0,8"
             Content="Save"
             Command="{Binding SaveFastTravelsCommand}" />
@@ -53,15 +55,18 @@
                          VerticalAlignment="Center"
                          Text="{Binding DescriptionName}" />
               <Button Grid.Column="1"
+                      Classes="skua-button"
                       Margin="8,0,0,0"
                       Content="Go"
                       Command="{Binding TravelCommand}"
                       CommandParameter="{Binding}" />
               <Button Grid.Column="2"
+                      Classes="skua-button"
                       Margin="8,0,0,0"
                       Content="Edit"
                       Command="{Binding EditCommand}" />
               <Button Grid.Column="3"
+                      Classes="skua-button"
                       Margin="8,0,0,0"
                       Content="Remove"
                       Command="{Binding RemoveCommand}" />
@@ -75,7 +80,8 @@
                 Grid.ColumnSpan="3"
                 Orientation="Horizontal"
                 Spacing="8">
-      <Button Content="Clear"
+      <Button Classes="skua-button"
+              Content="Clear"
               Command="{Binding ClearFastTravelsCommand}" />
     </StackPanel>
   </Grid>

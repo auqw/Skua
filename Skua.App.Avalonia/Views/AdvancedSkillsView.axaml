@@ -50,6 +50,7 @@
                              Increment="10"
                              Value="{Binding CurrentSkillTimeout}" />
               <Button Grid.Column="2"
+                      Classes="skua-button"
                       Margin="8,0,0,0"
                       Content="Save"
                       Command="{Binding SaveSkillsCommand}" />
@@ -64,6 +65,7 @@
                        Margin="0,0,8,0"
                        Watermark="Skill number (0-5)" />
               <Button Grid.Column="1"
+                      Classes="skua-button"
                       Content="Add Skill"
                       Command="{Binding AddSkillToCurrentCommand}"
                       CommandParameter="{Binding Text, ElementName=SkillInputBox}" />
@@ -74,33 +76,39 @@
                         Orientation="Horizontal"
                         Spacing="6"
                         Margin="0,0,0,8">
-              <TextBlock VerticalAlignment="Center"
-                         Opacity="0.8"
-                         Text="Quick add:" />
-              <Button Content="0"
-                      MinWidth="32"
-                      Command="{Binding AddSkillToCurrentCommand}"
-                      CommandParameter="0" />
-              <Button Content="1"
-                      MinWidth="32"
-                      Command="{Binding AddSkillToCurrentCommand}"
-                      CommandParameter="1" />
-              <Button Content="2"
-                      MinWidth="32"
-                      Command="{Binding AddSkillToCurrentCommand}"
-                      CommandParameter="2" />
-              <Button Content="3"
-                      MinWidth="32"
-                      Command="{Binding AddSkillToCurrentCommand}"
-                      CommandParameter="3" />
-              <Button Content="4"
-                      MinWidth="32"
-                      Command="{Binding AddSkillToCurrentCommand}"
-                      CommandParameter="4" />
-              <Button Content="5"
-                      MinWidth="32"
-                      Command="{Binding AddSkillToCurrentCommand}"
-                      CommandParameter="5" />
+                <TextBlock VerticalAlignment="Center"
+                           Opacity="0.8"
+                           Text="Quick add:" />
+                <Button Classes="skua-button"
+                        Content="0"
+                        MinWidth="32"
+                        Command="{Binding AddSkillToCurrentCommand}"
+                        CommandParameter="0" />
+                <Button Classes="skua-button"
+                        Content="1"
+                        MinWidth="32"
+                        Command="{Binding AddSkillToCurrentCommand}"
+                        CommandParameter="1" />
+                <Button Classes="skua-button"
+                        Content="2"
+                        MinWidth="32"
+                        Command="{Binding AddSkillToCurrentCommand}"
+                        CommandParameter="2" />
+                <Button Classes="skua-button"
+                        Content="3"
+                        MinWidth="32"
+                        Command="{Binding AddSkillToCurrentCommand}"
+                        CommandParameter="3" />
+                <Button Classes="skua-button"
+                        Content="4"
+                        MinWidth="32"
+                        Command="{Binding AddSkillToCurrentCommand}"
+                        CommandParameter="4" />
+                <Button Classes="skua-button"
+                        Content="5"
+                        MinWidth="32"
+                        Command="{Binding AddSkillToCurrentCommand}"
+                        CommandParameter="5" />
             </StackPanel>
 
             <Border Grid.Row="4"
@@ -119,7 +127,8 @@
                             IsChecked="{Binding SkipUseBool}" />
                   <CheckBox Content="Multi Aura"
                             IsChecked="{Binding MultiAuraBool}" />
-                  <Button Content="Reset"
+                  <Button Classes="skua-button"
+                          Content="Reset"
                           Command="{Binding ResetUseRulesCommand}" />
                 </StackPanel>
 
@@ -243,8 +252,9 @@
                       <ComboBoxItem Content="AND" />
                       <ComboBoxItem Content="OR" />
                     </ComboBox>
-                    <Button Content="Add Aura"
-                            Command="{Binding AddAuraCheckCommand}" />
+                      <Button Classes="skua-button"
+                              Content="Add Aura"
+                              Command="{Binding AddAuraCheckCommand}" />
                   </StackPanel>
 
                   <Border Grid.Row="3"
@@ -275,6 +285,7 @@
                               <ComboBoxItem Content="Target" />
                             </ComboBox>
                             <Button Grid.Column="4"
+                                    Classes="skua-button"
                                     Content="Remove"
                                     Command="{Binding DataContext.RemoveAuraCheckCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                     CommandParameter="{Binding}" />
@@ -310,15 +321,20 @@
                         Orientation="Horizontal"
                         Spacing="8"
                         Margin="0,8,0,0">
-              <Button Content="Up"
+              <Button Classes="skua-button"
+                      Content="Up"
                       Command="{Binding MoveSkillUpCommand}" />
-              <Button Content="Down"
+              <Button Classes="skua-button"
+                      Content="Down"
                       Command="{Binding MoveSkillDownCommand}" />
-              <Button Content="Edit Rule"
+              <Button Classes="skua-button"
+                      Content="Edit Rule"
                       Command="{Binding EditSkillCommand}" />
-              <Button Content="Remove"
+              <Button Classes="skua-button"
+                      Content="Remove"
                       Command="{Binding RemoveSkillCommand}" />
-              <Button Content="Clear"
+              <Button Classes="skua-button"
+                      Content="Clear"
                       Command="{Binding ClearSkillsCommand}" />
             </StackPanel>
           </Grid>
@@ -342,6 +358,7 @@
                   ColumnDefinitions="Auto,*,*,Auto"
                   Margin="0,0,0,8">
               <Button Grid.Column="0"
+                      Classes="skua-button"
                       Margin="0,0,8,0"
                       Content="Load Classes"
                       Command="{Binding LoadAvailableClassesCommand}" />
@@ -354,6 +371,7 @@
                         ItemsSource="{Binding AvailableModes}"
                         SelectedItem="{Binding SelectedMode}" />
               <Button Grid.Column="3"
+                      Classes="skua-button"
                       Content="Open"
                       Command="{Binding LoadSelectedClassModeCommand}" />
             </Grid>
@@ -380,13 +398,17 @@
                         Orientation="Horizontal"
                         Spacing="8"
                         Margin="0,8,0,0">
-              <Button Content="Edit Selected"
+              <Button Classes="skua-button"
+                      Content="Edit Selected"
                       Command="{Binding EditSelectedCommand}" />
-              <Button Content="Remove Selected"
+              <Button Classes="skua-button"
+                      Content="Remove Selected"
                       Command="{Binding RemoveSelectedCommand}" />
-              <Button Content="Refresh"
+              <Button Classes="skua-button"
+                      Content="Refresh"
                       Command="{Binding RefreshSkillsCommand}" />
-              <Button Content="Reset Sets"
+              <Button Classes="skua-button"
+                      Content="Reset Sets"
                       Command="{Binding ResetSkillsSetCommand}" />
             </StackPanel>
           </Grid>

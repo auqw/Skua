@@ -52,15 +52,15 @@
                  HorizontalOffset="-220"
                  IsLightDismissEnabled="True">
             
-            <sharedShell:TopbarPopupPanel x:Name="AutoPanel">
-              <StackPanel Spacing="8">
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                  <Button x:Name="AutoAttackButton" Content="Attack" />
-                  <Button x:Name="AutoHuntButton" Content="Hunt" />
-                  <Button x:Name="AutoStopButton" Content="Stop" />
-                </StackPanel>
-                <TextBlock x:Name="AutoClassText" />
-              </StackPanel>
+             <sharedShell:TopbarPopupPanel x:Name="AutoPanel">
+               <StackPanel Spacing="8">
+                 <StackPanel Spacing="8">
+                   <Button x:Name="AutoAttackButton" Classes="skua-button" Content="Attack" />
+                   <Button x:Name="AutoHuntButton" Classes="skua-button" Content="Hunt" />
+                   <Button x:Name="AutoStopButton" Classes="skua-button" Content="Stop" />
+                 </StackPanel>
+                 <TextBlock x:Name="AutoClassText" />
+               </StackPanel>
             </sharedShell:TopbarPopupPanel>
             
           </Popup>
@@ -78,9 +78,9 @@
                 <TextBox x:Name="JumpCellTextBox" Watermark="Cell" />
                 <TextBox x:Name="JumpPadTextBox" Watermark="Pad" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                  <Button x:Name="JumpCurrentButton" Content="Current" />
-                  <Button x:Name="JumpRefreshButton" Content="Refresh" />
-                  <Button x:Name="JumpGoButton" Content="Jump" />
+                  <Button x:Name="JumpCurrentButton" Classes="skua-button" Content="Current" />
+                  <Button x:Name="JumpRefreshButton" Classes="skua-button" Content="Refresh" />
+                  <Button x:Name="JumpGoButton" Classes="skua-button" Content="Jump" />
                 </StackPanel>
               </StackPanel>
             </sharedShell:TopbarPopupPanel>

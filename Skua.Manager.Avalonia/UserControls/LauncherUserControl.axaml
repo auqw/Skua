@@ -31,12 +31,8 @@
                        VerticalAlignment="Center"
                        FontWeight="SemiBold" />
             <Button Grid.Column="1"
+                    Classes="skua-button"
                     Click="KillAll_Click"
-                    Background="{DynamicResource SkuaAccentBrush}"
-                    BorderBrush="{DynamicResource SkuaAccentBrush}"
-                    BorderThickness="1"
-                    CornerRadius="4"
-                    Foreground="{DynamicResource SkuaAccentForegroundBrush}"
                     Padding="10,6">
                 <StackPanel Orientation="Horizontal" Spacing="4">
                     <materialIcons:MaterialIcon Kind="CloseCircleOutline"

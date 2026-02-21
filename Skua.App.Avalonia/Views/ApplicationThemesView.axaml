@@ -16,6 +16,7 @@
                    Watermark="Theme Name"
                    Text="{Binding ThemeSettings.ThemeName, Mode=TwoWay}" />
           <Button Grid.Column="1"
+                  Classes="skua-button"
                   Content="Save"
                   Command="{Binding ThemeSettings.SaveThemeCommand}" />
         </Grid>
@@ -62,23 +63,27 @@
                       SelectedItem="{Binding SelectedBackground}" />
             <Button Grid.Row="0"
                     Grid.Column="1"
+                    Classes="skua-button"
                     Margin="3"
                     Content="Browse"
                     Command="{Binding BrowseBackgroundCommand}" />
             <Button Grid.Row="0"
                     Grid.Column="2"
+                    Classes="skua-button"
                     Margin="3"
                     Content="Refresh"
                     Command="{Binding RefreshBackgroundsCommand}" />
 
             <Button Grid.Row="1"
                     Grid.Column="0"
+                    Classes="skua-button"
                     Margin="3"
                     Content="Open Themes Folder"
                     Command="{Binding OpenThemesFolderCommand}" />
             <Button Grid.Row="1"
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
+                    Classes="skua-button"
                     Margin="3"
                     Content="Get Backgrounds"
                     Command="{Binding GetBackgroundsCommand}" />

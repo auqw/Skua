@@ -7,9 +7,11 @@
                 Orientation="Horizontal"
                 Spacing="8"
                 Margin="0,0,0,8">
-      <Button Content="Load"
+      <Button Classes="skua-button"
+              Content="Load"
               Command="{Binding LoadPluginCommand}" />
-      <Button Content="Unload All"
+      <Button Classes="skua-button"
+              Content="Unload All"
               Command="{Binding UnloadAllPluginsCommand}" />
     </StackPanel>
 
@@ -27,11 +29,13 @@
                          VerticalAlignment="Center"
                          Text="{Binding Container.Plugin.Name}" />
               <Button Grid.Column="1"
+                      Classes="skua-button"
                       Margin="8,0,0,0"
                       Content="Options"
                       IsVisible="{Binding HasOptions}"
                       Command="{Binding EditPluginOptionsCommand}" />
               <Button Grid.Column="2"
+                      Classes="skua-button"
                       Margin="8,0,0,0"
                       Content="Unload"
                       Command="{Binding UnloadCommand}" />

@@ -45,6 +45,7 @@
                 </ScrollViewer>
 
                 <Button Grid.Row="3"
+                        Classes="skua-button"
                         Margin="0,6,0,0"
                         Command="{Binding ClearCommand, ElementName=Root}">
                     <StackPanel Orientation="Horizontal" Spacing="4">

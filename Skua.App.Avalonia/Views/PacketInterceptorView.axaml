@@ -17,6 +17,7 @@
         </ComboBox.ItemTemplate>
       </ComboBox>
       <Button Grid.Column="1"
+              Classes="skua-button"
               Margin="8,0,0,0"
               MinWidth="110"
               Content="Connect / Disconnect"
@@ -30,6 +31,7 @@
                 Content="Log Packets"
                 IsChecked="{Binding IsLogging}" />
       <Button Grid.Column="1"
+              Classes="skua-button"
               Margin="8,0,0,0"
               Content="Clear"
               Command="{Binding ClearPacketsCommand}" />

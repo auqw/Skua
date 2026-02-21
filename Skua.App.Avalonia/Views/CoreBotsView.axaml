@@ -10,14 +10,17 @@
                  VerticalAlignment="Center"
                  Text="{Binding CurrentPlayer}" />
       <Button Grid.Column="1"
+              Classes="skua-button"
               Margin="8,0,0,0"
               Content="Load"
               Command="{Binding LoadCommand}" />
       <Button Grid.Column="2"
+              Classes="skua-button"
               Margin="8,0,0,0"
               Content="Save"
               Command="{Binding SaveCommand}" />
       <Button Grid.Column="3"
+              Classes="skua-button"
               Margin="8,0,0,0"
               Content="Load Character"
               Command="{Binding LoadCharacterCommand}" />

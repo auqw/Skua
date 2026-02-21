@@ -72,6 +72,7 @@ public partial class OptionItemControl : UserControl
             MinWidth = 64,
             Margin = new Thickness(8, 0, 0, 0)
         };
+        button.Classes.Add("skua-button");
         if (vm is CommandOptionItemViewModel commandVm)
             button.Click += (_, _) => commandVm.Command.Execute(textBox.Text ?? string.Empty);
 
@@ -117,6 +118,7 @@ public partial class OptionItemControl : UserControl
             Content = vm.Content,
             MinWidth = 96
         };
+        button.Classes.Add("skua-button");
         if (vm is CommandOptionItemViewModel commandVm)
             button.Click += (_, _) => commandVm.Command.Execute(textBox.Text ?? string.Empty);
 
@@ -138,6 +140,7 @@ public partial class OptionItemControl : UserControl
             Margin = new Thickness(6, 4),
             HorizontalAlignment = HorizontalAlignment.Stretch
         };
+        button.Classes.Add("skua-button");
 
         if (vm is CommandOptionItemViewModel commandVm)
             button.Command = commandVm.Command;

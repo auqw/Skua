@@ -13,6 +13,7 @@
              TextWrapping="Wrap"
              MinHeight="220" />
     <Button Grid.Row="2"
+            Classes="skua-button"
             Margin="0,8,0,0"
             HorizontalAlignment="Right"
             MinWidth="110"

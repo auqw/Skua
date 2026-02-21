@@ -38,13 +38,16 @@
           ColumnDefinitions="Auto,Auto,Auto,*"
           Margin="0,0,0,0">
       <Button Grid.Column="0"
+              Classes="skua-button"
               Content="Clear Logs"
               Command="{Binding ClearPacketLogsCommand}" />
       <Button Grid.Column="1"
+              Classes="skua-button"
               Margin="8,0,0,0"
               Content="Clear Filters"
               Command="{Binding ClearFiltersCommand}" />
       <Button Grid.Column="2"
+              Classes="skua-button"
               Margin="8,0,0,0"
               Content="Save"
               Command="{Binding SavePacketLogsCommand}" />

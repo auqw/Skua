@@ -10,10 +10,12 @@
                Watermark="Drop names separated by |"
                Text="{Binding AddDropInput}" />
       <Button Grid.Column="1"
+              Classes="skua-button"
               Margin="8,0,0,0"
               Content="Add"
               Command="{Binding AddDropCommand}" />
       <Button Grid.Column="2"
+              Classes="skua-button"
               Margin="8,0,0,0"
               Content="Clear"
               Command="{Binding RemoveAllDropsCommand}" />
@@ -34,7 +36,8 @@
                      Maximum="2000"
                      Increment="10"
                      Value="{Binding SoundDelay}" />
-      <Button Content="Test"
+      <Button Classes="skua-button"
+              Content="Test"
               Command="{Binding TestBeepCommand}" />
     </StackPanel>
 

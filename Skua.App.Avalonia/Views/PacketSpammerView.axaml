@@ -18,19 +18,25 @@
     <StackPanel Grid.Row="0"
                 Grid.Column="1"
                 Spacing="8">
-      <Button Content="Add"
+      <Button Classes="skua-button"
+              Content="Add"
               Command="{Binding AddPacketCommand}" />
-      <Button Content="Remove"
+      <Button Classes="skua-button"
+              Content="Remove"
               Command="{Binding RemovePacketCommand}" />
-      <Button Content="Clear"
+      <Button Classes="skua-button"
+              Content="Clear"
               Command="{Binding ClearPacketsCommand}" />
-      <Button Content="Load"
+      <Button Classes="skua-button"
+              Content="Load"
               Command="{Binding LoadSpammerCommand}" />
-      <Button Content="Save"
+      <Button Classes="skua-button"
+              Content="Save"
               Command="{Binding SaveSpammerCommand}" />
       <TextBlock Text="Delay (ms)" />
       <TextBox Text="{Binding SpamDelay}" />
-      <Button Content="Start / Stop"
+      <Button Classes="skua-button"
+              Content="Start / Stop"
               Command="{Binding ToggleSpammerCommand}" />
       <CheckBox Content="Send to Client"
                 IsChecked="{Binding SendToClient}" />
@@ -44,6 +50,7 @@
 
     <Button Grid.Row="1"
             Grid.Column="1"
+            Classes="skua-button"
             Content="Send"
             Command="{Binding SendPacketCommand}" />
   </Grid>
