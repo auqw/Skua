@@ -11,15 +11,15 @@
 
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-          <SolidColorBrush x:Key="SkuaPageBrush" Color="#424242" />
-          <SolidColorBrush x:Key="SkuaSurfaceBrush" Color="#424242" />
-          <SolidColorBrush x:Key="SkuaSurfaceAltBrush" Color="#303030" />
-          <SolidColorBrush x:Key="SkuaBorderBrush" Color="#303030" />
-          <SolidColorBrush x:Key="SkuaNavHoverBrush" Color="#303030" />
-          <SolidColorBrush x:Key="SkuaTextBrush" Color="#ECEFF4" />
-          <SolidColorBrush x:Key="SkuaMutedTextBrush" Color="#C3CAD0" />
-          <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#667D9AA9" />
-          <SolidColorBrush x:Key="SkuaNavChipBrush" Color="#303030" />
+          <SolidColorBrush x:Key="SkuaPageBrush" Color="#FFFAFAFA" />
+          <SolidColorBrush x:Key="SkuaSurfaceBrush" Color="#FFFFFFFF" />
+          <SolidColorBrush x:Key="SkuaSurfaceAltBrush" Color="#FFF5F5F5" />
+          <SolidColorBrush x:Key="SkuaBorderBrush" Color="#FFE0E0E0" />
+          <SolidColorBrush x:Key="SkuaNavHoverBrush" Color="#FFECEFF1" />
+          <SolidColorBrush x:Key="SkuaTextBrush" Color="#FF212121" />
+          <SolidColorBrush x:Key="SkuaMutedTextBrush" Color="#FF616161" />
+          <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#337D9AA9" />
+          <SolidColorBrush x:Key="SkuaNavChipBrush" Color="#FFF1F3F4" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
           <SolidColorBrush x:Key="SkuaPageBrush" Color="#424242" />
