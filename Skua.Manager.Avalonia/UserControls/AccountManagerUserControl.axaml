@@ -36,8 +36,6 @@
         <Border x:Name="AddAccountForm"
                 Grid.Row="0"
                 IsVisible="False"
-                BorderBrush="{DynamicResource SkuaBorderBrush}"
-                BorderThickness="1"
                 CornerRadius="4"
                 Padding="4"
                 Margin="0,0,0,2">
@@ -350,8 +348,6 @@
 
         <Border Grid.Row="2"
                 Margin="0,4,0,4"
-                BorderBrush="{DynamicResource SkuaBorderBrush}"
-                BorderThickness="1"
                 CornerRadius="4"
                 Padding="5">
             <Grid ColumnDefinitions="*,Auto,Auto">
