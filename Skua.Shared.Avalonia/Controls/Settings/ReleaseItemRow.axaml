@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:buttonControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons"
+             x:Class="Skua.Shared.Avalonia.Controls.Settings.ReleaseItemRow"
+             x:Name="Root">
+  <Border BorderBrush="{DynamicResource SkuaBorderBrush}" BorderThickness="0,0,0,1" Padding="8">
+    <Grid ColumnDefinitions="*,Auto">
+      <StackPanel Spacing="2">
+        <TextBlock Text="{Binding ReleaseName, ElementName=Root}" FontWeight="SemiBold" />
+        <TextBlock Text="{Binding Version, ElementName=Root}" FontSize="12" Foreground="{DynamicResource SkuaMutedTextBrush}" />
+      </StackPanel>
+      <buttonControls:IconTextButton Grid.Column="1"
+                                     Command="{Binding DownloadCommand, ElementName=Root}"
+                                     IconKind="Download"
+                                     Text="Download" />
+    </Grid>
+  </Border>
+</UserControl>

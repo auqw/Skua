@@ -2,30 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vms="clr-namespace:Skua.Manager.Avalonia.ViewModels"
+             xmlns:uc="clr-namespace:Skua.Manager.Avalonia.UserControls"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.Manager.Avalonia.UserControls.LauncherUserControl"
              d:DesignWidth="800"
              d:DesignHeight="600"
              mc:Ignorable="d">
     <UserControl.Styles>
-        <Style Selector="Button.hover-stop">
+        <Style Selector="sharedControls|IconTextButton.hover-stop">
             <Setter Property="IsVisible" Value="False" />
         </Style>
-        <Style Selector="Border.process-row:pointerover Button.hover-stop">
+        <Style Selector="Border.process-row:pointerover sharedControls|IconTextButton.hover-stop">
             <Setter Property="IsVisible" Value="True" />
         </Style>
     </UserControl.Styles>
 
     <DockPanel Margin="8">
-        <Button DockPanel.Dock="Top"
-                Margin="0,0,0,8"
-                Command="{Binding LaunchSkuaCommand}">
-            <StackPanel Orientation="Horizontal" Spacing="4">
-                <materialIcons:MaterialIcon Kind="PlayCircleOutline" Width="14" Height="14" />
-                <TextBlock Text="Launch Skua" />
-            </StackPanel>
-        </Button>
+        <sharedControls:IconTextButton DockPanel.Dock="Top"
+                                       Margin="0,0,0,8"
+                                       Command="{Binding LaunchSkuaCommand}"
+                                       IconKind="PlayCircleOutline"
+                                       Text="Launch Skua" />
 
         <Grid DockPanel.Dock="Top" Margin="0,0,0,8" ColumnDefinitions="*,Auto">
             <TextBlock Grid.Column="0"
@@ -47,34 +45,7 @@
             <ItemsControl ItemsSource="{Binding SkuaProcesses}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="0,2"
-                                Classes="process-row"
-                                Padding="8,4"
-                                BorderBrush="{DynamicResource SkuaBorderBrush}"
-                                BorderThickness="0,0,0,1">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding AccountName}"
-                                               FontSize="14"
-                                               FontWeight="SemiBold" />
-                                    <TextBlock Text="{Binding ProcessId, StringFormat=PID: {0}}"
-                                               FontSize="11"
-                                               Foreground="{DynamicResource SkuaMutedTextBrush}" />
-                                </StackPanel>
-                                <Button Grid.Column="1"
-                                        Classes="hover-stop"
-                                        Width="64"
-                                        Height="28"
-                                        Command="{Binding DataContext.StopProcessCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}"
-                                        Margin="8,0,0,0">
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <materialIcons:MaterialIcon Kind="StopCircleOutline" Width="14" Height="14" />
-                                        <TextBlock Text="Stop" />
-                                    </StackPanel>
-                                </Button>
-                            </Grid>
-                        </Border>
+                        <uc:LauncherProcessRow StopCommand="{Binding DataContext.StopProcessCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

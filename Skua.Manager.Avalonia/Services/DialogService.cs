@@ -4,11 +4,11 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Material.Dialog.ViewModels;
 using Skua.Core.Interfaces;
 using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Models;
 using Skua.Manager.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.ViewModels.Options;
 using Skua.Shared.Avalonia.ViewModels.Dialogs;
 using System;
 using System.Linq;
@@ -27,13 +27,14 @@ public class DialogService : IDialogService
     public bool? ShowDialog<TViewModel>(TViewModel viewModel, Action<TViewModel> callback) where TViewModel : class
     {
         bool? result = ShowDialogInternal(viewModel, viewModel.GetType().Name);
-        callback(viewModel);
+        callback?.Invoke(viewModel);
         return result;
     }
 
     public void ShowDialog(IOptionContainer optionContainer, Action<IOptionContainerViewModel> callback)
     {
-        throw new NotImplementedException();
+        OptionContainerViewModel vm = new(optionContainer);
+        callback?.Invoke(vm);
     }
 
     public void ShowMessageBox(string message, string caption)
@@ -58,7 +59,7 @@ public class DialogService : IDialogService
 
     public IInputDialogViewModel CreateInputDialog(string title, string dialogHint)
     {
-        throw new NotImplementedException();
+        return new InputDialogViewModel(title, dialogHint);
     }
 
     private bool? ShowDialogInternal<TViewModel>(TViewModel viewModel, string title) where TViewModel : class

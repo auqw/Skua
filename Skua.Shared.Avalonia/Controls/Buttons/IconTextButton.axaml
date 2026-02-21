@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="Skua.Shared.Avalonia.Controls.Buttons.IconTextButton"
+             x:Name="Root">
+  <Button Command="{Binding Command, ElementName=Root}"
+          CommandParameter="{Binding CommandParameter, ElementName=Root}"
+          Padding="{Binding ButtonPadding, ElementName=Root}"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
+    <StackPanel Orientation="Horizontal" Spacing="{Binding Spacing, ElementName=Root}">
+      <materialIcons:MaterialIcon Kind="{Binding IconKind, ElementName=Root}"
+                                  Width="{Binding IconSize, ElementName=Root}"
+                                  Height="{Binding IconSize, ElementName=Root}" />
+      <TextBlock Text="{Binding Text, ElementName=Root}" />
+    </StackPanel>
+  </Button>
+</UserControl>

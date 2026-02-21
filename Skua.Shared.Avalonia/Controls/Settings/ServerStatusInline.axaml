@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.Shared.Avalonia.Controls.Settings.ServerStatusInline"
+             x:Name="Root">
+  <StackPanel Orientation="Horizontal" Spacing="4">
+    <TextBlock Text="{Binding Server.Name, ElementName=Root}" FontWeight="SemiBold" />
+    <TextBlock Text="{Binding Server, ElementName=Root, Converter={StaticResource ServerMembershipTextConverter}}"
+               FontSize="11"
+               Foreground="{DynamicResource SkuaMutedTextBrush}" />
+    <TextBlock Text=" - " FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
+    <TextBlock Text="{Binding Server, ElementName=Root, Converter={StaticResource ServerPingTextConverter}}"
+               FontSize="11"
+               Foreground="{DynamicResource SkuaMutedTextBrush}" />
+    <StackPanel Orientation="Horizontal"
+                IsVisible="{Binding Server.Online, ElementName=Root}"
+                Spacing="4">
+      <TextBlock Text=" - " FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
+      <TextBlock Text="{Binding Server.PlayerCount, ElementName=Root}" FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
+      <TextBlock Text="/" FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
+      <TextBlock Text="{Binding Server.MaxPlayers, ElementName=Root}" FontSize="11" Foreground="{DynamicResource SkuaMutedTextBrush}" />
+    </StackPanel>
+  </StackPanel>
+</UserControl>

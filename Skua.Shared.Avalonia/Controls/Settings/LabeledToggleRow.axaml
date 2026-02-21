@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.Shared.Avalonia.Controls.Settings.LabeledToggleRow"
+             x:Name="Root">
+  <Grid ColumnDefinitions="*,Auto">
+    <TextBlock Grid.Column="0"
+               VerticalAlignment="Center"
+               Text="{Binding Label, ElementName=Root}" />
+    <ToggleSwitch Grid.Column="1"
+                  VerticalAlignment="Center"
+                  OnContent=""
+                  OffContent=""
+                  IsChecked="{Binding IsChecked, ElementName=Root, Mode=TwoWay}" />
+  </Grid>
+</UserControl>

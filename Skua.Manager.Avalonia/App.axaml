@@ -5,7 +5,7 @@
              xmlns:managerVms="clr-namespace:Skua.Manager.Avalonia.ViewModels"
              xmlns:conv="clr-namespace:Skua.Manager.Avalonia.Converters"
              xmlns:uc="clr-namespace:Skua.Manager.Avalonia.UserControls"
-             xmlns:viewModels="clr-namespace:Skua.Shared.Avalonia.ViewModels;assembly=Skua.Shared.Avalonia"
+             xmlns:sharedVms="clr-namespace:Skua.Shared.Avalonia.ViewModels;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.Manager.Avalonia.App"
              RequestedThemeVariant="Default">
     <Application.Resources>
@@ -16,13 +16,16 @@
     <Application.Styles>
         <FluentTheme>
             <FluentTheme.Palettes>
-                <fluent:ColorPaletteResources x:Key="Light" Accent="#C9479A" />
-                <fluent:ColorPaletteResources x:Key="Dark" Accent="#C9479A" />
+                <fluent:ColorPaletteResources x:Key="Light" Accent="#7D9AA9" />
+                <fluent:ColorPaletteResources x:Key="Dark" Accent="#7D9AA9" />
             </FluentTheme.Palettes>
         </FluentTheme>
         <materialIcons:MaterialIconStyles />
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
-        <StyleInclude Source="/Themes/CustomStyles.axaml" />
+        <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Theme.axaml" />
+        <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Controls.axaml" />
+        <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Navigation.axaml" />
+        <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Containers.axaml" />
     </Application.Styles>
     <TrayIcon.Icons>
         <TrayIcons>
@@ -56,13 +59,13 @@
         <DataTemplate DataType="managerVms:ManagerOptionsViewModel">
             <uc:ManagerOptionsUserControl />
         </DataTemplate>
-        <DataTemplate DataType="viewModels:ApplicationThemesViewModel">
+        <DataTemplate DataType="sharedVms:ApplicationThemesViewModel">
             <uc:ApplicationThemesUserControl />
         </DataTemplate>
-        <DataTemplate DataType="viewModels:AboutViewModel">
+        <DataTemplate DataType="sharedVms:AboutViewModel">
             <uc:AboutUserControl />
         </DataTemplate>
-        <DataTemplate DataType="viewModels:ChangeLogsViewModel">
+        <DataTemplate DataType="sharedVms:ChangeLogsViewModel">
             <uc:ChangeLogsUserControl />
         </DataTemplate>
     </Application.DataTemplates>

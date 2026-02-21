@@ -6,14 +6,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace Skua.App.Avalonia.Services;
+namespace Skua.Shared.Avalonia.Services;
 
 public class AvaloniaThemeService : IThemeService
 {
     private readonly ISettingsService _settingsService;
     private static readonly Dictionary<string, Color> AccentMap = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["Default"] = Color.Parse("#C9479A"),
+        ["Default"] = Color.Parse("#7D9AA9"),
         ["Pink"] = Color.Parse("#C9479A"),
         ["Ocean"] = Color.Parse("#2E6DD8"),
         ["Forest"] = Color.Parse("#2E9D57"),
@@ -32,7 +32,7 @@ public class AvaloniaThemeService : IThemeService
         _isColorAdjusted = _settingsService.Get("ManagerIsColorAdjusted", false);
         _desiredContrastRatio = _settingsService.Get("ManagerDesiredContrastRatio", 4.5f);
         _contrastValue = _settingsService.Get("ManagerContrastValue", "Medium");
-        _primaryColor = ParseColor(_settingsService.Get("ManagerAccentColor", "#C9479A"), Color.Parse("#C9479A"));
+        _primaryColor = ParseColor(_settingsService.Get("ManagerAccentColor", "#7D9AA9"), Color.Parse("#7D9AA9"));
         _primaryForegroundColor = ParseColor(_settingsService.Get("ManagerAccentForegroundColor", "#FFFFFFFF"), Color.Parse("#FFFFFFFF"));
         if (_isColorAdjusted)
             _primaryForegroundColor = ComputeForeground(_primaryColor, GetTargetContrastRatio());
@@ -211,14 +211,14 @@ public class AvaloniaThemeService : IThemeService
             }
             catch
             {
-                return Color.Parse("#C9479A");
+                return Color.Parse("#7D9AA9");
             }
         }
 
         if (obj is Color c)
             return c;
 
-        return Color.Parse("#C9479A");
+        return Color.Parse("#7D9AA9");
     }
 
     private static string FindClosestSelectionKey(Color target)
@@ -376,7 +376,6 @@ public class AvaloniaThemeService : IThemeService
         double lb = RelativeLuminance(background);
         double r = Math.Clamp(targetContrast, 1d, 21d);
 
-        // For darker backgrounds use lighter text; for lighter backgrounds use darker text.
         bool chooseLighter = lb < 0.5;
         double lf = chooseLighter
             ? (r * (lb + 0.05)) - 0.05
@@ -385,15 +384,6 @@ public class AvaloniaThemeService : IThemeService
         lf = Math.Clamp(lf, 0d, 1d);
         byte c = LuminanceToSrgbByte(lf);
         return Color.FromArgb(255, c, c, c);
-    }
-
-    private static double ContrastRatio(Color a, Color b)
-    {
-        double la = RelativeLuminance(a);
-        double lb = RelativeLuminance(b);
-        double lighter = Math.Max(la, lb);
-        double darker = Math.Min(la, lb);
-        return (lighter + 0.05) / (darker + 0.05);
     }
 
     private static double RelativeLuminance(Color color)
@@ -412,11 +402,9 @@ public class AvaloniaThemeService : IThemeService
 
     private static byte LuminanceToSrgbByte(double luminance)
     {
-        // For grayscale, linear RGB channels are equal to luminance.
         double s = luminance <= 0.0031308
             ? luminance * 12.92
             : 1.055 * Math.Pow(luminance, 1.0 / 2.4) - 0.055;
         return (byte)Math.Clamp(Math.Round(s * 255), 0, 255);
     }
 }
-

@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Skua.Shared.Avalonia.Controls.Content.MarkdownCard"
+             x:Name="Root"
+             d:DesignWidth="900"
+             d:DesignHeight="600"
+             mc:Ignorable="d">
+    <Grid Margin="8" RowDefinitions="Auto,*">
+        <Border Grid.Row="0"
+                Classes="card">
+            <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                <StackPanel Spacing="2">
+                    <TextBlock Text="{Binding Title, ElementName=Root}"
+                               FontSize="14"
+                               FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Subtitle, ElementName=Root}"
+                               FontSize="11"
+                               Foreground="{DynamicResource SkuaMutedTextBrush}" />
+                </StackPanel>
+                <ContentPresenter Grid.Column="1"
+                                  Content="{Binding HeaderActions, ElementName=Root}" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Margin="0,8,0,0"
+                Classes="card"
+                Padding="0">
+            <ContentControl x:Name="BodyHost" />
+        </Border>
+    </Grid>
+</UserControl>

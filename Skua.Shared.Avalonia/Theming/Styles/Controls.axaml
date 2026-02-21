@@ -1,0 +1,76 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Style Selector="Button.topbar-action, Button.toolbar">
+    <Setter Property="Height" Value="25" />
+    <Setter Property="MinWidth" Value="34" />
+    <Setter Property="Padding" Value="10,0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="Button.topbar-action:pointerover, Button.toolbar:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="ToggleButton.topbar-action, ToggleButton.toolbar">
+    <Setter Property="Height" Value="25" />
+    <Setter Property="MinWidth" Value="50" />
+    <Setter Property="Padding" Value="10,0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="ToggleButton.topbar-action:pointerover, ToggleButton.toolbar:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="ToggleButton.topbar-action:checked, ToggleButton.toolbar:checked">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.danger-icon, Button.icon, Button.danger">
+    <Setter Property="Width" Value="24" />
+    <Setter Property="Height" Value="24" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.danger-icon TextBlock, Button.icon TextBlock, Button.danger TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.danger-icon:pointerover, Button.icon:pointerover, Button.danger:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.danger-icon:pressed, Button.icon:pressed, Button.danger:pressed">
+    <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentPressedBrush}" />
+  </Style>
+
+  <Style Selector="Button.primary">
+    <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
+  </Style>
+
+  <Style Selector="Button.secondary">
+    <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+  </Style>
+</Styles>

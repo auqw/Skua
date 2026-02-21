@@ -1,6 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:uc="clr-namespace:Skua.App.Avalonia.UserControls"
+             xmlns:sharedOptions="clr-namespace:Skua.Shared.Avalonia.Controls.Options;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.App.Avalonia.Views.GameOptionsView">
   <Grid RowDefinitions="*,Auto,Auto"
         Margin="8">
@@ -10,7 +10,7 @@
       <ItemsControl ItemsSource="{Binding GameOptions}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <uc:OptionItemUserControl />
+            <sharedOptions:OptionItemControl />
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>

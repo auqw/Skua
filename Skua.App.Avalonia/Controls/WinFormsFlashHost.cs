@@ -1,10 +1,11 @@
 using Avalonia.Controls;
 using Avalonia.Platform;
 using System;
-using WinForms = System.Windows.Forms;
 
 namespace Skua.App.Avalonia.Controls;
 
+#if IS_WINDOWS
+using WinForms = System.Windows.Forms;
 public class WinFormsFlashHost : NativeControlHost
 {
     private WinForms.Panel? _panel;
@@ -55,3 +56,9 @@ public class WinFormsFlashHost : NativeControlHost
         _panel.Controls.Add(_child);
     }
 }
+#else
+public class WinFormsFlashHost : NativeControlHost
+{
+    
+}
+#endif

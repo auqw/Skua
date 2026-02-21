@@ -1,11 +1,12 @@
 using Skua.Core.Interfaces;
-using Skua.Core.Models;
 using System.Collections.Generic;
-using System.IO;
-using WinForms = System.Windows.Forms;
 
 namespace Skua.App.Avalonia.Services;
 
+#if IS_WINDOWS
+using Skua.Core.Models;
+using System.IO;
+using WinForms = System.Windows.Forms;
 public class FileDialogService : IFileDialogService
 {
     private const string DefaultFilter = "Text Files (*.txt)|*.txt";
@@ -74,3 +75,62 @@ public class FileDialogService : IFileDialogService
             File.WriteAllLines(path, contents);
     }
 }
+#else
+public class FileDialogService : IFileDialogService
+{
+    public string? OpenFile()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public string? OpenFile(string filters)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public string? OpenFile(string initialDirectory, string filters)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public string? OpenFolder()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public string? OpenFolder(string initialDirectory)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public IEnumerable<string>? OpenText()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public string? Save()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public string? Save(string filters)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public string? Save(string initialDirectory, string filters)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void SaveText(string contents)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void SaveText(IEnumerable<string> contents)
+    {
+        throw new System.NotImplementedException();
+    }
+}
+#endif

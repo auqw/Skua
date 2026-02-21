@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Input;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
@@ -8,11 +7,17 @@ using Skua.App.Avalonia.Services;
 using Skua.App.Avalonia.ViewModels;
 using Skua.App.Avalonia.ViewModels.MainMenu;
 using Skua.Core.Interfaces;
-using Skua.Core.Messaging;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Linq;
+using System.Runtime.InteropServices;
+
+#if IS_WINDOWS
+using Avalonia.Input;
+using AxShockwaveFlashObjects;
+using Skua.Core.Messaging;
+using System.Runtime.Versioning;
+#endif
 
 namespace Skua.App.Avalonia.Views;
 
@@ -20,14 +25,13 @@ public partial class MainWindow : Window
 {
     private static readonly TimeSpan MetricRefreshInterval = TimeSpan.FromSeconds(1);
 
-    //private readonly IFlashUtil _flash;
+    private readonly IFlashUtil _flash;
     private readonly IScriptOption _options;
     private readonly SkuaStartupHandler _startup;
     private readonly MainMenuViewModel _mainMenuVm;
     private readonly MainViewModel _mainViewModel;
     private MenuItem? _pluginsMenuItem;
     private readonly DispatcherTimer _metricsTimer;
-    private MenuItem[] _hoverMenus = [];
     private bool _isFlashLoaded;
 
     public MainWindow()
@@ -35,7 +39,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         _mainViewModel = Ioc.Default.GetRequiredService<MainViewModel>();
         _mainMenuVm = Ioc.Default.GetRequiredService<MainMenuViewModel>();
-        //_flash = Ioc.Default.GetRequiredService<IFlashUtil>();
+        _flash = Ioc.Default.GetRequiredService<IFlashUtil>();
         _options = Ioc.Default.GetRequiredService<IScriptOption>();
         _startup = Ioc.Default.GetRequiredService<SkuaStartupHandler>();
         _metricsTimer = new DispatcherTimer(MetricRefreshInterval, DispatcherPriority.Background, (_, _) => UpdateMetrics());
@@ -43,13 +47,11 @@ public partial class MainWindow : Window
         DataContext = _mainViewModel;
         ConfigureTopActions();
         ConfigureMainMenu();
-        RegisterMessages();
         RegisterLifecycleHandlers();
         
-        TitleBar.PointerPressed += (_, e) => BeginMoveDrag(e);
-        MinimizeButton.Click += (_, _) => WindowState = WindowState.Minimized;
-        MaximizeButton.Click += (_, _) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-        CloseButton.Click += (_, _) => Close();
+        #if IS_WINDOWS
+        RegisterMessages();
+        #endif
     }
 
     private void ConfigureTopActions()
@@ -102,10 +104,12 @@ public partial class MainWindow : Window
         _mainMenuVm.Plugins.CollectionChanged += PluginsChanged;
     }
 
+    #if IS_WINDOWS
     private void RegisterMessages()
     {
-        //WeakReferenceMessenger.Default.Register<MainWindow, FlashChangedMessage<AxShockwaveFlash>>(this, static (r, m) => r.OnFlashControlChanged(m.Flash));
+        WeakReferenceMessenger.Default.Register<MainWindow, FlashChangedMessage<AxShockwaveFlash>>(this, static (r, m) => r.OnFlashControlChanged(m.Flash));
     }
+    #endif
 
     private void RegisterLifecycleHandlers()
     {
@@ -116,28 +120,32 @@ public partial class MainWindow : Window
     private void MainWindow_Opened(object? sender, EventArgs e)
     {
         _startup.Execute();
-        //_flash.FlashCall += OnFlashCall;
-        //_flash.InitializeFlash();
+        _flash.FlashCall += OnFlashCall;
+        
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) _flash.InitializeFlash();
+        
         UpdateMetrics();
         _metricsTimer.Start();
     }
 
     private void MainWindow_Closed(object? sender, EventArgs e)
     {
-        //_flash.FlashCall -= OnFlashCall;
+        _flash.FlashCall -= OnFlashCall;
         _metricsTimer.Stop();
         _startup.Dispose();
         _mainMenuVm.MainMenuItems.CollectionChanged -= MainMenuItemsChanged;
         _mainMenuVm.Plugins.CollectionChanged -= PluginsChanged;
-        //WeakReferenceMessenger.Default.UnregisterAll(this);
+        WeakReferenceMessenger.Default.UnregisterAll(this);
     }
-
-    /*private void OnFlashControlChanged(AxShockwaveFlash flash)
+    
+    #if IS_WINDOWS
+    private void OnFlashControlChanged(AxShockwaveFlash flash)
     {
         FlashHost.SetChild(flash);
-    }*/
+    }
+    #endif
 
-    /*private void OnFlashCall(string function, params object[] args)
+    private void OnFlashCall(string function, params object[] args)
     {
         if (function == "loaded" && !_isFlashLoaded)
         {
@@ -148,21 +156,6 @@ public partial class MainWindow : Window
                 FlashHost.IsVisible = true;
             });
         }
-    }*/
-
-    private void TopMenuItem_PointerEntered(object? sender, PointerEventArgs e)
-    {
-        if (sender is not MenuItem hovered || !hovered.HasSubMenu)
-            return;
-
-        foreach (MenuItem item in _hoverMenus)
-            item.IsSubMenuOpen = ReferenceEquals(item, hovered);
-    }
-
-    private void NonMenuArea_PointerEntered(object? sender, PointerEventArgs e)
-    {
-        foreach (MenuItem item in _hoverMenus)
-            item.IsSubMenuOpen = false;
     }
 
     private void MainMenuItemsChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -173,7 +166,6 @@ public partial class MainWindow : Window
     private void PluginsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         BuildPluginsMenuItems();
-        RefreshHoverMenus();
     }
 
     private void BuildMainMenu()
@@ -184,10 +176,8 @@ public partial class MainWindow : Window
 
         _pluginsMenuItem = new MenuItem { Header = "Plugins" };
         _pluginsMenuItem.Classes.Add("top-nav-item");
-        _pluginsMenuItem.PointerEntered += TopMenuItem_PointerEntered;
         MainMenuControl.Items.Add(_pluginsMenuItem);
         BuildPluginsMenuItems();
-        RefreshHoverMenus();
     }
 
     private void BuildPluginsMenuItems()
@@ -198,14 +188,6 @@ public partial class MainWindow : Window
         _pluginsMenuItem.Items.Clear();
         foreach (MainMenuItemViewModel plugin in _mainMenuVm.Plugins)
             _pluginsMenuItem.Items.Add(CreateSubMenuItem(plugin));
-    }
-
-    private void RefreshHoverMenus()
-    {
-        _hoverMenus = MainMenuControl.Items
-            .OfType<MenuItem>()
-            .Where(x => x.HasSubMenu)
-            .ToArray();
     }
 
     private MenuItem CreateMainMenuItem(MainMenuItemViewModel item)
@@ -221,8 +203,6 @@ public partial class MainWindow : Window
         {
             foreach (MainMenuItemViewModel child in item.SubItems)
                 menuItem.Items.Add(CreateSubMenuItem(child));
-
-            menuItem.PointerEntered += TopMenuItem_PointerEntered;
         }
 
         return menuItem;
@@ -253,9 +233,9 @@ public partial class MainWindow : Window
         double managedMb = GC.GetTotalMemory(false) / (1024d * 1024d);
         int fps = _options.SetFPS;
 
-        FpsMetricText.Text = $"FPS: {fps}";
-        WorkingSetMetricText.Text = $"RAM: {workingSetMb:0.0} MB";
-        PrivateMetricText.Text = $"Private: {privateMb:0.0} MB";
-        ManagedMetricText.Text = $"Managed: {managedMb:0.0} MB";
+        MetricsStrip.FpsText = $"FPS: {fps}";
+        MetricsStrip.WorkingSetText = $"RAM: {workingSetMb:0.0} MB";
+        MetricsStrip.PrivateText = $"Private: {privateMb:0.0} MB";
+        MetricsStrip.ManagedText = $"Managed: {managedMb:0.0} MB";
     }
 }
