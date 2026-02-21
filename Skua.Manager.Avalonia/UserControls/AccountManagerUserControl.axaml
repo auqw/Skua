@@ -30,40 +30,6 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
         </Style>
-        <Style Selector="Button.group-action-button:pressed">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-        </Style>
-        <Style Selector="Expander.group-expander /template/ ToggleButton">
-            <Setter Property="Background" Value="{DynamicResource SkuaNavChipBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
-        <Style Selector="Expander.group-expander /template/ ToggleButton:pointerover">
-            <Setter Property="Background" Value="{DynamicResource SkuaNavChipBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
-        <Style Selector="Expander.group-expander /template/ ToggleButton:checked">
-            <Setter Property="Background" Value="{DynamicResource SkuaNavChipBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
-        <Style Selector="Expander.group-expander /template/ ToggleButton:pressed">
-            <Setter Property="Background" Value="{DynamicResource SkuaNavChipBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
-        <Style Selector="Expander.group-expander /template/ ContentPresenter">
-            <Setter Property="Padding" Value="3" />
-            <Setter Property="Margin" Value="0" />
-        </Style>
-        <Style Selector="Expander.group-expander">
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
-        <Style Selector="Expander.group-expander /template/ Border">
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
     </UserControl.Styles>
 
     <Grid Margin="2" RowDefinitions="Auto,*,Auto,Auto">
@@ -300,79 +266,7 @@
 
             <TabItem Header="Groups">
                 <Grid RowDefinitions="Auto,*" Margin="0,4,0,0">
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,3">
-                        <Button Click="AddGroup_Click"
-                                Content="+"
-                                Width="26"
-                                Height="24"
-                                Margin="0,0,4,0"
-                                ToolTip.Tip="Add group" />
-                    </StackPanel>
-                    <ScrollViewer Grid.Row="1"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding Groups}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Expander Classes="group-expander"
-                                              IsExpanded="{Binding IsExpanded}"
-                                              Padding="0"
-                                              HorizontalAlignment="Stretch"
-                                              HorizontalContentAlignment="Stretch"
-                                              Margin="0,0,0,4">
-                                        <Expander.Header>
-                                            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" HorizontalAlignment="Stretch" ColumnSpacing="4">
-                                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
-                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" VerticalAlignment="Center" />
-                                                    <TextBlock Text="{Binding Accounts.Count, StringFormat=({0} accounts)}" VerticalAlignment="Center" />
-                                                </StackPanel>
-                                                <Button Grid.Column="1"
-                                                        Classes="group-action-button"
-                                                        Width="28"
-                                                        Height="24"
-                                                        ToolTip.Tip="Start"
-                                                        Command="{Binding StartCommand}">
-                                                    <materialIcons:MaterialIcon Kind="PlayCircleOutline" Width="14" Height="14" />
-                                                </Button>
-                                                <Button Grid.Column="2"
-                                                        Classes="group-action-button"
-                                                        Width="28"
-                                                        Height="24"
-                                                        ToolTip.Tip="Start with script"
-                                                        Command="{Binding StartWithScriptCommand}">
-                                                    <materialIcons:MaterialIcon Kind="ScriptTextPlayOutline" Width="14" Height="14" />
-                                                </Button>
-                                                <Button Grid.Column="3"
-                                                        Classes="group-action-button"
-                                                        Width="28"
-                                                        Height="24"
-                                                        ToolTip.Tip="Rename"
-                                                        Command="{Binding RenameCommand}">
-                                                    <materialIcons:MaterialIcon Kind="PencilOutline" Width="14" Height="14" />
-                                                </Button>
-                                                <Button Grid.Column="4"
-                                                        Classes="group-action-button"
-                                                        Width="28"
-                                                        Height="24"
-                                                        ToolTip.Tip="Remove group"
-                                                        Command="{Binding RemoveCommand}">
-                                                    <materialIcons:MaterialIcon Kind="DeleteOutline" Width="14" Height="14" />
-                                                </Button>
-                                            </Grid>
-                                        </Expander.Header>
 
-                                        <ItemsControl ItemsSource="{Binding Accounts}" Margin="0">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <uc:GroupAccountRow />
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </Expander>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
                 </Grid>
             </TabItem>
         </TabControl>

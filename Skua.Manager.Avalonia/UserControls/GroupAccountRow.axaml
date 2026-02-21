@@ -14,10 +14,12 @@
             Padding="12,6"
             Margin="0">
         <Grid ColumnDefinitions="*,Auto">
-            <StackPanel Grid.Column="0" Spacing="2">
-                <TextBlock Text="{Binding DisplayOrUsername}"
+            <Grid Grid.Column="0" RowDefinitions="Auto,Auto" RowSpacing="2">
+                <TextBlock Grid.Row="0"
+                           Text="{Binding DisplayOrUsername}"
                            FontSize="12" />
                 <ItemsControl ItemsSource="{Binding Tags}"
+                              Grid.Row="1"
                               Margin="0,2,0,0">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -39,7 +41,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </StackPanel>
+            </Grid>
 
             <Button Grid.Column="1"
                     Margin="0"
