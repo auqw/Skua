@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Avalonia.Layout;
 using Skua.Core.Interfaces;
+using Skua.Shared.Avalonia.Controls.Shell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,12 +80,18 @@ public class WindowService : IWindowService
         Window window = new()
         {
             Title = title,
+            SystemDecorations = SystemDecorations.None,
+            ExtendClientAreaToDecorationsHint = true,
+            ExtendClientAreaChromeHints = global::Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome,
+            ExtendClientAreaTitleBarHeightHint = 32,
             WindowStartupLocation = WindowStartupLocation.CenterScreen,
             SizeToContent = sizeToContent,
             DataContext = viewModel,
-            Content = hasTemplate
-                ? new ContentControl { Content = viewModel }
-                : CreateFallbackContent(title)
+            Content = CreateShellContent(
+                title,
+                hasTemplate
+                    ? new ContentControl { Content = viewModel }
+                    : CreateFallbackContent(title))
         };
 
         if (width > 0)
@@ -93,6 +100,33 @@ public class WindowService : IWindowService
             window.Height = height;
 
         return window;
+    }
+
+    private static Control CreateShellContent(string title, Control content)
+    {
+        Border contentHost = new()
+        {
+            Margin = new Thickness(4, 2, 4, 4),
+            Padding = new Thickness(3),
+            Child = content
+        };
+        contentHost.Classes.Add("card");
+
+        Grid root = new();
+        root.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+        root.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+
+        WindowTitleBar titleBar = new()
+        {
+            TitleText = title,
+            IconSource = "avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
+        };
+        Grid.SetRow(titleBar, 0);
+        Grid.SetRow(contentHost, 1);
+        root.Children.Add(titleBar);
+        root.Children.Add(contentHost);
+
+        return root;
     }
 
     private static Control CreateFallbackContent(string title) =>

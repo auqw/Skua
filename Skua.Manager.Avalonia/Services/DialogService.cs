@@ -4,14 +4,18 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Skua.Core.Interfaces;
 using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Models;
 using Skua.Manager.Avalonia.ViewModels;
+using Skua.Shared.Avalonia.Controls.Shell;
 using Skua.Shared.Avalonia.ViewModels.Options;
 using Skua.Shared.Avalonia.ViewModels.Dialogs;
 using System;
 using System.Linq;
+using System.Threading;
 using CustomDialogViewModel = Skua.Shared.Avalonia.ViewModels.Dialogs.CustomDialogViewModel;
 
 namespace Skua.Manager.Avalonia.Services;
@@ -83,7 +87,8 @@ public class DialogService : IDialogService
 
         bool? result = null;
         Button ok = new() { Content = "OK", MinWidth = 84 };
-        Button cancel = new() { Content = "Cancel", MinWidth = 84 };
+        Button cancel = new() { Content = "Cancel", MinWidth = 84, IsCancel = true };
+        ok.IsDefault = true;
         ok.Click += (_, _) =>
         {
             vm.DialogTextInput = input.Text ?? string.Empty;
@@ -96,7 +101,7 @@ public class DialogService : IDialogService
             dialog.Close();
         };
 
-        dialog.Content = new StackPanel
+        StackPanel content = new()
         {
             Margin = new Thickness(14),
             Spacing = 10,
@@ -113,6 +118,7 @@ public class DialogService : IDialogService
                 }
             }
         };
+        dialog.Content = WrapWithShell(title, content);
         Show(dialog);
         return result;
     }
@@ -130,7 +136,8 @@ public class DialogService : IDialogService
 
         bool? result = null;
         Button ok = new() { Content = "OK", MinWidth = 84 };
-        Button cancel = new() { Content = "Cancel", MinWidth = 84 };
+        Button cancel = new() { Content = "Cancel", MinWidth = 84, IsCancel = true };
+        ok.IsDefault = true;
         ok.Click += (_, _) =>
         {
             vm.SelectedGroup = groups.SelectedItem as GroupItemViewModel;
@@ -143,7 +150,7 @@ public class DialogService : IDialogService
             dialog.Close();
         };
 
-        dialog.Content = new StackPanel
+        StackPanel content = new()
         {
             Margin = new Thickness(14),
             Spacing = 10,
@@ -160,6 +167,7 @@ public class DialogService : IDialogService
                 }
             }
         };
+        dialog.Content = WrapWithShell(title, content);
         Show(dialog);
         return result;
     }
@@ -177,12 +185,13 @@ public class DialogService : IDialogService
         Window dialog = CreateBaseDialog(title);
         bool? result = null;
         Button ok = new() { Content = "OK", MinWidth = 84 };
+        ok.IsDefault = true;
         ok.Click += (_, _) =>
         {
             result = true;
             dialog.Close();
         };
-        dialog.Content = new StackPanel
+        StackPanel content = new()
         {
             Margin = new Thickness(14),
             Spacing = 10,
@@ -197,6 +206,7 @@ public class DialogService : IDialogService
                 }
             }
         };
+        dialog.Content = WrapWithShell(title, content);
         Show(dialog);
         return result;
     }
@@ -205,24 +215,28 @@ public class DialogService : IDialogService
     {
         Window dialog = CreateBaseDialog(title);
         string clicked = string.Empty;
+        int index = 0;
         StackPanel row = new()
         {
-            Orientation = Orientation.Horizontal,
-            HorizontalAlignment = HorizontalAlignment.Right,
+            Orientation = Orientation.Vertical,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
             Spacing = 8
         };
         foreach (string buttonText in buttons)
         {
-            Button button = new() { Content = buttonText, MinWidth = 84 };
+            Button button = new() { Content = buttonText, HorizontalAlignment = HorizontalAlignment.Stretch };
+            if (index == 0)
+                button.IsDefault = true;
             button.Click += (_, _) =>
             {
                 clicked = buttonText;
                 dialog.Close();
             };
             row.Children.Add(button);
+            index++;
         }
 
-        dialog.Content = new StackPanel
+        StackPanel content = new()
         {
             Margin = new Thickness(14),
             Spacing = 10,
@@ -232,6 +246,7 @@ public class DialogService : IDialogService
                 row
             }
         };
+        dialog.Content = WrapWithShell(title, content);
 
         Show(dialog);
         return clicked;
@@ -242,36 +257,121 @@ public class DialogService : IDialogService
         {
             Title = title,
             Width = 420,
-            Height = 180,
+            SizeToContent = SizeToContent.Height,
             CanResize = false,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner
+            ShowActivated = true,
+            Topmost = true,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            SystemDecorations = SystemDecorations.None,
+            ExtendClientAreaToDecorationsHint = true,
+            ExtendClientAreaChromeHints = global::Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome,
+            ExtendClientAreaTitleBarHeightHint = 32
         };
+
+    private static Control WrapWithShell(string title, Control content)
+    {
+        Grid root = new();
+        root.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+        root.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+
+        WindowTitleBar titleBar = new()
+        {
+            TitleText = title,
+            IconSource = "avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
+        };
+
+        Grid.SetRow(titleBar, 0);
+        Grid.SetRow(content, 1);
+        root.Children.Add(titleBar);
+        root.Children.Add(content);
+        return root;
+    }
 
     private static void Show(Window dialog)
     {
         Window? owner = GetOwner();
         if (owner != null)
         {
-            dialog.ShowDialog(owner).GetAwaiter().GetResult();
+            ShowModalAndBlock(dialog, owner);
             return;
         }
 
-        Window tempOwner = new()
-        {
-            Width = 1,
-            Height = 1,
-            Opacity = 0,
-            ShowInTaskbar = false
-        };
-        tempOwner.Show();
-        dialog.ShowDialog(tempOwner).GetAwaiter().GetResult();
-        tempOwner.Close();
+        ShowAndBlock(dialog);
     }
 
     private static Window? GetOwner()
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return null;
-        return desktop.MainWindow;
+
+        Window? activeVisible = desktop.Windows.FirstOrDefault(w => w.IsVisible && w.IsActive);
+        if (activeVisible != null)
+            return activeVisible;
+
+        Window? visible = desktop.Windows.LastOrDefault(w => w.IsVisible);
+        if (visible != null)
+            return visible;
+
+        return desktop.MainWindow?.IsVisible == true ? desktop.MainWindow : null;
+    }
+
+    private static void ShowModalAndBlock(Window dialog, Window owner)
+    {
+        using CancellationTokenSource closedCts = new();
+        void OnClosed(object? _, EventArgs __) => closedCts.Cancel();
+        void OnOpened(object? _, EventArgs __) => FocusDefaultDialogAction(dialog);
+
+        dialog.Closed += OnClosed;
+        dialog.Opened += OnOpened;
+        _ = dialog.ShowDialog(owner);
+
+        try
+        {
+            Dispatcher.UIThread.MainLoop(closedCts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            // Expected when the dialog closes and cancels the nested loop.
+        }
+        finally
+        {
+            dialog.Closed -= OnClosed;
+            dialog.Opened -= OnOpened;
+        }
+    }
+
+    private static void ShowAndBlock(Window dialog)
+    {
+        using CancellationTokenSource closedCts = new();
+        void OnClosed(object? _, EventArgs __) => closedCts.Cancel();
+        void OnOpened(object? _, EventArgs __) => FocusDefaultDialogAction(dialog);
+
+        dialog.Closed += OnClosed;
+        dialog.Opened += OnOpened;
+        dialog.Show();
+
+        try
+        {
+            Dispatcher.UIThread.MainLoop(closedCts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            // Expected when the dialog closes and cancels the nested loop.
+        }
+        finally
+        {
+            dialog.Closed -= OnClosed;
+            dialog.Opened -= OnOpened;
+        }
+    }
+
+    private static void FocusDefaultDialogAction(Window dialog)
+    {
+        dialog.Activate();
+        dialog.Focus();
+        dialog.GetVisualDescendants()
+            .OfType<Button>()
+            .FirstOrDefault(b => b.IsDefault)?
+            .Focus();
     }
 }

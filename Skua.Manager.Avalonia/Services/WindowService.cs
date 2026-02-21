@@ -1,10 +1,13 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Skua.Core.Interfaces;
+using Skua.Shared.Avalonia.Controls.Shell;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Skua.Manager.Avalonia.Services;
 
@@ -64,17 +67,67 @@ public class WindowService : IWindowService
 
     private static Window CreateHostWindow(object viewModel, string title, double width, double height)
     {
-        return new Window
+        bool hasTemplate = Application.Current?.DataTemplates.Any(t => t.Match(viewModel)) == true;
+
+        Window window = new()
         {
             Title = title,
+            SystemDecorations = SystemDecorations.None,
+            ExtendClientAreaToDecorationsHint = true,
+            ExtendClientAreaChromeHints = global::Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome,
+            ExtendClientAreaTitleBarHeightHint = 32,
             Width = width,
             Height = height,
             WindowStartupLocation = WindowStartupLocation.CenterScreen,
             DataContext = viewModel,
-            Content = new ContentControl
+            Content = CreateShellContent(
+                title,
+                hasTemplate
+                    ? new ContentControl { Content = viewModel }
+                    : CreateFallbackContent(title))
+        };
+
+        return window;
+    }
+
+    private static Control CreateShellContent(string title, Control content)
+    {
+        Border contentHost = new()
+        {
+            Margin = new Thickness(4, 2, 4, 4),
+            Padding = new Thickness(3),
+            Child = content
+        };
+        contentHost.Classes.Add("card");
+
+        Grid root = new();
+        root.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+        root.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+
+        WindowTitleBar titleBar = new()
+        {
+            TitleText = title,
+            IconSource = "avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
+        };
+
+        Grid.SetRow(titleBar, 0);
+        Grid.SetRow(contentHost, 1);
+        root.Children.Add(titleBar);
+        root.Children.Add(contentHost);
+
+        return root;
+    }
+
+    private static Control CreateFallbackContent(string title) =>
+        new Border
+        {
+            Padding = new Thickness(16),
+            Child = new TextBlock
             {
-                Content = viewModel
+                Text = title,
+                FontSize = 16,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left
             }
         };
-    }
 }

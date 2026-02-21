@@ -5,6 +5,9 @@ using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.Models.GitHub;
 using Skua.Core.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Skua.Shared.Avalonia.ViewModels.ScriptRepo;
 
@@ -20,7 +23,8 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
 
     protected override void OnActivated()
     {
-        _ = RefreshScriptsList();
+        if (!RefreshScriptsCommand.IsRunning)
+            _ = RefreshScripts(default);
     }
 
     private readonly IGetScriptsService _getScriptsService;
@@ -34,8 +38,14 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     private RangedObservableCollection<ScriptInfoViewModel> _scripts = new();
 
     [ObservableProperty]
+    private RangedObservableCollection<ScriptInfoViewModel> _filteredScripts = new();
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DownloadedQuantity), nameof(OutdatedQuantity), nameof(ScriptQuantity), nameof(BotScriptQuantity))]
     private ScriptInfoViewModel? _selectedItem;
+
+    [ObservableProperty]
+    private string _searchText = string.Empty;
 
     [ObservableProperty]
     private bool _isBusy;
@@ -47,7 +57,11 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     public int OutdatedQuantity => _getScriptsService?.Outdated ?? 0;
     public int ScriptQuantity => _getScriptsService?.Total ?? 0;
     public int BotScriptQuantity => _scripts.Count;
+    public bool ShowStartButton => !IsManagerMode;
     public IRelayCommand OpenScriptFolderCommand { get; }
+
+    partial void OnIsManagerModeChanged(bool value) => OnPropertyChanged(nameof(ShowStartButton));
+    partial void OnSearchTextChanged(string value) => ApplySearchFilter();
 
     [RelayCommand]
     private void OpenScript()
@@ -101,6 +115,7 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
             _scripts.AddRange(scriptViewModels);
         }
 
+        ApplySearchFilter();
         OnPropertyChanged(nameof(Scripts));
         OnPropertyChanged(nameof(DownloadedQuantity));
         OnPropertyChanged(nameof(OutdatedQuantity));
@@ -183,5 +198,25 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
             DeleteCommand.Cancel();
         else
             ProgressReportMessage = string.Empty;
+    }
+
+    private void ApplySearchFilter()
+    {
+        IEnumerable<ScriptInfoViewModel> source = Scripts;
+        string query = SearchText.Trim();
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            source = source.Where(s =>
+                s.FileName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                s.InfoTags.Any(t => t.Contains(query, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        List<ScriptInfoViewModel> matches = source.ToList();
+        FilteredScripts.Clear();
+        FilteredScripts.AddRange(matches);
+
+        if (SelectedItem is not null && !matches.Contains(SelectedItem))
+            SelectedItem = null;
     }
 }
