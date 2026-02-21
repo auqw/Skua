@@ -5,6 +5,7 @@
              x:Name="Root">
   <Button Command="{Binding Command, ElementName=Root}"
           CommandParameter="{Binding CommandParameter, ElementName=Root}"
+          Classes="skua-button"
           Height="{Binding Height, ElementName=Root}"
           Padding="{Binding ButtonPadding, ElementName=Root}"
           HorizontalAlignment="Stretch"
@@ -12,9 +13,11 @@
           VerticalAlignment="Stretch">
     <StackPanel Orientation="Horizontal" Spacing="{Binding Spacing, ElementName=Root}">
       <materialIcons:MaterialIcon Kind="{Binding IconKind, ElementName=Root}"
+                                  Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                   Width="{Binding IconSize, ElementName=Root}"
                                   Height="{Binding IconSize, ElementName=Root}" />
       <TextBlock Text="{Binding Text, ElementName=Root}"
+                 Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                  VerticalAlignment="Center" />
     </StackPanel>
   </Button>

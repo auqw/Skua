@@ -43,6 +43,9 @@ public static class ThemeResourceApplicator
         Color switchTrackOn = Color.FromArgb(140, accent.R, accent.G, accent.B);
         Color switchTrackOff = Color.FromArgb(80, pressed.R, pressed.G, pressed.B);
 
+        // Scheme Target mapping from theme editor:
+        // Primary -> SkuaAccentColor / SkuaAccentBrush
+        // Text on Primary -> SkuaAccentForegroundColor / SkuaAccentForegroundBrush
         app.Resources["SkuaAccentColor"] = accent;
         app.Resources["SkuaAccentForegroundColor"] = accentForeground;
         app.Resources["SkuaAccentBrush"] = new SolidColorBrush(accent);

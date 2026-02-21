@@ -18,18 +18,6 @@
         <Style Selector="Border.account-row:pointerover">
             <Setter Property="Background" Value="{DynamicResource SkuaNavChipBrush}" />
         </Style>
-        <Style Selector="Button.group-action-button">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-            <Setter Property="Padding" Value="0" />
-        </Style>
-        <Style Selector="Button.group-action-button:pointerover">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-        </Style>
     </UserControl.Styles>
 
     <Grid Margin="2" RowDefinitions="Auto,*,Auto,Auto">
@@ -120,11 +108,19 @@
                         <Button x:Name="ShowAddAccountButton"
                                 Grid.Column="0"
                                 Click="ShowAddAccountButton_Click"
-                                Content="+"
                                 Width="26"
                                 Height="24"
+                                Padding="0"
                                 Margin="0,0,4,0"
-                                ToolTip.Tip="Add account" />
+                                Foreground="{DynamicResource SkuaAccentForegroundBrush}"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                ToolTip.Tip="Add account">
+                            <materialIcons:MaterialIcon Kind="Plus"
+                                                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                        Width="12"
+                                                        Height="12" />
+                        </Button>
 
                         <Button x:Name="BulkActionsAnchor"
                                 Grid.Column="1"
@@ -132,8 +128,12 @@
                                 Height="24"
                                 Margin="0,0,6,0"
                                 Click="OpenBulkActionsMenu_Click"
+                                Foreground="{DynamicResource SkuaAccentForegroundBrush}"
                                 ToolTip.Tip="Bulk actions">
-                            <materialIcons:MaterialIcon Kind="DotsVertical" Width="14" Height="14" />
+                            <materialIcons:MaterialIcon Kind="DotsVertical"
+                                                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                        Width="14"
+                                                        Height="14" />
                             <Button.ContextMenu>
                                 <ContextMenu Placement="Bottom">
                                     <MenuItem Header="Select all" Command="{Binding SelectAllCommand}">
@@ -184,6 +184,7 @@
                         </Button>
 
                         <ToggleButton Grid.Column="5"
+                                      Classes="app-toggle"
                                       IsChecked="{Binding ShowTags}"
                                       Height="24"
                                       MinWidth="52"
@@ -196,6 +197,7 @@
 
                         <ToggleButton x:Name="FilterPopupAnchor"
                                       Grid.Column="6"
+                                      Classes="app-toggle"
                                       MinWidth="56"
                                       Height="24"
                                       Margin="4,0,0,0"
@@ -208,6 +210,7 @@
                         </ToggleButton>
 
                         <ToggleButton Grid.Column="7"
+                                      Classes="app-toggle"
                                       IsChecked="{Binding ShowGridView}"
                                       Height="24"
                                       MinWidth="52"
@@ -266,7 +269,41 @@
 
             <TabItem Header="Groups">
                 <Grid RowDefinitions="Auto,*" Margin="0,4,0,0">
+                    <DockPanel Grid.Row="0"
+                               Margin="0,6,0,6"
+                               LastChildFill="False">
+                        <Button DockPanel.Dock="Right"
+                                Height="28"
+                                Classes="skua-button"
+                                Padding="6,0"
+                                Click="AddGroup_Click"
+                                ToolTip.Tip="Create New Group">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <materialIcons:MaterialIcon Kind="Plus"
+                                                            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                            Width="14"
+                                                            Height="14"
+                                                            VerticalAlignment="Center" />
+                                <TextBlock Text="New Group"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                           FontSize="11"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </DockPanel>
 
+                    <ScrollViewer Grid.Row="1"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding Groups}"
+                                      Margin="6,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <uc:GroupItemUserControl />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
         </TabControl>

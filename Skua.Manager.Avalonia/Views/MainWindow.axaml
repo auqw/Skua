@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sharedShell="clr-namespace:Skua.Shared.Avalonia.Controls.Shell;assembly=Skua.Shared.Avalonia"
         x:Class="Skua.Manager.Avalonia.Views.MainWindow"
+        Classes="skua"
         d:DesignWidth="800"
         d:DesignHeight="500"
         Title="{Binding Title}"

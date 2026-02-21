@@ -13,7 +13,12 @@ internal static class Program
     }
 
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
-            .UsePlatformDetect()
-            .LogToTrace();
+    {
+        AppBuilder builder = AppBuilder.Configure<App>()
+            .UsePlatformDetect();
+#if DEBUG
+        builder = builder.WithDeveloperTools();
+#endif
+        return builder.LogToTrace();
+    }
 }
