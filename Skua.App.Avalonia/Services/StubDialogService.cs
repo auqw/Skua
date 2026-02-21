@@ -4,7 +4,6 @@ using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Models;
 using Skua.Shared.Avalonia.ViewModels.Dialogs;
 using System;
-using WinForms = System.Windows.Forms;
 
 namespace Skua.App.Avalonia.Services;
 
@@ -33,12 +32,12 @@ public class StubDialogService : IDialogService
 
     public void ShowMessageBox(string message, string caption)
     {
-        WinForms.MessageBox.Show(message, caption, WinForms.MessageBoxButtons.OK, WinForms.MessageBoxIcon.Information);
+        //WinForms.MessageBox.Show(message, caption, WinForms.MessageBoxButtons.OK, WinForms.MessageBoxIcon.Information);
     }
 
     public bool? ShowMessageBox(string message, string caption, bool yesAndNo)
     {
-        if (!yesAndNo)
+        /*if (!yesAndNo)
         {
             WinForms.MessageBox.Show(message, caption, WinForms.MessageBoxButtons.OK, WinForms.MessageBoxIcon.Information);
             return true;
@@ -49,12 +48,14 @@ public class StubDialogService : IDialogService
             caption,
             WinForms.MessageBoxButtons.YesNo,
             WinForms.MessageBoxIcon.Question);
-        return result == WinForms.DialogResult.Yes;
+        return result == WinForms.DialogResult.Yes;*/
+
+        return null;
     }
 
     public DialogResult ShowMessageBox(string message, string caption, params string[] buttons)
     {
-        if (buttons is null || buttons.Length == 0)
+        /*if (buttons is null || buttons.Length == 0)
         {
             WinForms.MessageBox.Show(message, caption, WinForms.MessageBoxButtons.OK, WinForms.MessageBoxIcon.Information);
             return new DialogResult("OK", 0);
@@ -71,7 +72,9 @@ public class StubDialogService : IDialogService
         }
 
         WinForms.MessageBox.Show(message, caption, WinForms.MessageBoxButtons.OK, WinForms.MessageBoxIcon.Information);
-        return new DialogResult(buttons[0], 0);
+        return new DialogResult(buttons[0], 0);*/
+        
+        return new DialogResult("", 0);
     }
 
     public IInputDialogViewModel CreateInputDialog(string title, string dialogHint)
