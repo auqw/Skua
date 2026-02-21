@@ -347,13 +347,15 @@
         </TabControl>
 
         <Border Grid.Row="2"
-                Margin="0,4,0,4"
+                Margin="0,4,0,1"
                 CornerRadius="4"
-                Padding="5">
+                Padding="5,2">
             <Grid ColumnDefinitions="*,Auto,Auto">
                 <ComboBox Grid.Column="0"
+                          Height="30"
                           ItemsSource="{Binding ServerList}"
                           SelectedItem="{Binding SelectedServer}"
+                          VerticalAlignment="Stretch"
                           Margin="0,0,4,0">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -361,22 +363,19 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button Grid.Column="1"
-                        Command="{Binding StartAccountsCommand}"
-                        Margin="0,0,4,0">
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <materialIcons:MaterialIcon Kind="PlayCircleOutline" Width="14" Height="14" />
-                        <TextBlock Text="Start Selected" />
-                    </StackPanel>
-                </Button>
-                <Button Grid.Column="2"
-                        Command="{Binding StartAllAccountsCommand}"
-                        >
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <materialIcons:MaterialIcon Kind="PlayCircle" Width="14" Height="14" />
-                        <TextBlock Text="Start All" />
-                    </StackPanel>
-                </Button>
+                <sharedControls:IconTextButton Grid.Column="1"
+                                               Height="30"
+                                               Margin="0,0,4,0"
+                                               VerticalAlignment="Stretch"
+                                               Command="{Binding StartAccountsCommand}"
+                                               IconKind="PlayCircleOutline"
+                                               Text="Start Selected" />
+                <sharedControls:IconTextButton Grid.Column="2"
+                                               Height="30"
+                                               VerticalAlignment="Stretch"
+                                               Command="{Binding StartAllAccountsCommand}"
+                                               IconKind="PlayCircle"
+                                               Text="Start All" />
             </Grid>
         </Border>
 
