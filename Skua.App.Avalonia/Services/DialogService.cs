@@ -1,17 +1,18 @@
 using Skua.Core.Interfaces;
 using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Models;
-using Skua.App.Avalonia.ViewModels;
-using Skua.App.Avalonia.ViewModels.AdvancedSkills;
-using Skua.App.Avalonia.ViewModels.Dialogs;
 using Skua.Shared.Avalonia.ViewModels.Dialogs;
 using System;
-using System.Drawing;
-using System.Linq;
-using WinForms = System.Windows.Forms;
 
 namespace Skua.App.Avalonia.Services;
 
+#if IS_WINDOWS
+using Skua.App.Avalonia.ViewModels;
+using Skua.App.Avalonia.ViewModels.AdvancedSkills;
+using Skua.App.Avalonia.ViewModels.Dialogs;
+using System.Drawing;
+using System.Linq;
+using WinForms = System.Windows.Forms;
 public class DialogService : IDialogService
 {
     public bool? ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : class
@@ -393,3 +394,49 @@ public class DialogService : IDialogService
             target.MultiAuraChecks.Add(new AuraCheckViewModel(check));
     }
 }
+#else
+public class DialogService : IDialogService
+{
+    // TODO implement these properly
+    public bool? ShowDialog<TViewModel>(TViewModel viewModel) where TViewModel : class
+    {
+        return null;
+    }
+
+    public bool? ShowDialog<TViewModel>(TViewModel viewModel, string Title) where TViewModel : class
+    {
+        return null;
+    }
+
+    public bool? ShowDialog<TViewModel>(TViewModel viewModel, Action<TViewModel> callback) where TViewModel : class
+    {
+        callback?.Invoke(viewModel);
+        return null;
+    }
+
+    public void ShowDialog(IOptionContainer optionContainer, Action<IOptionContainerViewModel> callback)
+    {
+        // Avalonia dialog host is not wired yet; no-op stub keeps flows non-fatal.
+    }
+
+    public void ShowMessageBox(string message, string caption)
+    {
+        
+    }
+
+    public bool? ShowMessageBox(string message, string caption, bool yesAndNo)
+    {
+        return null;
+    }
+
+    public DialogResult ShowMessageBox(string message, string caption, params string[] buttons)
+    {
+        return new DialogResult("", 0);
+    }
+
+    public IInputDialogViewModel CreateInputDialog(string title, string dialogHint)
+    {
+        return new InputDialogViewModel(title, dialogHint);
+    }
+}
+#endif

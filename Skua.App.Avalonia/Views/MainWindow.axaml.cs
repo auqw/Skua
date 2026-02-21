@@ -1,18 +1,23 @@
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Input;
 using Avalonia.Threading;
-using AxShockwaveFlashObjects;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.App.Avalonia.Services;
 using Skua.App.Avalonia.ViewModels;
 using Skua.App.Avalonia.ViewModels.MainMenu;
 using Skua.Core.Interfaces;
-using Skua.Core.Messaging;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+
+#if IS_WINDOWS
+using Avalonia.Input;
+using AxShockwaveFlashObjects;
+using Skua.Core.Messaging;
+using System.Runtime.Versioning;
+#endif
 
 namespace Skua.App.Avalonia.Views;
 
@@ -42,9 +47,11 @@ public partial class MainWindow : Window
         DataContext = _mainViewModel;
         ConfigureTopActions();
         ConfigureMainMenu();
-        RegisterMessages();
         RegisterLifecycleHandlers();
         
+        #if IS_WINDOWS
+        RegisterMessages();
+        #endif
     }
 
     private void ConfigureTopActions()
@@ -97,10 +104,12 @@ public partial class MainWindow : Window
         _mainMenuVm.Plugins.CollectionChanged += PluginsChanged;
     }
 
+    #if IS_WINDOWS
     private void RegisterMessages()
     {
         WeakReferenceMessenger.Default.Register<MainWindow, FlashChangedMessage<AxShockwaveFlash>>(this, static (r, m) => r.OnFlashControlChanged(m.Flash));
     }
+    #endif
 
     private void RegisterLifecycleHandlers()
     {
@@ -112,7 +121,9 @@ public partial class MainWindow : Window
     {
         _startup.Execute();
         _flash.FlashCall += OnFlashCall;
-        _flash.InitializeFlash();
+        
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) _flash.InitializeFlash();
+        
         UpdateMetrics();
         _metricsTimer.Start();
     }
@@ -126,11 +137,13 @@ public partial class MainWindow : Window
         _mainMenuVm.Plugins.CollectionChanged -= PluginsChanged;
         WeakReferenceMessenger.Default.UnregisterAll(this);
     }
-
+    
+    #if IS_WINDOWS
     private void OnFlashControlChanged(AxShockwaveFlash flash)
     {
         FlashHost.SetChild(flash);
     }
+    #endif
 
     private void OnFlashCall(string function, params object[] args)
     {

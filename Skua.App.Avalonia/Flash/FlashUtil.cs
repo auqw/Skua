@@ -1,11 +1,16 @@
+using Skua.Core.Interfaces;
+using System;
+using System.Xml.Linq;
+
+namespace Skua.App.Avalonia.Flash;
+
+#if IS_WINDOWS
 using AxShockwaveFlashObjects;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Flash;
-using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.Utils;
-using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
@@ -14,10 +19,6 @@ using System.Security;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using System.Xml.Linq;
-
-namespace Skua.App.Avalonia.Flash;
-
 public class FlashUtil : IFlashUtil
 {
     public FlashUtil(IMessenger messenger, Lazy<IScriptManager> manager)
@@ -266,3 +267,43 @@ public class FlashUtil : IFlashUtil
         }
     }
 }
+#else
+public class FlashUtil : IFlashUtil
+{
+    public void Dispose()
+    {
+        throw new NotImplementedException();
+    }
+
+    public event FlashCallHandler? FlashCall;
+    public void InitializeFlash()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string? Call(string function, params object[] args)
+    {
+        throw new NotImplementedException();
+    }
+
+    public T? Call<T>(string function, params object[] args)
+    {
+        throw new NotImplementedException();
+    }
+
+    public object? Call(string function, Type type, params object[] args)
+    {
+        throw new NotImplementedException();
+    }
+
+    public object FromFlashXml(XElement el)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IFlashObject<T> CreateFlashObject<T>(string path)
+    {
+        throw new NotImplementedException();
+    }
+}
+#endif
