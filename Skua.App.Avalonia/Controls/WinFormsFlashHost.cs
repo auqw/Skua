@@ -1,10 +1,10 @@
 using Avalonia.Controls;
+using Avalonia.Platform;
+using System;
 
 namespace Skua.App.Avalonia.Controls;
 
 #if IS_WINDOWS
-using Avalonia.Platform;
-using System;
 using WinForms = System.Windows.Forms;
 public class WinFormsFlashHost : NativeControlHost
 {
