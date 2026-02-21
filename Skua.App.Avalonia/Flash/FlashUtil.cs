@@ -1,11 +1,16 @@
+using Skua.Core.Interfaces;
+using System;
+using System.Xml.Linq;
+
+namespace Skua.App.Avalonia.Flash;
+
+#if IS_WINDOWS
 using AxShockwaveFlashObjects;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Flash;
-using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.Utils;
-using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
@@ -13,11 +18,6 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading;
-using System.Xml.Linq;
-
-namespace Skua.App.Avalonia.Flash;
-
-#if IS_WINDOWS
 using System.Windows.Forms;
 public class FlashUtil : IFlashUtil
 {
