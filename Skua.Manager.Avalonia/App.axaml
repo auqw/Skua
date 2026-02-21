@@ -1,6 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:fluent="clr-namespace:Avalonia.Themes.Fluent;assembly=Avalonia.Themes.Fluent"
+             xmlns:material="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:managerVms="clr-namespace:Skua.Manager.Avalonia.ViewModels"
              xmlns:conv="clr-namespace:Skua.Manager.Avalonia.Converters"
@@ -16,12 +16,7 @@
         <conv:ServerPingTextConverter x:Key="ServerPingTextConverter" />
     </Application.Resources>
     <Application.Styles>
-        <FluentTheme>
-            <FluentTheme.Palettes>
-                <fluent:ColorPaletteResources x:Key="Light" Accent="#7D9AA9" />
-                <fluent:ColorPaletteResources x:Key="Dark" Accent="#7D9AA9" />
-            </FluentTheme.Palettes>
-        </FluentTheme>
+        <material:MaterialTheme BaseTheme="Dark" PrimaryColor="BlueGrey" SecondaryColor="Red"/>
         <materialIcons:MaterialIconStyles />
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
         <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Theme.axaml" />
