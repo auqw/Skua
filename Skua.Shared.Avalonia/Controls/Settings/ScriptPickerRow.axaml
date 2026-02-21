@@ -3,10 +3,7 @@
              xmlns:buttonControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons"
              x:Class="Skua.Shared.Avalonia.Controls.Settings.ScriptPickerRow"
              x:Name="Root">
-  <Border BorderBrush="{DynamicResource SkuaBorderBrush}"
-          BorderThickness="1"
-          CornerRadius="4"
-          Padding="5">
+  <Border Padding="5">
     <Grid ColumnDefinitions="*,Auto,Auto,Auto" VerticalAlignment="Center">
       <Border Grid.Column="0"
               Background="{DynamicResource SkuaSurfaceAltBrush}"
