@@ -1,20 +1,23 @@
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Input;
 using Avalonia.Threading;
-using AxShockwaveFlashObjects;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.App.Avalonia.Services;
 using Skua.App.Avalonia.ViewModels;
 using Skua.App.Avalonia.ViewModels.MainMenu;
 using Skua.Core.Interfaces;
-using Skua.Core.Messaging;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+
+#if IS_WINDOWS
+using Avalonia.Input;
+using AxShockwaveFlashObjects;
+using Skua.Core.Messaging;
 using System.Runtime.Versioning;
+#endif
 
 namespace Skua.App.Avalonia.Views;
 

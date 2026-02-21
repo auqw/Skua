@@ -1,11 +1,11 @@
 using Skua.Core.Interfaces;
-using Skua.Core.Models;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Skua.App.Avalonia.Services;
 
 #if IS_WINDOWS
+using Skua.Core.Models;
+using System.IO;
 using WinForms = System.Windows.Forms;
 public class FileDialogService : IFileDialogService
 {

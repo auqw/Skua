@@ -1,17 +1,17 @@
 using Skua.Core.Interfaces;
 using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Models;
-using Skua.App.Avalonia.ViewModels;
-using Skua.App.Avalonia.ViewModels.AdvancedSkills;
-using Skua.App.Avalonia.ViewModels.Dialogs;
 using Skua.Shared.Avalonia.ViewModels.Dialogs;
 using System;
-using System.Drawing;
-using System.Linq;
 
 namespace Skua.App.Avalonia.Services;
 
 #if IS_WINDOWS
+using Skua.App.Avalonia.ViewModels;
+using Skua.App.Avalonia.ViewModels.AdvancedSkills;
+using Skua.App.Avalonia.ViewModels.Dialogs;
+using System.Drawing;
+using System.Linq;
 using WinForms = System.Windows.Forms;
 public class DialogService : IDialogService
 {
