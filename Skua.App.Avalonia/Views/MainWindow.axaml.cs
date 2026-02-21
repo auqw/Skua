@@ -2,7 +2,6 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Threading;
-using AxShockwaveFlashObjects;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.App.Avalonia.Services;
@@ -99,7 +98,7 @@ public partial class MainWindow : Window
 
     private void RegisterMessages()
     {
-        WeakReferenceMessenger.Default.Register<MainWindow, FlashChangedMessage<AxShockwaveFlash>>(this, static (r, m) => r.OnFlashControlChanged(m.Flash));
+        //WeakReferenceMessenger.Default.Register<MainWindow, FlashChangedMessage<AxShockwaveFlash>>(this, static (r, m) => r.OnFlashControlChanged(m.Flash));
     }
 
     private void RegisterLifecycleHandlers()
@@ -111,15 +110,15 @@ public partial class MainWindow : Window
     private void MainWindow_Opened(object? sender, EventArgs e)
     {
         _startup.Execute();
-        _flash.FlashCall += OnFlashCall;
-        _flash.InitializeFlash();
+        //_flash.FlashCall += OnFlashCall;
+        //_flash.InitializeFlash();
         UpdateMetrics();
         _metricsTimer.Start();
     }
 
     private void MainWindow_Closed(object? sender, EventArgs e)
     {
-        _flash.FlashCall -= OnFlashCall;
+        //_flash.FlashCall -= OnFlashCall;
         _metricsTimer.Stop();
         _startup.Dispose();
         _mainMenuVm.MainMenuItems.CollectionChanged -= MainMenuItemsChanged;
@@ -127,7 +126,7 @@ public partial class MainWindow : Window
         WeakReferenceMessenger.Default.UnregisterAll(this);
     }
 
-    private void OnFlashControlChanged(AxShockwaveFlash flash)
+    /*private void OnFlashControlChanged(AxShockwaveFlash flash)
     {
         FlashHost.SetChild(flash);
     }
@@ -143,7 +142,7 @@ public partial class MainWindow : Window
                 FlashHost.IsVisible = true;
             });
         }
-    }
+    }*/
 
     private void MainMenuItemsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {

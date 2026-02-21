@@ -3,7 +3,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Skua.App.Avalonia.Flash;
@@ -14,10 +13,8 @@ using Skua.Core.AppStartup;
 using Skua.Core.Interfaces;
 using Skua.Core.Utils;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using WinForms = System.Windows.Forms;
 
 namespace Skua.App.Avalonia;
 
@@ -41,14 +38,14 @@ public partial class App : Application
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<IDispatcherService, DispatcherService>();
         services.AddSingleton<IClipboardService, ClipboardService>();
-        services.AddSingleton<IDialogService, DialogService>();
+        services.AddSingleton<IDialogService, StubDialogService>();
         services.AddSingleton<IWindowService, WindowService>();
-        services.AddSingleton<IFileDialogService, FileDialogService>();
+        services.AddSingleton<IFileDialogService, StubFileDialogService>();
         services.AddSingleton<IThemeService, Skua.Shared.Avalonia.Services.AvaloniaThemeService>();
         services.AddSingleton(HotKeys.CreateHotKeys);
         services.AddSingleton<IHotKeyService, HotKeyService>();
         services.AddSingleton<ISoundService, SoundService>();
-        services.AddSingleton<IFlashUtil, FlashUtil>();
+        services.AddSingleton<IFlashUtil, StubFlashUtil>();
         services.AddSingleton<SkuaStartupHandler>();
         services.AddSkuaMainAppViewModels();
 
@@ -98,11 +95,11 @@ public partial class App : Application
         try
         {
             string details = $"Unhandled exception source: {source}\r\n\r\n{ex.GetType().FullName}: {ex.Message}\r\n\r\n{ex.StackTrace}";
-            WinForms.MessageBox.Show(
+            /*WinForms.MessageBox.Show(
                 details,
                 "Skua Client Exception",
                 WinForms.MessageBoxButtons.OK,
-                WinForms.MessageBoxIcon.Error);
+                WinForms.MessageBoxIcon.Error);*/
         }
         catch
         {

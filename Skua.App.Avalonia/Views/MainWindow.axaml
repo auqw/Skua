@@ -2,7 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="clr-namespace:Skua.App.Avalonia.Controls"
         xmlns:sharedShell="clr-namespace:Skua.Shared.Avalonia.Controls.Shell;assembly=Skua.Shared.Avalonia"
         x:Class="Skua.App.Avalonia.Views.MainWindow"
         
@@ -91,7 +90,7 @@
       </Grid>
 
       <Grid Grid.Row="1" Background="#000000">
-        <controls:WinFormsFlashHost x:Name="FlashHost" IsVisible="False" />
+        <!--<controls:WinFormsFlashHost x:Name="FlashHost" IsVisible="False" />-->
         <ProgressBar x:Name="LoadingBar"
                      Width="150"
                      Height="8"
