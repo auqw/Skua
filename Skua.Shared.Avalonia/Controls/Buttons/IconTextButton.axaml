@@ -5,14 +5,17 @@
              x:Name="Root">
   <Button Command="{Binding Command, ElementName=Root}"
           CommandParameter="{Binding CommandParameter, ElementName=Root}"
+          Height="{Binding Height, ElementName=Root}"
           Padding="{Binding ButtonPadding, ElementName=Root}"
           HorizontalAlignment="Stretch"
+          VerticalContentAlignment="Center"
           VerticalAlignment="Stretch">
     <StackPanel Orientation="Horizontal" Spacing="{Binding Spacing, ElementName=Root}">
       <materialIcons:MaterialIcon Kind="{Binding IconKind, ElementName=Root}"
                                   Width="{Binding IconSize, ElementName=Root}"
                                   Height="{Binding IconSize, ElementName=Root}" />
-      <TextBlock Text="{Binding Text, ElementName=Root}" />
+      <TextBlock Text="{Binding Text, ElementName=Root}"
+                 VerticalAlignment="Center" />
     </StackPanel>
   </Button>
 </UserControl>
