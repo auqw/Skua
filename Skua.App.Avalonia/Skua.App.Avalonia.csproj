@@ -16,6 +16,15 @@
         <DefineConstants>$(DefineConstants);IS_WINDOWS</DefineConstants>
     </PropertyGroup>
     
+    <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <Reference Include="AxInterop.ShockwaveFlashObjects">
+            <HintPath>Assemblies\AxInterop.ShockwaveFlashObjects.dll</HintPath>
+        </Reference>
+        <Reference Include="Interop.ShockwaveFlashObjects">
+            <HintPath>Assemblies\Interop.ShockwaveFlashObjects.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    
     <ItemGroup>
         <PackageReference Include="Avalonia" />
         <PackageReference Include="Avalonia.Desktop" />
@@ -34,15 +43,6 @@
         <ProjectReference Include="..\Skua.Core.Interfaces\Skua.Core.Interfaces.csproj" />
         <ProjectReference Include="..\Skua.Core.Models\Skua.Core.Models.csproj" />
         <ProjectReference Include="..\Skua.Shared.Avalonia\Skua.Shared.Avalonia.csproj" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <Reference Include="AxInterop.ShockwaveFlashObjects">
-          <HintPath>Assemblies\AxInterop.ShockwaveFlashObjects.dll</HintPath>
-        </Reference>
-        <Reference Include="Interop.ShockwaveFlashObjects">
-          <HintPath>Assemblies\Interop.ShockwaveFlashObjects.dll</HintPath>
-        </Reference>
     </ItemGroup>
     
     <ItemGroup>
