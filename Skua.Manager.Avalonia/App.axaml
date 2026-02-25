@@ -19,10 +19,7 @@
         <material:MaterialTheme BaseTheme="Dark" PrimaryColor="BlueGrey" SecondaryColor="Red"/>
         <materialIcons:MaterialIconStyles />
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
-        <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Theme.axaml" />
-        <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Controls.axaml" />
-        <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Navigation.axaml" />
-        <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Containers.axaml" />
+        <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/BaseTheme.axaml" />
     </Application.Styles>
     <TrayIcon.Icons>
         <TrayIcons>
