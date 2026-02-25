@@ -177,6 +177,7 @@ public partial class App : Application
         StrongReferenceMessenger.Default.Reset();
     }
 
+    // TODO: Client and manager share these theme events. So should they should probably be combined
     private void OnThemeChanged(object? theme)
     {
         IThemeService themeService = Ioc.Default.GetRequiredService<IThemeService>();
