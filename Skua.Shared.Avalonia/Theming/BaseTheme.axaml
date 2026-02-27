@@ -8,6 +8,7 @@
 
     <Styles.Resources>
         <ResourceDictionary>
+            <Bitmap x:Key="SkuaImage">avares://Skua.Shared.Avalonia/Assets/SkuaImage.png</Bitmap>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://Skua.Shared.Avalonia/Theming/Colors.axaml"/>
             </ResourceDictionary.MergedDictionaries>

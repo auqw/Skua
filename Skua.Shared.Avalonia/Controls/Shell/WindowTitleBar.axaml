@@ -20,7 +20,7 @@
               Height="30"
               Classes="titlebar-app-badge"
               CornerRadius="15" />
-      <Image Source="{Binding IconSource, ElementName=Root}"
+      <Image Source="{StaticResource SkuaImage}"
              Width="32"
              Height="32"
              VerticalAlignment="Center" />

@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace Skua.Shared.Avalonia.Controls.Shell;
 
@@ -10,19 +11,10 @@ public partial class WindowTitleBar : UserControl
     public static readonly StyledProperty<string> TitleTextProperty =
         AvaloniaProperty.Register<WindowTitleBar, string>(nameof(TitleText), "Skua");
 
-    public static readonly StyledProperty<string> IconSourceProperty =
-        AvaloniaProperty.Register<WindowTitleBar, string>(nameof(IconSource), "avares://Skua.Shared.Avalonia/Assets/SkuaImage.png");
-
     public string TitleText
     {
         get => GetValue(TitleTextProperty);
         set => SetValue(TitleTextProperty, value);
-    }
-
-    public string IconSource
-    {
-        get => GetValue(IconSourceProperty);
-        set => SetValue(IconSourceProperty, value);
     }
 
     public WindowTitleBar()

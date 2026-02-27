@@ -276,8 +276,7 @@ public class DialogService : IDialogService
 
         WindowTitleBar titleBar = new()
         {
-            TitleText = title,
-            IconSource = "avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
+            TitleText = title
         };
 
         Grid.SetRow(titleBar, 0);
