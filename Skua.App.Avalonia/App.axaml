@@ -46,6 +46,7 @@
     </TrayIcons>
   </TrayIcon.Icons>
   
+  <!--TODO: Look into using View Locator to clean this up. https://docs.avaloniaui.net/docs/concepts/view-locator-->
   <Application.DataTemplates>
     <DataTemplate DataType="vms:BotWindowViewModel">
       <Grid ColumnDefinitions="210,*"
