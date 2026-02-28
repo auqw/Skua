@@ -14,14 +14,13 @@
                 
                 <ResourceInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Buttons.axaml"/>
                 <ResourceInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ToggleButtons.axaml"/>
+                <ResourceInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ListBoxes.axaml"/>
+                <ResourceInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/CheckBoxes.axaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Styles.Resources>
     
-    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Borders.axaml"/>
-    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/CheckBoxes.axaml"/>
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ComboBoxes.axaml"/>
-    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ListBoxes.axaml"/>
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Menus.axaml"/>
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ScrollViewers.axaml"/>
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/TextBlocks.axaml"/>
