@@ -5,7 +5,7 @@
         xmlns:controls="clr-namespace:Skua.App.Avalonia.Controls"
         xmlns:sharedShell="clr-namespace:Skua.Shared.Avalonia.Controls.Shell;assembly=Skua.Shared.Avalonia"
         x:Class="Skua.App.Avalonia.Views.MainWindow"
-        Classes="skua"
+        
         
         mc:Ignorable="d" d:DesignWidth="948" d:DesignHeight="600"
         Width="948" Height="600"
