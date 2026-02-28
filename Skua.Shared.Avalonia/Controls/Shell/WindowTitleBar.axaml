@@ -36,13 +36,13 @@
     <StackPanel Grid.Column="2"
                 Orientation="Horizontal">
       <Button x:Name="MinimizeButton"
-              Classes="titlebar flat"
+              Classes="titlebar"
               Content="{materialIcons:MaterialIconExt Kind=WindowMinimize, IconSize=12}" />
       <Button x:Name="MaximizeButton"
-              Classes="titlebar flat"
+              Classes="titlebar"
               Content="{materialIcons:MaterialIconExt Kind=WindowMaximize, IconSize=12}" />
       <Button x:Name="CloseButton"
-              Classes="titlebar flat titlebar-close"
+              Classes="titlebar"
               Content="{materialIcons:MaterialIconExt Kind=WindowClose, IconSize=12}" />
     </StackPanel>
   </Grid>

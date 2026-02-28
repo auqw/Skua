@@ -49,6 +49,29 @@
             <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
         </Style>
+        
+        <Style Selector="^.titlebar">
+            <Setter Property="Width" Value="36" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+        </Style>
+
+        <Style Selector="^.titlebar:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+        </Style>
+
+        <Style Selector="^.titlebar:pressed">
+            <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+        </Style>
+
+        <Style Selector="^.titlebar-close:pointerover">
+            <Setter Property="Background" Value="#CCB93A32" />
+            <Setter Property="Foreground" Value="#FFFFFFFF" />
+        </Style>
     </ControlTheme>
     
     
@@ -132,26 +155,5 @@
 
     
     
-    <Style Selector="Button.titlebar">
-        <Setter Property="Width" Value="36" />
-        <Setter Property="Height" Value="32" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="CornerRadius" Value="0" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-    </Style>
-
-    <Style Selector="Button.titlebar:pointerover">
-        <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
-    </Style>
-
-    <Style Selector="Button.titlebar:pressed">
-        <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
-    </Style>
-
-    <Style Selector="Button.titlebar-close:pointerover">
-        <Setter Property="Background" Value="#CCB93A32" />
-        <Setter Property="Foreground" Value="#FFFFFFFF" />
-    </Style>-->
+    -->
 </ResourceDictionary>
