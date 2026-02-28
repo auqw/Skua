@@ -7,7 +7,6 @@
     </Design.PreviewWith>
     
     <ControlTheme x:Key="{x:Type ToggleButton}" TargetType="ToggleButton">
-        <Setter Property="Background" Value="Red" />
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center" />
         
