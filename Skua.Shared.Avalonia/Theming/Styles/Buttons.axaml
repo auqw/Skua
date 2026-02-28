@@ -1,21 +1,121 @@
-<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  
-    <Style Selector="Button.topbar-action, Button.toolbar">
-        <Setter Property="Height" Value="25" />
-        <Setter Property="MinWidth" Value="34" />
-        <Setter Property="Padding" Value="10,0" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-    </Style>
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:buttons="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:shell="clr-namespace:Skua.Shared.Avalonia.Controls.Shell">
+    
+    <Design.PreviewWith>
+        <Grid RowDefinitions="Auto,*"
+              Width="350"
+              Height="450">
+            <shell:WindowTitleBar Grid.Row="0" x:Name="TitleBar" TitleText="Load Script" />
+            
+            <Grid Row="1" RowDefinitions="Auto,Auto,*,Auto" Margin="3">
+                <StackPanel Grid.Row="0" HorizontalAlignment="Center">
+                    <TextBlock FontSize="20" Text="Status: [No Script Loaded]" />
+                    <TextBlock Text="" />
+                </StackPanel>
+                <Grid Grid.Row="1"
+                      Margin="0,3"
+                      RowDefinitions="Auto,Auto,Auto,Auto"
+                      ColumnDefinitions="*,*">
+                    <ToggleButton x:Name="AutoToggle" Classes="topbar-action" Content="Auto" />
+                    <!--<Button Grid.Row="0" Grid.Column="0" Classes="skua-button" Margin="0,0,3,3" Content="Load Script" Command="{Binding LoadScriptCommand}" />
+                    <Button Grid.Row="0" Grid.Column="1" Classes="skua-button" Margin="3,0,0,3" Content="Open VSCode" Command="{Binding OpenVSCodeCommand}" />
+                    <Button Grid.Row="1" Grid.Column="0" Classes="skua-button" Margin="0,3,3,3" Content="Edit Script" Command="{Binding EditScriptCommand}" />
+                    <Button Grid.Row="1" Grid.Column="1" Classes="skua-button" Margin="3,3,0,3" Content="Search Scripts" Command="{Binding OpenScriptRepoCommand}" />
+                    <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Classes="skua-button" Margin="0,3,0,3" Content="Edit Script Options" Command="{Binding EditScriptConfigCommand}" IsEnabled="{Binding ToggleScriptEnabled}" />
+                    <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Classes="skua-button" Margin="0,3,0,0" Content="Start/Stop Script" Command="{Binding ToggleScriptCommand}" IsEnabled="{Binding ToggleScriptEnabled}" />-->
+                </Grid>
+                <ContentControl Grid.Row="2"
+                                Content="{Binding ScriptLogs}" />
+                
+                <Button Grid.Row="3"
+                        Classes="skua-button"
+                        Margin="0,3,0,0"
+                        Content="Report Issues to @Tato2/@bogalj"
+                        Command="{Binding OpenBrowserFormCommand}" />
+            </Grid>
+        </Grid>
+    </Design.PreviewWith>
+    
+    <ControlTheme x:Key="{x:Type Button}" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        
+        <Style Selector="^.skua-button">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10,2" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        
+        <Style Selector="^.skua-button:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SkuaAccentHoverBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentHoverBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
+        </Style>
 
-    <Style Selector="Button.topbar-action:pointerover, Button.toolbar:pointerover">
-        <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-    </Style>
+        <Style Selector="^.skua-button:pressed">
+            <Setter Property="Background" Value="{DynamicResource SkuaAccentPressedBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentPressedBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
+        </Style>
+
+        <Style Selector="^.skua-button:disabled">
+            <Setter Property="Opacity" Value="0.65" />
+        </Style>
+        
+        <Style Selector="^.topbar-action">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="MaxHeight" Value="25" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+
+        <Style Selector="^.topbar-action:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+        </Style>
+    </ControlTheme>
+    
+    
+    
+    <ControlTheme x:Key="{x:Type buttons:IconTextButton}" TargetType="buttons:IconTextButton">
+        
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Padding" Value="7,2" />
+        
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Button Command="{TemplateBinding Command}"
+                        CommandParameter="{TemplateBinding CommandParameter}"
+                        Padding="{TemplateBinding ButtonPadding}"
+                        HorizontalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        VerticalAlignment="Stretch">
+                    <StackPanel Orientation="Horizontal" Spacing="{TemplateBinding Spacing}">
+                        <materialIcons:MaterialIcon Kind="{TemplateBinding IconKind}"
+                                                    Width="{TemplateBinding IconSize}"
+                                                    Height="{TemplateBinding IconSize}"
+                                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                        <TextBlock Text="{TemplateBinding Text}"
+                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+    
+    <!--
 
     <Style Selector="Button.danger-icon, Button.icon, Button.danger">
         <Setter Property="Width" Value="24" />
@@ -61,25 +161,11 @@
         <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <!-- Use "Text on Primary" from Scheme Target -->
+        ~1~ Use "Text on Primary" from Scheme Target @1@
         <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
     </Style>
 
-    <Style Selector="Button.skua-button:pointerover">
-        <Setter Property="Background" Value="{DynamicResource SkuaAccentHoverBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentHoverBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
-    </Style>
-
-    <Style Selector="Button.skua-button:pressed">
-        <Setter Property="Background" Value="{DynamicResource SkuaAccentPressedBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentPressedBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
-    </Style>
-
-    <Style Selector="Button.skua-button:disabled">
-        <Setter Property="Opacity" Value="0.65" />
-    </Style>
+    
     
     <Style Selector="Button.titlebar">
         <Setter Property="Width" Value="36" />
@@ -102,5 +188,5 @@
     <Style Selector="Button.titlebar-close:pointerover">
         <Setter Property="Background" Value="#CCB93A32" />
         <Setter Property="Foreground" Value="#FFFFFFFF" />
-    </Style>
-</Styles>
+    </Style>-->
+</ResourceDictionary>
