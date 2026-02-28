@@ -30,7 +30,7 @@
                 <Menu x:Name="MainMenuControl" Classes="top-toolbar"/>
                 <StackPanel x:Name="TopActionsPanel" Grid.Column="1" Orientation="Horizontal">
                   
-                    <ToggleButton x:Name="AutoToggle" Classes="topbar-action flat" Content="Auto" />
+                    <ToggleButton x:Name="AutoToggle" Classes="topbar-action" Content="Auto" />
                     <Popup x:Name="AutoPopup"
                            IsOpen="{Binding IsChecked, ElementName=AutoToggle}"
                            Placement="Bottom"
@@ -50,7 +50,7 @@
                         </sharedShell:TopbarPopupPanel>
                     </Popup>
 
-                    <ToggleButton x:Name="JumpToggle" Classes="topbar-action flat" Content="Jump" />
+                    <ToggleButton x:Name="JumpToggle" Classes="topbar-action" Content="Jump" />
                     <Popup x:Name="JumpPopup"
                            IsOpen="{Binding IsChecked, ElementName=JumpToggle}"
                            Placement="Bottom"
@@ -71,7 +71,7 @@
                         </sharedShell:TopbarPopupPanel>
                     </Popup>
 
-                    <Button x:Name="BotWindowButton" Classes="topbar-action flat" Content="+" />
+                    <Button x:Name="BotWindowButton" Classes="topbar-action" Content="+" />
                 </StackPanel>
             </Grid>
 
