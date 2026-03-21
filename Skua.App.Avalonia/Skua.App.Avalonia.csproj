@@ -15,27 +15,27 @@
         <UseWindowsForms>true</UseWindowsForms>
         <DefineConstants>$(DefineConstants);IS_WINDOWS</DefineConstants>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="Avalonia" />
         <PackageReference Include="Avalonia.Desktop" />
         <PackageReference Include="Avalonia.Controls.ColorPicker" />
         <PackageReference Include="Avalonia.Themes.Fluent" />
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
-        
+
         <PackageReference Include="Material.Avalonia" />
         <PackageReference Include="Material.Icons" />
         <PackageReference Include="Material.Icons.Avalonia" />
         <PackageReference Include="CoreHook" />
     </ItemGroup>
-    
+
     <ItemGroup>
         <ProjectReference Include="..\Skua.Core\Skua.Core.csproj" />
         <ProjectReference Include="..\Skua.Core.Interfaces\Skua.Core.Interfaces.csproj" />
         <ProjectReference Include="..\Skua.Core.Models\Skua.Core.Models.csproj" />
         <ProjectReference Include="..\Skua.Shared.Avalonia\Skua.Shared.Avalonia.csproj" />
     </ItemGroup>
-    
+
     <ItemGroup>
         <Reference Include="AxInterop.ShockwaveFlashObjects">
           <HintPath>Assemblies\AxInterop.ShockwaveFlashObjects.dll</HintPath>
@@ -44,7 +44,7 @@
           <HintPath>Assemblies\Interop.ShockwaveFlashObjects.dll</HintPath>
         </Reference>
     </ItemGroup>
-    
+
     <ItemGroup>
         <Content Include="Assemblies\corehook32.dll" Link="corehook32.dll">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -59,17 +59,17 @@
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
-    
+
     <ItemGroup>
         <None Include="..\Skua.AS3\skua\bin\skua.swf" Link="skua.swf" Condition="Exists('..\Skua.AS3\skua\bin\skua.swf')">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
-    
+
     <ItemGroup>
         <None Update="app.manifest">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
-    
+
 </Project>
