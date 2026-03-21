@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 using Skua.Core.Interfaces;
-using Skua.Core.ViewModels;
+using Skua.App.Avalonia.ViewModels.Packets;
 
-namespace Skua.Core.AppStartup;
+namespace Skua.App.Avalonia.AppStartup;
 
 internal static class PacketInterceptor
 {

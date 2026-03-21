@@ -5,7 +5,7 @@ using Skua.Manager.Avalonia.ViewModels;
 using Skua.Shared.Avalonia.ViewModels;
 using Skua.Shared.Avalonia.ViewModels.ScriptRepo;
 
-namespace Skua.Manager.Avalonia.FromCore.AppStartup;
+namespace Skua.Manager.Avalonia.AppStartup;
 
 public static class Services
 {

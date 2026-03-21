@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Skua.App.Avalonia.FromCore.Plugins;
+using Skua.App.Avalonia.Plugins;
 using Skua.App.Avalonia.ViewModels;
 using Skua.App.Avalonia.ViewModels.AdvancedSkills;
 using Skua.App.Avalonia.ViewModels.AppLogs;
@@ -26,7 +26,7 @@ using Skua.Shared.Avalonia.ViewModels;
 using Skua.Shared.Avalonia.ViewModels.ScriptRepo;
 using System.Collections.Generic;
 
-namespace Skua.App.Avalonia.FromCore.AppStartup;
+namespace Skua.App.Avalonia.AppStartup;
 
 public static class Services
 {

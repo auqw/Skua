@@ -5,7 +5,7 @@ using Skua.Core.Models;
 using System;
 using System.Collections.Generic;
 
-namespace Skua.App.Avalonia.FromCore.AppStartup;
+namespace Skua.App.Avalonia.AppStartup;
 
 internal static class LogTabs
 {

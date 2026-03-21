@@ -9,7 +9,7 @@ using Skua.Core.AppStartup;
 using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.Services;
-using Skua.Manager.Avalonia.FromCore.AppStartup;
+using Skua.Manager.Avalonia.AppStartup;
 using Skua.Manager.Avalonia.Services;
 using Skua.Manager.Avalonia.ViewModels;
 using Skua.Shared.Avalonia.Services;

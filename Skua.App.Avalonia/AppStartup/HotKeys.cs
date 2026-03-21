@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Skua.App.Avalonia.FromCore.AppStartup;
+namespace Skua.App.Avalonia.AppStartup;
 
 internal static class HotKeys
 {

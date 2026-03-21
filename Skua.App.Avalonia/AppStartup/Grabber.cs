@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Skua.App.Avalonia.FromCore.AppStartup;
+namespace Skua.App.Avalonia.AppStartup;
 
 internal class Grabber
 {

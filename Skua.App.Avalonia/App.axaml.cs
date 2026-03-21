@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Skua.App.Avalonia.Flash;
-using Skua.App.Avalonia.FromCore.AppStartup;
+using Skua.App.Avalonia.AppStartup;
 using Skua.App.Avalonia.Services;
 using Skua.Shared.Avalonia.Services;
 using Skua.Core.AppStartup;

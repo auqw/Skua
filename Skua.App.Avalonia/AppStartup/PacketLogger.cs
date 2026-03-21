@@ -4,7 +4,7 @@ using Skua.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace Skua.App.Avalonia.FromCore.AppStartup;
+namespace Skua.App.Avalonia.AppStartup;
 
 internal static class PacketLogger
 {

@@ -11,7 +11,7 @@ using Skua.Shared.Avalonia.ViewModels.Options;
 using System;
 using System.Collections.Generic;
 
-namespace Skua.Manager.Avalonia.FromCore.AppStartup;
+namespace Skua.Manager.Avalonia.AppStartup;
 
 internal class SkuaManager
 {

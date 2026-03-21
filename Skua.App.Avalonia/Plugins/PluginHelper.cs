@@ -7,7 +7,7 @@ using Skua.Core.Messaging;
 using System;
 using System.Collections.Generic;
 
-namespace Skua.App.Avalonia.FromCore.Plugins;
+namespace Skua.App.Avalonia.Plugins;
 
 public class PluginHelper : IPluginHelper
 {

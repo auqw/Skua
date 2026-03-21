@@ -19,7 +19,7 @@ using Skua.Shared.Avalonia.ViewModels.ScriptRepo;
 using System;
 using System.Collections.Generic;
 
-namespace Skua.App.Avalonia.FromCore.AppStartup;
+namespace Skua.App.Avalonia.AppStartup;
 
 internal class MainMenu
 {
