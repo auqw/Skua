@@ -26,7 +26,6 @@ public static class Services
     }
 
 
-
     private static List<PortableExecutableReference>? _cachedBaseReferences;
     private static readonly object _referenceCacheLock = new();
 
