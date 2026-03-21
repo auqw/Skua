@@ -1,0 +1,13 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- TODO(style-scope): Replace Window.skua ScrollViewer with an opt-in class style (e.g. ScrollViewer.skua-scroll). -->
+    <Style Selector="Window.skua ScrollViewer">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+</Styles>

@@ -101,7 +101,7 @@ public partial class App : Application
         try
         {
             string details = $"Unhandled exception source: {source}\r\n\r\n{ex.GetType().FullName}: {ex.Message}\r\n\r\n{ex.StackTrace}";
-            
+
             #if IS_WINDOWS
             WinForms.MessageBox.Show(
                 details,

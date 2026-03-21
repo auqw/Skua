@@ -20,18 +20,18 @@
              xmlns:viewModels="clr-namespace:Skua.Shared.Avalonia.ViewModels;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.App.Avalonia.App"
              RequestedThemeVariant="Default">
-  
+
   <Application.Styles>
     <material:MaterialTheme BaseTheme="Dark" PrimaryColor="BlueGrey" SecondaryColor="Red"/>
     <materialIcons:MaterialIconStyles />
-    
+
     <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Theme.axaml" />
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Controls.axaml" />
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Navigation.axaml" />
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Containers.axaml" />
   </Application.Styles>
-  
+
   <TrayIcon.Icons>
     <TrayIcons>
       <TrayIcon Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
@@ -48,7 +48,7 @@
       </TrayIcon>
     </TrayIcons>
   </TrayIcon.Icons>
-  
+
   <Application.DataTemplates>
     <DataTemplate DataType="vms:BotWindowViewModel">
       <Grid ColumnDefinitions="210,*"

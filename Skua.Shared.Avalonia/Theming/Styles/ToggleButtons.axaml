@@ -1,0 +1,47 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+    
+    <ControlTheme x:Key="{x:Type ToggleButton}" TargetType="ToggleButton">
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        
+        <Style Selector="^.topbar-action">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+            
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="MaxHeight" Value="25" />
+            <Setter Property="FontSize" Value="15" />
+        </Style>
+
+        <Style Selector="^.topbar-action:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+        </Style>
+        
+        <Style Selector="^.topbar-action:checked">
+            <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+        </Style>
+        
+        <Style Selector="^.app-toggle">
+            <Setter Property="Height" Value="22" />
+            <Setter Property="Padding" Value="6,1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+        </Style>
+
+        <Style Selector="^.app-toggle:checked">
+            <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

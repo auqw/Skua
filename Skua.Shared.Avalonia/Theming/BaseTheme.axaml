@@ -1,0 +1,35 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <Styles.Resources>
+        <ResourceDictionary>
+            <Bitmap x:Key="SkuaImage">avares://Skua.Shared.Avalonia/Assets/SkuaImage.png</Bitmap>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Skua.Shared.Avalonia/Theming/Colors.axaml"/>
+                
+                <ResourceInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Buttons.axaml"/>
+                <ResourceInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ToggleButtons.axaml"/>
+                <ResourceInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ListBoxes.axaml"/>
+                <ResourceInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/CheckBoxes.axaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+    
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ComboBoxes.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Menus.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ScrollViewers.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/TextBlocks.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/TextBoxes.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ToolTips.axaml"/>
+    
+    <Style Selector="Window.skua">
+        <Setter Property="Background" Value="{DynamicResource SkuaPageBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+</Styles>

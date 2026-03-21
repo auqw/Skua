@@ -6,35 +6,35 @@
         xmlns:sharedShell="clr-namespace:Skua.Shared.Avalonia.Controls.Shell;assembly=Skua.Shared.Avalonia"
         x:Class="Skua.App.Avalonia.Views.MainWindow"
         Classes="skua"
-        
+
         mc:Ignorable="d" d:DesignWidth="948" d:DesignHeight="600"
         Width="948" Height="600"
         MinWidth="948" MinHeight="600"
         WindowStartupLocation="CenterScreen"
-        
+
         Title="{Binding Title}"
         Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
-        
+
         SystemDecorations="None"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="32"
         >
-  
+
   <Grid RowDefinitions="Auto,*">
-    
+
     <sharedShell:WindowTitleBar Grid.Row="0"
                                 x:Name="TitleBar"
                                 TitleText="{Binding Title}" />
-      
+
     <Grid Grid.Row="1"
       RowDefinitions="Auto,*,Auto">
-      
+
       <Grid Grid.Row="0" ColumnDefinitions="*,Auto"
             Background="{DynamicResource SkuaSurfaceAltBrush}"
             Height="25"
             >
-        
+
         <Menu
           x:Name="MainMenuControl"
           Classes="top-toolbar"
@@ -43,7 +43,7 @@
         <StackPanel x:Name="TopActionsPanel"
                     Grid.Column="1"
                     Orientation="Horizontal">
-          
+
           <ToggleButton x:Name="AutoToggle" Classes="topbar-action flat" Content="Auto" />
           <Popup x:Name="AutoPopup"
                  IsOpen="{Binding IsChecked, ElementName=AutoToggle}"
@@ -51,7 +51,7 @@
                  PlacementTarget="{Binding ElementName=AutoToggle}"
                  HorizontalOffset="-220"
                  IsLightDismissEnabled="True">
-            
+
              <sharedShell:TopbarPopupPanel x:Name="AutoPanel">
                <StackPanel Spacing="8">
                  <StackPanel Spacing="8">
@@ -62,7 +62,7 @@
                  <TextBlock x:Name="AutoClassText" />
                </StackPanel>
             </sharedShell:TopbarPopupPanel>
-            
+
           </Popup>
 
           <ToggleButton x:Name="JumpToggle" Classes="topbar-action flat" Content="Jump" />
@@ -72,7 +72,7 @@
                  PlacementTarget="{Binding ElementName=JumpToggle}"
                  HorizontalOffset="-185"
                  IsLightDismissEnabled="True">
-            
+
             <sharedShell:TopbarPopupPanel x:Name="JumpPanel">
               <StackPanel Spacing="8">
                 <TextBox x:Name="JumpCellTextBox" Watermark="Cell" />
@@ -84,7 +84,7 @@
                 </StackPanel>
               </StackPanel>
             </sharedShell:TopbarPopupPanel>
-            
+
           </Popup>
 
           <Button x:Name="BotWindowButton" Classes="topbar-action flat" Content="+" />
@@ -104,7 +104,7 @@
       <sharedShell:MetricsStrip x:Name="MetricsStrip"
                                 Grid.Row="2" />
     </Grid>
-    
+
   </Grid>
-  
+
 </Window>
