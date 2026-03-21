@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sharedContent="clr-namespace:Skua.Shared.Avalonia.Controls.Content;assembly=Skua.Shared.Avalonia"
+             xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
+             x:Class="Skua.Manager.Avalonia.UserControls.ChangeLogsUserControl"
+             d:DesignWidth="900"
+             d:DesignHeight="600"
+             mc:Ignorable="d">
+    <sharedContent:MarkdownCard Title="Change Logs"
+                                Subtitle="Latest manager and client changes"
+                                Markdown="{Binding MarkdownDoc}">
+        <sharedContent:MarkdownCard.HeaderActions>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <sharedControls:IconTextButton Command="{Binding NavigateCommand}"
+                                               CommandParameter="https://github.com/auqw/Skua/blob/master/changelogs.md"
+                                               Height="30"
+                                               IconKind="FileDocumentOutline"
+                                               Text="Open File" />
+                <sharedControls:IconTextButton Command="{Binding OpenDonationLink}"
+                                               Height="30"
+                                               IconKind="HeartOutline"
+                                               Text="Donate" />
+            </StackPanel>
+        </sharedContent:MarkdownCard.HeaderActions>
+    </sharedContent:MarkdownCard>
+</UserControl>

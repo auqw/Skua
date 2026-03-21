@@ -1,0 +1,77 @@
+using System.Windows.Input;
+using Avalonia;
+using Avalonia.Controls;
+using Material.Icons;
+
+namespace Skua.Shared.Avalonia.Controls.Buttons;
+
+public partial class IconTextButton : UserControl
+{
+    public static readonly StyledProperty<ICommand?> CommandProperty =
+        AvaloniaProperty.Register<IconTextButton, ICommand?>(nameof(Command));
+
+    public static readonly StyledProperty<object?> CommandParameterProperty =
+        AvaloniaProperty.Register<IconTextButton, object?>(nameof(CommandParameter));
+
+    public static readonly StyledProperty<string?> TextProperty =
+        AvaloniaProperty.Register<IconTextButton, string?>(nameof(Text));
+
+    public static readonly StyledProperty<MaterialIconKind> IconKindProperty =
+        AvaloniaProperty.Register<IconTextButton, MaterialIconKind>(nameof(IconKind));
+
+    public static readonly StyledProperty<double> IconSizeProperty =
+        AvaloniaProperty.Register<IconTextButton, double>(nameof(IconSize), 14);
+
+    public static readonly StyledProperty<double> SpacingProperty =
+        AvaloniaProperty.Register<IconTextButton, double>(nameof(Spacing), 4);
+
+    public static readonly StyledProperty<Thickness> ButtonPaddingProperty =
+        AvaloniaProperty.Register<IconTextButton, Thickness>(nameof(ButtonPadding), new Thickness(7, 2));
+
+    public IconTextButton()
+    {
+        InitializeComponent();
+    }
+
+    public ICommand? Command
+    {
+        get => GetValue(CommandProperty);
+        set => SetValue(CommandProperty, value);
+    }
+
+    public object? CommandParameter
+    {
+        get => GetValue(CommandParameterProperty);
+        set => SetValue(CommandParameterProperty, value);
+    }
+
+    public string? Text
+    {
+        get => GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
+
+    public MaterialIconKind IconKind
+    {
+        get => GetValue(IconKindProperty);
+        set => SetValue(IconKindProperty, value);
+    }
+
+    public double IconSize
+    {
+        get => GetValue(IconSizeProperty);
+        set => SetValue(IconSizeProperty, value);
+    }
+
+    public double Spacing
+    {
+        get => GetValue(SpacingProperty);
+        set => SetValue(SpacingProperty, value);
+    }
+
+    public Thickness ButtonPadding
+    {
+        get => GetValue(ButtonPaddingProperty);
+        set => SetValue(ButtonPaddingProperty, value);
+    }
+}

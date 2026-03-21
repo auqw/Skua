@@ -116,12 +116,26 @@ public class UnifiedSettingsService
                 else if (_currentRole == AppRole.Client)
                 {
                     PropertyInfo? clientProp = FindPropertyByJsonName(_root.Client.GetType(), key);
-                    clientProp?.SetValue(_root.Client, value);
+                    if (clientProp != null)
+                        clientProp.SetValue(_root.Client, value);
+                    else
+                    {
+                        // Allow client-side code to update shared manager-backed values
+                        // (e.g., unified theme settings) when keys live under manager.
+                        PropertyInfo? managerProp = FindPropertyByJsonName(_root.Manager.GetType(), key);
+                        managerProp?.SetValue(_root.Manager, value);
+                    }
                 }
                 else if (_currentRole == AppRole.Manager)
                 {
                     PropertyInfo? managerProp = FindPropertyByJsonName(_root.Manager.GetType(), key);
-                    managerProp?.SetValue(_root.Manager, value);
+                    if (managerProp != null)
+                        managerProp.SetValue(_root.Manager, value);
+                    else
+                    {
+                        PropertyInfo? clientProp = FindPropertyByJsonName(_root.Client.GetType(), key);
+                        clientProp?.SetValue(_root.Client, value);
+                    }
                 }
 
                 SaveSettings();

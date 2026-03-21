@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
+             xmlns:sharedTheming="clr-namespace:Skua.Shared.Avalonia.Controls.Theming;assembly=Skua.Shared.Avalonia"
+             x:Class="Skua.Manager.Avalonia.UserControls.ApplicationThemesUserControl"
+             d:DesignWidth="900"
+             d:DesignHeight="600"
+             mc:Ignorable="d">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="8" Spacing="10">
+            <Border Classes="card">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBox Grid.Row="0"
+                             Grid.Column="0"
+                             Margin="0,0,8,0"
+                             Watermark="Theme Name"
+                             Text="{Binding ThemeSettings.ThemeName, Mode=TwoWay}" />
+                    <sharedControls:IconTextButton Grid.Row="0"
+                                                   Grid.Column="1"
+                                                   Margin="0,0,0,0"
+                                                   Height="30"
+                                                   Command="{Binding ThemeSettings.SaveThemeCommand}"
+                                                   IconKind="ContentSaveOutline"
+                                                   Text="Save" />
+                </Grid>
+            </Border>
+
+            <Border Classes="card">
+                <sharedTheming:AccentEditorPanel SeparatorBrush="{DynamicResource SkuaBorderBrush}" />
+            </Border>
+
+            <Border Classes="card">
+                <sharedTheming:SchemePreviewCard PreviewBorderBrush="{DynamicResource SkuaBorderBrush}" />
+            </Border>
+
+            <Border Classes="card">
+                <sharedTheming:ThemeLibraryPanel />
+            </Border>
+
+            <Expander IsExpanded="False">
+                <Expander.Header>
+                    <TextBlock FontWeight="SemiBold" Text="Backgrounds" />
+                </Expander.Header>
+                <Border Margin="0,8,0,0"
+                        Padding="4"
+                        BorderBrush="{DynamicResource SkuaBorderBrush}"
+                        BorderThickness="1"
+                        Background="{DynamicResource SkuaSurfaceBrush}">
+                    <Grid DataContext="{Binding BackgroundTheme}" ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto">
+                        <ComboBox Grid.Row="0"
+                                  Grid.Column="0"
+                                  Margin="3"
+                                  ItemsSource="{Binding AvailableBackgrounds}"
+                                  SelectedItem="{Binding SelectedBackground}" />
+                        <Button Grid.Row="0"
+                                Grid.Column="1"
+                                Classes="skua-button"
+                                Margin="3"
+                                Command="{Binding BrowseBackgroundCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <materialIcons:MaterialIcon Kind="FolderOpenOutline" Width="14" Height="14" />
+                                <TextBlock Text="Browse" />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Row="0"
+                                Grid.Column="2"
+                                Classes="skua-button"
+                                Margin="3"
+                                Command="{Binding RefreshBackgroundsCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <materialIcons:MaterialIcon Kind="Refresh" Width="14" Height="14" />
+                                <TextBlock Text="Refresh" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button Grid.Row="1"
+                                Grid.Column="0"
+                                Classes="skua-button"
+                                Margin="3"
+                                Command="{Binding OpenThemesFolderCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <materialIcons:MaterialIcon Kind="FolderOpenOutline" Width="14" Height="14" />
+                                <TextBlock Text="Open Themes Folder" />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Row="1"
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                Classes="skua-button"
+                                Margin="3"
+                                Command="{Binding GetBackgroundsCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <materialIcons:MaterialIcon Kind="Download" Width="14" Height="14" />
+                                <TextBlock Text="Get Backgrounds" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+            </Expander>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -389,3 +389,11 @@ Skua.Installer/FFDecComponentsGenerated.wxs
 Skua.Installer/ComponentsGenerated.wxs
 Skua.Installer/FFDecComponentsGenerated.wxs
 .aider*
+
+# Avalonia migration local artifacts
+Skua.Manager.Avalonia/obj_run/
+Skua.App.Avalonia/obj_run/
+Skua.App.Avalonia/objalt/
+Skua.App.Avalonia/bin_alt/
+Skua.Avalonia/**/*.bak
+Skua.Avalonia/

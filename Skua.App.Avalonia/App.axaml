@@ -1,0 +1,176 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:material="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:vms="clr-namespace:Skua.App.Avalonia.ViewModels"
+             xmlns:views="clr-namespace:Skua.App.Avalonia.Views"
+             xmlns:uc="clr-namespace:Skua.App.Avalonia.UserControls"
+             xmlns:plugins="clr-namespace:Skua.App.Avalonia.ViewModels.Plugins"
+             xmlns:grabber="clr-namespace:Skua.App.Avalonia.ViewModels.Grabber"
+             xmlns:runtime="clr-namespace:Skua.App.Avalonia.ViewModels.Runtime"
+             xmlns:fastTravel="clr-namespace:Skua.App.Avalonia.ViewModels.FastTravel"
+             xmlns:advancedSkills="clr-namespace:Skua.App.Avalonia.ViewModels.AdvancedSkills"
+             xmlns:packets="clr-namespace:Skua.App.Avalonia.ViewModels.Packets"
+             xmlns:options="clr-namespace:Skua.App.Avalonia.ViewModels.Options"
+             xmlns:coreBotsOptions="clr-namespace:Skua.App.Avalonia.ViewModels.CoreBotsOptions"
+             xmlns:hotKeys="clr-namespace:Skua.App.Avalonia.ViewModels.HotKeys"
+             xmlns:appLogs="clr-namespace:Skua.App.Avalonia.ViewModels.AppLogs"
+             xmlns:scriptRepo="clr-namespace:Skua.Shared.Avalonia.ViewModels.ScriptRepo;assembly=Skua.Shared.Avalonia"
+             xmlns:sharedScriptRepo="clr-namespace:Skua.Shared.Avalonia.Controls.ScriptRepo;assembly=Skua.Shared.Avalonia"
+             xmlns:viewModels="clr-namespace:Skua.Shared.Avalonia.ViewModels;assembly=Skua.Shared.Avalonia"
+             x:Class="Skua.App.Avalonia.App"
+             RequestedThemeVariant="Default">
+  
+  <Application.Styles>
+    <material:MaterialTheme BaseTheme="Dark" PrimaryColor="BlueGrey" SecondaryColor="Red"/>
+    <materialIcons:MaterialIconStyles />
+    
+    <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Theme.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Controls.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Navigation.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Containers.axaml" />
+  </Application.Styles>
+  
+  <TrayIcon.Icons>
+    <TrayIcons>
+      <TrayIcon Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
+                ToolTipText="Skua"
+                Clicked="TrayIcon_Clicked">
+        <TrayIcon.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="Show Client" Click="TrayShowClient_Click" />
+            <NativeMenuItem Header="Hide Client" Click="TrayHideClient_Click" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="Exit" Click="TrayExit_Click" />
+          </NativeMenu>
+        </TrayIcon.Menu>
+      </TrayIcon>
+    </TrayIcons>
+  </TrayIcon.Icons>
+  
+  <Application.DataTemplates>
+    <DataTemplate DataType="vms:BotWindowViewModel">
+      <Grid ColumnDefinitions="210,*"
+            RowDefinitions="*"
+            Margin="8">
+        <Border Grid.Column="0"
+                Margin="0,0,8,0"
+                Padding="6"
+                Background="{DynamicResource SkuaPageBrush}"
+                BorderBrush="{DynamicResource SkuaNavHoverBrush}"
+                BorderThickness="1">
+          <ListBox ItemsSource="{Binding BotViews}"
+                   SelectedItem="{Binding SelectedItem}"
+                   BorderThickness="0"
+                   Background="Transparent">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Title}" Margin="6,4" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Border>
+        <Border Grid.Column="1"
+                Padding="8"
+                Background="{DynamicResource SkuaPageBrush}"
+                BorderBrush="{DynamicResource SkuaNavHoverBrush}"
+                BorderThickness="1">
+          <ContentControl Content="{Binding SelectedItem}" />
+        </Border>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate DataType="vms:ScriptLoaderViewModel">
+      <views:ScriptLoaderView />
+    </DataTemplate>
+    <DataTemplate DataType="scriptRepo:ScriptRepoViewModel">
+      <sharedScriptRepo:ScriptRepoControl />
+    </DataTemplate>
+    <DataTemplate DataType="plugins:PluginsViewModel">
+      <views:PluginsView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:LoaderViewModel">
+      <views:LoaderView />
+    </DataTemplate>
+    <DataTemplate DataType="grabber:GrabberViewModel">
+      <views:GrabberView />
+    </DataTemplate>
+    <DataTemplate DataType="runtime:RuntimeHelpersViewModel">
+      <views:RuntimeHelpersView />
+    </DataTemplate>
+    <DataTemplate DataType="runtime:NotifyDropViewModel">
+      <views:NotifyDropView />
+    </DataTemplate>
+    <DataTemplate DataType="fastTravel:FastTravelViewModel">
+      <views:FastTravelView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:CurrentDropsViewModel">
+      <views:CurrentDropsView />
+    </DataTemplate>
+    <DataTemplate DataType="runtime:JunkItemsViewModel">
+      <views:JunkItemsView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:ConsoleViewModel">
+      <views:ConsoleView />
+    </DataTemplate>
+    <DataTemplate DataType="vms:ScriptStatsViewModel">
+      <views:ScriptStatsView />
+    </DataTemplate>
+    <DataTemplate DataType="advancedSkills:AdvancedSkillsViewModel">
+      <views:AdvancedSkillsView />
+    </DataTemplate>
+    <DataTemplate DataType="packets:PacketSpammerViewModel">
+      <views:PacketSpammerView />
+    </DataTemplate>
+    <DataTemplate DataType="packets:PacketLoggerViewModel">
+      <views:PacketLoggerView />
+    </DataTemplate>
+    <DataTemplate DataType="packets:PacketInterceptorViewModel">
+      <views:PacketInterceptorView />
+    </DataTemplate>
+    <DataTemplate DataType="options:GameOptionsViewModel">
+      <views:GameOptionsView />
+    </DataTemplate>
+    <DataTemplate DataType="options:ApplicationOptionsViewModel">
+      <views:ApplicationOptionsView />
+    </DataTemplate>
+    <DataTemplate DataType="coreBotsOptions:CoreBotsViewModel">
+      <views:CoreBotsView />
+    </DataTemplate>
+    <DataTemplate DataType="coreBotsOptions:CBOLoadoutViewModel">
+      <views:CBOLoadoutView />
+    </DataTemplate>
+    <DataTemplate DataType="coreBotsOptions:CBOClassSelectViewModel">
+      <views:CBOClassSelectView />
+    </DataTemplate>
+    <DataTemplate DataType="coreBotsOptions:CBOClassEquipmentViewModel">
+      <views:CBOClassEquipmentView />
+    </DataTemplate>
+    <DataTemplate DataType="coreBotsOptions:CBOptionsViewModel">
+      <views:CBOptionsView />
+    </DataTemplate>
+    <DataTemplate DataType="coreBotsOptions:CBOOtherOptionsViewModel">
+      <views:CBOOtherOptionsView />
+    </DataTemplate>
+    <DataTemplate DataType="viewModels:ApplicationThemesViewModel">
+      <views:ApplicationThemesView />
+    </DataTemplate>
+    <DataTemplate DataType="hotKeys:HotKeysViewModel">
+      <views:HotKeysView />
+    </DataTemplate>
+    <DataTemplate DataType="appLogs:LogsViewModel">
+      <views:LogsView />
+    </DataTemplate>
+    <DataTemplate DataType="appLogs:LogTabViewModel">
+      <uc:LogTabUserControl />
+    </DataTemplate>
+    <DataTemplate DataType="viewModels:BotControlViewModelBase">
+      <Border Padding="10"
+              Background="{DynamicResource SkuaPageBrush}"
+              BorderBrush="{DynamicResource SkuaNavHoverBrush}"
+              BorderThickness="1">
+        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+      </Border>
+    </DataTemplate>
+  </Application.DataTemplates>
+</Application>

@@ -1,0 +1,110 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:Skua.App.Avalonia.Controls"
+        xmlns:sharedShell="clr-namespace:Skua.Shared.Avalonia.Controls.Shell;assembly=Skua.Shared.Avalonia"
+        x:Class="Skua.App.Avalonia.Views.MainWindow"
+        Classes="skua"
+        
+        mc:Ignorable="d" d:DesignWidth="948" d:DesignHeight="600"
+        Width="948" Height="600"
+        MinWidth="948" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        
+        Title="{Binding Title}"
+        Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
+        
+        SystemDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="32"
+        >
+  
+  <Grid RowDefinitions="Auto,*">
+    
+    <sharedShell:WindowTitleBar Grid.Row="0"
+                                x:Name="TitleBar"
+                                TitleText="{Binding Title}" />
+      
+    <Grid Grid.Row="1"
+      RowDefinitions="Auto,*,Auto">
+      
+      <Grid Grid.Row="0" ColumnDefinitions="*,Auto"
+            Background="{DynamicResource SkuaSurfaceAltBrush}"
+            Height="25"
+            >
+        
+        <Menu
+          x:Name="MainMenuControl"
+          Classes="top-toolbar"
+          />
+
+        <StackPanel x:Name="TopActionsPanel"
+                    Grid.Column="1"
+                    Orientation="Horizontal">
+          
+          <ToggleButton x:Name="AutoToggle" Classes="topbar-action flat" Content="Auto" />
+          <Popup x:Name="AutoPopup"
+                 IsOpen="{Binding IsChecked, ElementName=AutoToggle}"
+                 Placement="Bottom"
+                 PlacementTarget="{Binding ElementName=AutoToggle}"
+                 HorizontalOffset="-220"
+                 IsLightDismissEnabled="True">
+            
+             <sharedShell:TopbarPopupPanel x:Name="AutoPanel">
+               <StackPanel Spacing="8">
+                 <StackPanel Spacing="8">
+                   <Button x:Name="AutoAttackButton" Classes="skua-button" Content="Attack" />
+                   <Button x:Name="AutoHuntButton" Classes="skua-button" Content="Hunt" />
+                   <Button x:Name="AutoStopButton" Classes="skua-button" Content="Stop" />
+                 </StackPanel>
+                 <TextBlock x:Name="AutoClassText" />
+               </StackPanel>
+            </sharedShell:TopbarPopupPanel>
+            
+          </Popup>
+
+          <ToggleButton x:Name="JumpToggle" Classes="topbar-action flat" Content="Jump" />
+          <Popup x:Name="JumpPopup"
+                 IsOpen="{Binding IsChecked, ElementName=JumpToggle}"
+                 Placement="Bottom"
+                 PlacementTarget="{Binding ElementName=JumpToggle}"
+                 HorizontalOffset="-185"
+                 IsLightDismissEnabled="True">
+            
+            <sharedShell:TopbarPopupPanel x:Name="JumpPanel">
+              <StackPanel Spacing="8">
+                <TextBox x:Name="JumpCellTextBox" Watermark="Cell" />
+                <TextBox x:Name="JumpPadTextBox" Watermark="Pad" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <Button x:Name="JumpCurrentButton" Classes="skua-button" Content="Current" />
+                  <Button x:Name="JumpRefreshButton" Classes="skua-button" Content="Refresh" />
+                  <Button x:Name="JumpGoButton" Classes="skua-button" Content="Jump" />
+                </StackPanel>
+              </StackPanel>
+            </sharedShell:TopbarPopupPanel>
+            
+          </Popup>
+
+          <Button x:Name="BotWindowButton" Classes="topbar-action flat" Content="+" />
+        </StackPanel>
+      </Grid>
+
+      <Grid Grid.Row="1" Background="#000000">
+        <controls:WinFormsFlashHost x:Name="FlashHost" IsVisible="False" />
+        <ProgressBar x:Name="LoadingBar"
+                     Width="150"
+                     Height="8"
+                     IsIndeterminate="True"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"/>
+      </Grid>
+
+      <sharedShell:MetricsStrip x:Name="MetricsStrip"
+                                Grid.Row="2" />
+    </Grid>
+    
+  </Grid>
+  
+</Window>

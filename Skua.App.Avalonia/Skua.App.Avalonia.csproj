@@ -1,0 +1,75 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework Condition="$([MSBuild]::IsOSPlatform('Windows'))">net10.0-windows</TargetFramework>
+        <TargetFramework Condition="!$([MSBuild]::IsOSPlatform('Windows'))">net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <ApplicationIcon>../Skua.Shared.Avalonia/Assets/SkuaIcon.ico</ApplicationIcon>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <UseWindowsForms>true</UseWindowsForms>
+        <DefineConstants>$(DefineConstants);IS_WINDOWS</DefineConstants>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Avalonia" />
+        <PackageReference Include="Avalonia.Desktop" />
+        <PackageReference Include="Avalonia.Controls.ColorPicker" />
+        <PackageReference Include="Avalonia.Themes.Fluent" />
+        <PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
+        
+        <PackageReference Include="Material.Avalonia" />
+        <PackageReference Include="Material.Icons" />
+        <PackageReference Include="Material.Icons.Avalonia" />
+        <PackageReference Include="CoreHook" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\Skua.Core\Skua.Core.csproj" />
+        <ProjectReference Include="..\Skua.Core.Interfaces\Skua.Core.Interfaces.csproj" />
+        <ProjectReference Include="..\Skua.Core.Models\Skua.Core.Models.csproj" />
+        <ProjectReference Include="..\Skua.Shared.Avalonia\Skua.Shared.Avalonia.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Reference Include="AxInterop.ShockwaveFlashObjects">
+          <HintPath>Assemblies\AxInterop.ShockwaveFlashObjects.dll</HintPath>
+        </Reference>
+        <Reference Include="Interop.ShockwaveFlashObjects">
+          <HintPath>Assemblies\Interop.ShockwaveFlashObjects.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Content Include="Assemblies\corehook32.dll" Link="corehook32.dll">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Assemblies\corehook64.dll" Link="corehook64.dll">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Assemblies\coreload32.dll" Link="coreload32.dll">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Assemblies\coreload64.dll" Link="coreload64.dll">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="..\Skua.AS3\skua\bin\skua.swf" Link="skua.swf" Condition="Exists('..\Skua.AS3\skua\bin\skua.swf')">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Update="app.manifest">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    
+</Project>

@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
+             xmlns:sharedSettings="clr-namespace:Skua.Shared.Avalonia.Controls.Settings;assembly=Skua.Shared.Avalonia"
+             x:Class="Skua.Manager.Avalonia.UserControls.ManagerOptionsUserControl"
+             d:DesignWidth="900"
+             d:DesignHeight="600"
+             mc:Ignorable="d">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="8" Spacing="8">
+            <sharedSettings:OptionSectionControl Title="General"
+                                                 ItemsSource="{Binding ManagerOptions}" />
+
+            <sharedSettings:OptionSectionControl Title="Dev Options"
+                                                 ItemsSource="{Binding DevOptions}" />
+
+            <Border Classes="card">
+                <StackPanel Spacing="6">
+                    <StackPanel Spacing="1">
+                        <TextBlock Text="Client Download Folder"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Text="Used for saving downloaded client update packages."
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SkuaMutedTextBrush}" />
+                    </StackPanel>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBox Grid.Column="0"
+                                 IsReadOnly="True"
+                                 Text="{Binding DownloadPath, FallbackValue=Client Download Folder}"
+                                 Margin="0,0,8,0" />
+                        <sharedControls:IconTextButton Grid.Column="1"
+                                                       Command="{Binding ChangeDownloadPathCommand}"
+                                                       IconKind="FolderEditOutline"
+                                                       Text="Browse" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <sharedControls:IconTextButton Height="36"
+                                           Command="{Binding OpenGHAuthCommand}"
+                                           IconKind="Github"
+                                           Text="GitHub Authentication" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
+

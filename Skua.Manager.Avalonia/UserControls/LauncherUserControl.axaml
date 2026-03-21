@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:uc="clr-namespace:Skua.Manager.Avalonia.UserControls"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
+             x:Class="Skua.Manager.Avalonia.UserControls.LauncherUserControl"
+             d:DesignWidth="800"
+             d:DesignHeight="600"
+             mc:Ignorable="d">
+    <UserControl.Styles>
+        <Style Selector="sharedControls|IconTextButton.hover-stop">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Border.process-row:pointerover sharedControls|IconTextButton.hover-stop">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </UserControl.Styles>
+
+    <DockPanel Margin="8">
+        <sharedControls:IconTextButton DockPanel.Dock="Top"
+                                       Margin="0,0,0,8"
+                                       Command="{Binding LaunchSkuaCommand}"
+                                       IconKind="PlayCircleOutline"
+                                       Text="Launch Skua" />
+
+        <Grid DockPanel.Dock="Top" Margin="0,0,0,8" ColumnDefinitions="*,Auto">
+            <TextBlock Grid.Column="0"
+                       Text="{Binding SkuaProcesses.Count, StringFormat=Running Processes: {0}}"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold" />
+            <Button Grid.Column="1"
+                    Classes="skua-button"
+                    MinHeight="28"
+                    Click="KillAll_Click"
+                    Padding="10,6">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <materialIcons:MaterialIcon Kind="CloseCircleOutline"
+                                                Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                Width="14"
+                                                Height="14" />
+                    <TextBlock Text="Kill All"
+                               Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding SkuaProcesses}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <uc:LauncherProcessRow StopCommand="{Binding DataContext.StopProcessCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+
+</UserControl>
+

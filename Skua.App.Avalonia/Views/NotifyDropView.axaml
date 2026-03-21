@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.Views.NotifyDropView">
+  <Grid Margin="8"
+        RowDefinitions="Auto,Auto,*,Auto">
+    <Grid Grid.Row="0"
+          ColumnDefinitions="*,Auto,Auto"
+          Margin="0,0,0,8">
+      <TextBox Grid.Column="0"
+               Watermark="Drop names separated by |"
+               Text="{Binding AddDropInput}" />
+      <Button Grid.Column="1"
+              Classes="skua-button"
+              Margin="8,0,0,0"
+              Content="Add"
+              Command="{Binding AddDropCommand}" />
+      <Button Grid.Column="2"
+              Classes="skua-button"
+              Margin="8,0,0,0"
+              Content="Clear"
+              Command="{Binding RemoveAllDropsCommand}" />
+    </Grid>
+
+    <StackPanel Grid.Row="1"
+                Orientation="Horizontal"
+                Spacing="8"
+                Margin="0,0,0,8">
+      <TextBlock VerticalAlignment="Center" Text="Beep count" />
+      <NumericUpDown Width="70"
+                     Minimum="1"
+                     Maximum="25"
+                     Value="{Binding SoundCount}" />
+      <TextBlock VerticalAlignment="Center" Text="Delay (ms)" />
+      <NumericUpDown Width="90"
+                     Minimum="10"
+                     Maximum="2000"
+                     Increment="10"
+                     Value="{Binding SoundDelay}" />
+      <Button Classes="skua-button"
+              Content="Test"
+              Command="{Binding TestBeepCommand}" />
+    </StackPanel>
+
+    <Border Grid.Row="2"
+            Margin="0,0,0,8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <ListBox ItemsSource="{Binding NotifyDropList}"
+               BorderThickness="0"
+               Background="Transparent" />
+    </Border>
+
+    <TextBlock Grid.Row="3"
+               Text="Use in-game exact item names."
+               Opacity="0.7" />
+  </Grid>
+</UserControl>

@@ -1,0 +1,91 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.Views.LoaderView">
+  <Grid RowDefinitions="Auto,Auto,Auto,*,Auto"
+        Margin="8">
+    <Grid Grid.Row="0"
+          ColumnDefinitions="Auto,*,Auto">
+      <ComboBox Grid.Column="0"
+                Width="90"
+                SelectedIndex="{Binding SelectedIndex}">
+        <ComboBoxItem Content="Shop" />
+        <ComboBoxItem Content="Quests" />
+      </ComboBox>
+      <TextBox Grid.Column="1"
+               Margin="8,0"
+               Watermark="IDs (comma/space separated)"
+               Text="{Binding InputIDs}" />
+      <Button Grid.Column="2"
+              Classes="skua-button"
+              Content="Load"
+              Command="{Binding LoadCommand}" />
+    </Grid>
+
+    <Grid Grid.Row="1"
+          ColumnDefinitions="Auto,Auto,Auto,Auto,*"
+          Margin="0,8,0,0">
+      <Button Grid.Column="0" Classes="skua-button" Content="Get Quests" Command="{Binding GetQuestsCommand}" />
+      <Button Grid.Column="1" Classes="skua-button" Margin="8,0,0,0" Content="Update All" Click="UpdateAll_Click" />
+      <Button Grid.Column="2" Classes="skua-button" Margin="8,0,0,0" Content="Update Missing" Click="UpdateMissing_Click" />
+      <Button Grid.Column="3" Classes="skua-button" Margin="8,0,0,0" Content="Cancel" Command="{Binding CancelQuestLoadCommand}" />
+    </Grid>
+
+    <Grid Grid.Row="2"
+          ColumnDefinitions="*,Auto"
+          Margin="0,8,0,0">
+      <TextBox Grid.Column="0"
+               Watermark="Quest range: startID endID"
+               Text="{Binding QuestRange}" />
+      <Button Grid.Column="1"
+              Classes="skua-button"
+              Margin="8,0,0,0"
+              Content="Update Range"
+              Command="{Binding UpdateQuestsRangeCommand}" />
+    </Grid>
+
+    <Border Grid.Row="3"
+            Margin="0,8,0,0"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <ListBox x:Name="QuestList"
+               ItemsSource="{Binding QuestIDs}"
+               SelectionMode="Multiple"
+               BorderThickness="0"
+               Background="Transparent">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <DockPanel Margin="6,3">
+              <TextBlock DockPanel.Dock="Right"
+                         Text="{Binding ID}" />
+              <TextBlock Text="{Binding Name}" />
+            </DockPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Border>
+
+    <Grid Grid.Row="4"
+          ColumnDefinitions="Auto,Auto,Auto,Auto,*"
+          Margin="0,8,0,0">
+      <Button Grid.Column="0"
+              Classes="skua-button"
+              Content="Load Selected"
+              Click="LoadSelected_Click" />
+      <Button Grid.Column="1"
+              Classes="skua-button"
+              Margin="8,0,0,0"
+              Content="Copy Names"
+              Click="CopyNames_Click" />
+      <Button Grid.Column="2"
+              Classes="skua-button"
+              Margin="8,0,0,0"
+              Content="Copy IDs"
+              Click="CopyIds_Click" />
+      <Button Grid.Column="3"
+              Classes="skua-button"
+              Margin="8,0,0,0"
+              Content="Copy Name+ID"
+              Click="CopyNamesAndIds_Click" />
+    </Grid>
+  </Grid>
+</UserControl>

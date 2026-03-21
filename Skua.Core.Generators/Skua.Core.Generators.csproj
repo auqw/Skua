@@ -8,6 +8,7 @@
     <Platforms>AnyCPU;x64;x86</Platforms>
     <!-- Force AnyCPU for source generators to avoid architecture issues -->
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
     <ItemGroup>

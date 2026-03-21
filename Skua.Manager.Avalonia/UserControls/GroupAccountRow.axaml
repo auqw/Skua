@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="Skua.Manager.Avalonia.UserControls.GroupAccountRow"
+             mc:Ignorable="d"
+             d:DesignWidth="520"
+             d:DesignHeight="62">
+    <Border Background="{DynamicResource SkuaSurfaceBrush}"
+            BorderBrush="{DynamicResource SkuaBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="2"
+            Padding="12,6"
+            Margin="0">
+        <Grid ColumnDefinitions="*,Auto">
+            <Grid Grid.Column="0" RowDefinitions="Auto,Auto" RowSpacing="2">
+                <TextBlock Grid.Row="0"
+                           Text="{Binding DisplayOrUsername}"
+                           FontSize="12" />
+                <ItemsControl ItemsSource="{Binding Tags}"
+                              Grid.Row="1"
+                              Margin="0,2,0,0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource SkuaAccentBrush}"
+                                    CornerRadius="2"
+                                    Padding="4,1"
+                                    Margin="0,0,3,2"
+                                    Opacity="0.85">
+                                <TextBlock Text="{Binding}"
+                                           FontSize="9"
+                                           FontWeight="Medium"
+                                           Foreground="{DynamicResource SkuaAccentForegroundBrush}" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+
+            <Button Grid.Column="1"
+                    Margin="0"
+                    Padding="0"
+                    Width="24"
+                    Height="24"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    Foreground="{DynamicResource SkuaMutedTextBrush}"
+                    Opacity="0.6"
+                    Click="RemoveButton_Click"
+                    ToolTip.Tip="Remove from group">
+                <materialIcons:MaterialIcon Kind="Close"
+                                            Width="14"
+                                            Height="14" />
+            </Button>
+        </Grid>
+    </Border>
+</UserControl>

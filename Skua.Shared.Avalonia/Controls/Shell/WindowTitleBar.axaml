@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Name="Root"
+             x:Class="Skua.Shared.Avalonia.Controls.Shell.WindowTitleBar">
+  <Grid Height="32"
+        Background="{DynamicResource SkuaSurfaceAltBrush}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
+
+    <Grid Column="0"
+          Width="30"
+          Height="30"
+          Margin="6,0"
+          HorizontalAlignment="Center">
+      <Border Width="30"
+              Height="30"
+              Classes="titlebar-app-badge"
+              CornerRadius="15" />
+      <Image Source="{Binding IconSource, ElementName=Root}"
+             Width="32"
+             Height="32"
+             VerticalAlignment="Center" />
+    </Grid>
+
+    <Viewbox Grid.Column="1"
+             Margin="6,0,0,0"
+             HorizontalAlignment="Left">
+      <TextBlock Text="{Binding TitleText, ElementName=Root}"
+                 Classes="titlebar-title" />
+    </Viewbox>
+
+    <StackPanel Grid.Column="2"
+                Orientation="Horizontal">
+      <Button x:Name="MinimizeButton"
+              Classes="titlebar flat"
+              Content="{materialIcons:MaterialIconExt Kind=WindowMinimize, IconSize=12}" />
+      <Button x:Name="MaximizeButton"
+              Classes="titlebar flat"
+              Content="{materialIcons:MaterialIconExt Kind=WindowMaximize, IconSize=12}" />
+      <Button x:Name="CloseButton"
+              Classes="titlebar flat titlebar-close"
+              Content="{materialIcons:MaterialIconExt Kind=WindowClose, IconSize=12}" />
+    </StackPanel>
+  </Grid>
+</UserControl>

@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Avalonia" />
+      <PackageReference Include="Avalonia.Controls.ColorPicker" />
+      <PackageReference Include="Avalonia.Themes.Fluent" />
+      <PackageReference Include="Material.Icons.Avalonia" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaResource Include="Assets/**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Skua.Core.Generators\Skua.Core.Generators.csproj" />
+      <ProjectReference Include="..\Skua.Core.Interfaces\Skua.Core.Interfaces.csproj" />
+      <ProjectReference Include="..\Skua.Core.Models\Skua.Core.Models.csproj" />
+      <ProjectReference Include="..\Skua.Core.Utils\Skua.Core.Utils.csproj" />
+      <ProjectReference Include="..\Skua.Core\Skua.Core.csproj" />
+    </ItemGroup>
+
+</Project>

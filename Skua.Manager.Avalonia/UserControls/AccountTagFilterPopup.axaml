@@ -1,0 +1,61 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.Manager.Avalonia.UserControls.AccountTagFilterPopup"
+             x:Name="Root">
+    <Popup IsOpen="{Binding IsOpen, ElementName=Root, Mode=TwoWay}"
+           Placement="Bottom"
+           IsLightDismissEnabled="True"
+           PlacementTarget="{Binding Anchor, ElementName=Root}">
+        <Border BorderBrush="{DynamicResource SkuaBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Background="{DynamicResource SkuaSurfaceBrush}"
+                Padding="8"
+                Width="260"
+                MaxHeight="330">
+            <Grid RowDefinitions="Auto,Auto,*,Auto">
+                <TextBlock Grid.Row="0"
+                           Text="Filter by Tags"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,3" />
+
+                <TextBox Grid.Row="1"
+                         Watermark="Search tags..."
+                         Text="{Binding TagSearchText, ElementName=Root, Mode=TwoWay}"
+                         Margin="0,0,0,3" />
+
+                <ScrollViewer Grid.Row="2"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding FilteredTags, ElementName=Root}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox Margin="0,2"
+                                          IsChecked="{Binding IsSelected}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}" />
+                                        <TextBlock Text="{Binding Count, StringFormat= ({0})}"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource SkuaMutedTextBrush}" />
+                                    </StackPanel>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <Button Grid.Row="3"
+                        Classes="skua-button"
+                        Margin="0,6,0,0"
+                        Command="{Binding ClearCommand, ElementName=Root}">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <PathIcon Data="M3,6H5V3A1,1 0 0,1 6,2H10V1H14V2H18A1,1 0 0,1 19,3V6H21V8H19V19A1,1 0 0,1 18,20H6A1,1 0 0,1 5,19V8H3V6M7,4V6H17V4H7M7,8V18H17V8H7M9,10H11V16H9V10M13,10H15V16H13V10Z"
+                                  Width="14"
+                                  Height="14" />
+                        <TextBlock Text="Clear All" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+    </Popup>
+</UserControl>

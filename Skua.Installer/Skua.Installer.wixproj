@@ -2,6 +2,8 @@
   <Import Project="Sdk.props" Sdk="WixToolset.Sdk" Version="6.0.2" />
   <PropertyGroup>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup>
     <OutputName>Skua-$(Configuration)-$(Platform)</OutputName>

@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.Views.PluginsView">
+  <Grid Margin="8"
+        RowDefinitions="Auto,*">
+    <StackPanel Grid.Row="0"
+                Orientation="Horizontal"
+                Spacing="8"
+                Margin="0,0,0,8">
+      <Button Classes="skua-button"
+              Content="Load"
+              Command="{Binding LoadPluginCommand}" />
+      <Button Classes="skua-button"
+              Content="Unload All"
+              Command="{Binding UnloadAllPluginsCommand}" />
+    </StackPanel>
+
+    <Border Grid.Row="1"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <ListBox ItemsSource="{Binding Plugins}"
+               BorderThickness="0"
+               Background="Transparent">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid Margin="8,6"
+                  ColumnDefinitions="*,Auto,Auto">
+              <TextBlock Grid.Column="0"
+                         VerticalAlignment="Center"
+                         Text="{Binding Container.Plugin.Name}" />
+              <Button Grid.Column="1"
+                      Classes="skua-button"
+                      Margin="8,0,0,0"
+                      Content="Options"
+                      IsVisible="{Binding HasOptions}"
+                      Command="{Binding EditPluginOptionsCommand}" />
+              <Button Grid.Column="2"
+                      Classes="skua-button"
+                      Margin="8,0,0,0"
+                      Content="Unload"
+                      Command="{Binding UnloadCommand}" />
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Border>
+  </Grid>
+</UserControl>

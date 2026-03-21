@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.Views.ScriptStatsView">
+  <Grid Margin="8"
+        RowDefinitions="*,Auto">
+    <Border Grid.Row="0"
+            Margin="0,0,0,8"
+            Padding="8"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+      <StackPanel Spacing="6">
+        <TextBlock>
+          <TextBlock.Text>
+            <Binding Path="ScriptStats.Kills" StringFormat="Kills: {0}" />
+          </TextBlock.Text>
+        </TextBlock>
+        <TextBlock>
+          <TextBlock.Text>
+            <Binding Path="ScriptStats.Drops" StringFormat="Drops: {0}" />
+          </TextBlock.Text>
+        </TextBlock>
+        <TextBlock>
+          <TextBlock.Text>
+            <Binding Path="ScriptStats.Deaths" StringFormat="Deaths: {0}" />
+          </TextBlock.Text>
+        </TextBlock>
+        <TextBlock>
+          <TextBlock.Text>
+            <Binding Path="ScriptStats.QuestsAccepted" StringFormat="Quests Accepted: {0}" />
+          </TextBlock.Text>
+        </TextBlock>
+        <TextBlock>
+          <TextBlock.Text>
+            <Binding Path="ScriptStats.QuestsCompleted" StringFormat="Quests Completed: {0}" />
+          </TextBlock.Text>
+        </TextBlock>
+        <TextBlock>
+          <TextBlock.Text>
+            <Binding Path="ScriptStats.Relogins" StringFormat="Relogins: {0}" />
+          </TextBlock.Text>
+        </TextBlock>
+      </StackPanel>
+    </Border>
+
+    <StackPanel Grid.Row="1"
+                Orientation="Horizontal"
+                Spacing="8">
+      <Button Classes="skua-button"
+              Content="Reset"
+              Command="{Binding ResetStatsCommand}" />
+      <Button Classes="skua-button"
+              Content="Get Space"
+              Command="{Binding GetSpaceCommand}" />
+    </StackPanel>
+  </Grid>
+</UserControl>

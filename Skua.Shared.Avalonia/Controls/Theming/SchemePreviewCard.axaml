@@ -1,0 +1,63 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.Shared.Avalonia.Controls.Theming.SchemePreviewCard"
+             x:Name="Root">
+  <StackPanel Spacing="8">
+    <TextBlock FontWeight="SemiBold" Text="Scheme Target" />
+    <Grid ColumnDefinitions="*,*">
+      <Button Grid.Column="0"
+              Margin="0,0,4,0"
+              Padding="0"
+              MinHeight="150"
+              HorizontalAlignment="Stretch"
+              HorizontalContentAlignment="Stretch"
+              VerticalContentAlignment="Stretch"
+              Command="{Binding ColorSchemeEditor.ChangeToPrimaryCommand}">
+        <Grid RowDefinitions="Auto,*" Margin="10,8">
+          <TextBlock Margin="0,0,0,6"
+                     HorizontalAlignment="Left"
+                     Text="Primary" />
+          <Border Grid.Row="1"
+                  Height="108"
+                  BorderBrush="{Binding PreviewBorderBrush, ElementName=Root}"
+                  BorderThickness="1"
+                  Padding="8,12"
+                  Background="{DynamicResource SkuaAccentBrush}">
+            <TextBlock Text="{Binding ThemeService.SelectedColor, TargetNullValue='(none)'}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource SkuaAccentForegroundBrush}" />
+          </Border>
+        </Grid>
+      </Button>
+
+      <Button Grid.Column="1"
+              Margin="4,0,0,0"
+              Padding="0"
+              MinHeight="150"
+              HorizontalAlignment="Stretch"
+              HorizontalContentAlignment="Stretch"
+              VerticalContentAlignment="Stretch"
+              Command="{Binding ColorSchemeEditor.ChangeToPrimaryForegroundCommand}">
+        <Grid RowDefinitions="Auto,*" Margin="10,8">
+          <TextBlock Margin="0,0,0,6"
+                     HorizontalAlignment="Left"
+                     Text="Text on Primary" />
+          <Border Grid.Row="1"
+                  Height="108"
+                  BorderBrush="{Binding PreviewBorderBrush, ElementName=Root}"
+                  BorderThickness="1"
+                  Padding="8,12"
+                  Background="{DynamicResource SkuaAccentBrush}">
+            <TextBlock Text="Text"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource SkuaAccentForegroundBrush}" />
+          </Border>
+        </Grid>
+      </Button>
+    </Grid>
+  </StackPanel>
+</UserControl>

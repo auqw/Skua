@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:buttonControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons"
+             x:Class="Skua.Shared.Avalonia.Controls.Settings.ScriptPickerRow"
+             x:Name="Root">
+  <Border Padding="5,2">
+    <Grid ColumnDefinitions="*,Auto,Auto,Auto"
+          VerticalAlignment="Center">
+      <Border Grid.Column="0"
+              Background="{DynamicResource SkuaSurfaceAltBrush}"
+              BorderBrush="{DynamicResource SkuaBorderBrush}"
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="8,4"
+              Margin="0,0,4,0">
+        <TextBlock VerticalAlignment="Center"
+                   Text="{Binding ScriptPath, ElementName=Root, FallbackValue=No script selected}"
+                   TextTrimming="CharacterEllipsis" />
+      </Border>
+      <buttonControls:IconTextButton Grid.Column="1"
+                                     Height="30"
+                                     Margin="0,0,4,0"
+                                     VerticalAlignment="Stretch"
+                                     Command="{Binding SearchCommand, ElementName=Root}"
+                                     IconKind="Magnify"
+                                     Text="Search" />
+      <buttonControls:IconTextButton Grid.Column="2"
+                                     Height="30"
+                                     Margin="0,0,4,0"
+                                     VerticalAlignment="Stretch"
+                                     Command="{Binding BrowseCommand, ElementName=Root}"
+                                     IconKind="FolderOpenOutline"
+                                     Text="Browse" />
+      <CheckBox Grid.Column="3"
+                Content="Auto-start"
+                IsChecked="{Binding AutoStart, ElementName=Root, Mode=TwoWay}" />
+    </Grid>
+  </Border>
+</UserControl>

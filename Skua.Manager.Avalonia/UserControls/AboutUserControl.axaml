@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sharedContent="clr-namespace:Skua.Shared.Avalonia.Controls.Content;assembly=Skua.Shared.Avalonia"
+             xmlns:sharedControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons;assembly=Skua.Shared.Avalonia"
+             x:Class="Skua.Manager.Avalonia.UserControls.AboutUserControl"
+             d:DesignWidth="900"
+             d:DesignHeight="600"
+             mc:Ignorable="d">
+    <sharedContent:MarkdownCard Title="About Skua"
+                                Subtitle="Project info and links"
+                                Markdown="{Binding MarkdownDoc}">
+        <sharedContent:MarkdownCard.HeaderActions>
+            <sharedControls:IconTextButton Command="{Binding NavigateCommand}"
+                                           CommandParameter="https://github.com/auqw/Skua"
+                                           Height="30"
+                                           IconKind="Github"
+                                           Text="GitHub" />
+        </sharedContent:MarkdownCard.HeaderActions>
+    </sharedContent:MarkdownCard>
+</UserControl>
