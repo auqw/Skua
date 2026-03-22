@@ -20,7 +20,7 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="#424242" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
         
         <Style Selector="^:checked">
             <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />

@@ -67,13 +67,10 @@ public partial class App : Application
     private void OnThemeChanged(object? theme)
     {
         IThemeService themeService = Ioc.Default.GetRequiredService<IThemeService>();
-        ISettingsService settings = Ioc.Default.GetRequiredService<ISettingsService>();
         RequestedThemeVariant = themeService.IsDarkTheme ? ThemeVariant.Dark : ThemeVariant.Light;
-        string? accentFromEvent = theme?.ToString();
-        ThemeResourceApplicator.ApplyAccentBrushes(this,
-            string.IsNullOrWhiteSpace(accentFromEvent) ? settings.Get("ManagerAccentColor", "#7D9AA9") : accentFromEvent,
-            settings.Get("ManagerAccentForegroundColor", "#FFFFFFFF"),
-            isDarkTheme: themeService.IsDarkTheme);
+        string? accentHex = theme?.ToString();
+        string? fgHex = themeService is AvaloniaThemeService ats ? ats.ForegroundHex : null;
+        ThemeResourceApplicator.ApplyAccentBrushes(this, accentHex, fgHex, isDarkTheme: themeService.IsDarkTheme);
     }
 
     private void OnSchemeChanged(Core.Models.ColorScheme scheme, object? color)
@@ -87,12 +84,11 @@ public partial class App : Application
 
     private void ApplyThemeFromService(IThemeService themeService)
     {
-        ISettingsService settings = Ioc.Default.GetRequiredService<ISettingsService>();
-        RequestedThemeVariant = themeService.IsDarkTheme ? ThemeVariant.Dark : ThemeVariant.Light;
-        ThemeResourceApplicator.ApplyAccentBrushes(this,
-            settings.Get("ManagerAccentColor", "#7D9AA9"),
-            settings.Get("ManagerAccentForegroundColor", "#FFFFFFFF"),
-            isDarkTheme: themeService.IsDarkTheme);
+        bool isDark = themeService.IsDarkTheme;
+        RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
+        string? accentHex = themeService.SelectedColor?.ToString();
+        string? fgHex = themeService is AvaloniaThemeService ats ? ats.ForegroundHex : null;
+        ThemeResourceApplicator.ApplyAccentBrushes(this, accentHex, fgHex, isDarkTheme: isDark);
     }
 
     private void TrayShowManager_Click(object? sender, EventArgs e)

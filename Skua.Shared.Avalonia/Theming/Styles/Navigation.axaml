@@ -9,18 +9,41 @@
     <Setter Property="Background" Value="{DynamicResource SkuaNavChipBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
     <Setter Property="BorderThickness" Value="1,1,1,2" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
     <Setter Property="Padding" Value="0" />
     <Setter Property="Margin" Value="0,0,3,0" />
     <Setter Property="CornerRadius" Value="5" />
   </Style>
 
+  <Style Selector="ListBox.top-tabs ListBoxItem:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
   <Style Selector="ListBox.top-tabs ListBoxItem:selected">
-    <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+    <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
     <Setter Property="BorderThickness" Value="1,1,1,2" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
+  </Style>
+
+  <!-- Prevent Material's internal selection visuals from bleeding through as the default blue. -->
+  <Style Selector="ListBox.top-tabs ListBoxItem:selected /template/ Border">
+    <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="ListBox.top-tabs ListBoxItem:pointerover /template/ Border">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="ListBox.top-tabs ListBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
   </Style>
 
   <Style Selector="ListBox.top-tabs ListBoxItem:selected TextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
     <Setter Property="FontWeight" Value="SemiBold" />
   </Style>
 </Styles>

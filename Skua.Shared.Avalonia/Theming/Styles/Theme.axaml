@@ -6,12 +6,12 @@
            Primary -> SkuaAccentColor / SkuaAccentBrush
            Text on Primary -> SkuaAccentForegroundColor / SkuaAccentForegroundBrush
            These are updated at runtime by ThemeResourceApplicator via theme editor selections. -->
-      <Color x:Key="SkuaAccentColor">#7D9AA9</Color>
-      <Color x:Key="SkuaAccentForegroundColor">#FFFFFFFF</Color>
+      <Color x:Key="SkuaAccentColor">#FF607D8B</Color>
+      <Color x:Key="SkuaAccentForegroundColor">#FF000000</Color>
       <SolidColorBrush x:Key="SkuaAccentBrush" Color="{StaticResource SkuaAccentColor}" />
       <SolidColorBrush x:Key="SkuaAccentForegroundBrush" Color="{StaticResource SkuaAccentForegroundColor}" />
-      <SolidColorBrush x:Key="SkuaAccentHoverBrush" Color="#8BAAB8" />
-      <SolidColorBrush x:Key="SkuaAccentPressedBrush" Color="#6C8794" />
+      <SolidColorBrush x:Key="SkuaAccentHoverBrush" Color="#FF78909C" />
+      <SolidColorBrush x:Key="SkuaAccentPressedBrush" Color="#FF546E7A" />
 
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
@@ -22,18 +22,18 @@
           <SolidColorBrush x:Key="SkuaNavHoverBrush" Color="#FFECEFF1" />
           <SolidColorBrush x:Key="SkuaTextBrush" Color="#FF212121" />
           <SolidColorBrush x:Key="SkuaMutedTextBrush" Color="#FF616161" />
-          <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#337D9AA9" />
+          <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#33607D8B" />
           <SolidColorBrush x:Key="SkuaNavChipBrush" Color="#FFF1F3F4" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
           <SolidColorBrush x:Key="SkuaPageBrush" Color="#424242" />
-          <SolidColorBrush x:Key="SkuaSurfaceBrush" Color="#424242" />
+          <SolidColorBrush x:Key="SkuaSurfaceBrush" Color="#4E4E4E" />
           <SolidColorBrush x:Key="SkuaSurfaceAltBrush" Color="#303030" />
           <SolidColorBrush x:Key="SkuaBorderBrush" Color="#303030" />
           <SolidColorBrush x:Key="SkuaNavHoverBrush" Color="#303030" />
           <SolidColorBrush x:Key="SkuaTextBrush" Color="#ECEFF4" />
           <SolidColorBrush x:Key="SkuaMutedTextBrush" Color="#C3CAD0" />
-          <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#667D9AA9" />
+          <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#66607D8B" />
           <SolidColorBrush x:Key="SkuaNavChipBrush" Color="#303030" />
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
