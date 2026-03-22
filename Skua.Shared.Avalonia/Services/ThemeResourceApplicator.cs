@@ -9,27 +9,40 @@ namespace Skua.Shared.Avalonia.Services;
 
 public static class ThemeResourceApplicator
 {
-    public static void ApplyAccentBrushes(Application app, string? accentHex = null, string? accentForegroundHex = null, string fallbackAccentHex = "#FF607D8B", bool? isDarkTheme = null)
+    public static void ApplyAccentBrushes(
+        Application app,
+        string? accentHex = null,
+        string? accentForegroundHex = null,
+        string? secondaryHex = null,
+        string? secondaryForegroundHex = null,
+        string fallbackAccentHex = "#FF607D8B",
+        bool? isDarkTheme = null)
     {
-        Color accent = ParseColorSafe(accentHex, GetResourceColor(app, "SkuaAccentColor", fallbackAccentHex));
-        Color accentForeground = ParseColorSafe(accentForegroundHex, GetResourceColor(app, "SkuaAccentForegroundColor", "#FF000000"));
+        // Keep both Skua* and Material* resources in sync because custom shell controls
+        // and Material templates read different keys at runtime (see Theme.axaml + Buttons.axaml).
+        Color primary = ParseColorSafe(accentHex, GetResourceColor(app, "SkuaAccentColor", fallbackAccentHex));
+        Color primaryForeground = ParseColorSafe(accentForegroundHex, GetResourceColor(app, "SkuaAccentForegroundColor", "#FF000000"));
+        Color secondary = ParseColorSafe(secondaryHex, GetResourceColor(app, "MaterialSecondaryColor", primary.ToString()));
+        Color secondaryForeground = ParseColorSafe(secondaryForegroundHex, GetResourceColor(app, "MaterialSecondaryMidForegroundColor", primaryForeground.ToString()));
 
-        app.Resources["SkuaAccentColor"] = accent;
-        app.Resources["SkuaAccentForegroundColor"] = accentForeground;
-        app.Resources["SkuaAccentBrush"] = new SolidColorBrush(accent);
-        app.Resources["SkuaAccentForegroundBrush"] = new SolidColorBrush(accentForeground);
-        app.Resources["SkuaAccentHoverBrush"] = new SolidColorBrush(Lighten(accent, 0.1));
-        app.Resources["SkuaAccentPressedBrush"] = new SolidColorBrush(Darken(accent, 0.12));
+        app.Resources["SkuaAccentColor"] = primary;
+        app.Resources["SkuaAccentForegroundColor"] = primaryForeground;
+        app.Resources["SkuaAccentBrush"] = new SolidColorBrush(primary);
+        app.Resources["SkuaAccentForegroundBrush"] = new SolidColorBrush(primaryForeground);
+        app.Resources["SkuaAccentHoverBrush"] = new SolidColorBrush(Lighten(primary, 0.1));
+        app.Resources["SkuaAccentPressedBrush"] = new SolidColorBrush(Darken(primary, 0.12));
 
-        Color selectionLight = Color.FromArgb(0x33, accent.R, accent.G, accent.B);
-        Color selectionDark = Color.FromArgb(0x66, accent.R, accent.G, accent.B);
+        Color selectionLight = Color.FromArgb(0x33, primary.R, primary.G, primary.B);
+        Color selectionDark = Color.FromArgb(0x66, primary.R, primary.G, primary.B);
         if (app.Resources.ThemeDictionaries.TryGetValue(ThemeVariant.Light, out IThemeVariantProvider? selLightProvider) && selLightProvider is IResourceDictionary selLightDict)
             selLightDict["SkuaSelectionBrush"] = new SolidColorBrush(selectionLight);
         if (app.Resources.ThemeDictionaries.TryGetValue(ThemeVariant.Dark, out IThemeVariantProvider? selDarkProvider) && selDarkProvider is IResourceDictionary selDarkDict)
             selDarkDict["SkuaSelectionBrush"] = new SolidColorBrush(selectionDark);
 
-        ApplyMaterialPaletteResources(app, accent, accentForeground);
-        TrySetMaterialAccent(app, accent);
+        // Republish full Material palette on every change so controls that cache specific
+        // MaterialPrimary*/MaterialSecondary* keys refresh consistently.
+        ApplyMaterialPaletteResources(app, primary, primaryForeground, secondary, secondaryForeground);
+        TrySetMaterialAccent(app, primary, secondary);
 
         if (isDarkTheme is bool dark)
             TrySetMaterialBaseTheme(app, dark);
@@ -87,7 +100,7 @@ public static class ThemeResourceApplicator
         }
     }
 
-    private static void TrySetMaterialAccent(Application app, Color accent)
+    private static void TrySetMaterialAccent(Application app, Color primary, Color secondary)
     {
         foreach (object style in app.Styles)
         {
@@ -96,44 +109,48 @@ public static class ThemeResourceApplicator
             if (string.IsNullOrWhiteSpace(fullName) || !fullName.StartsWith("Material.Styles.Themes.", StringComparison.Ordinal))
                 continue;
 
-            TrySetThemeColor(style, type, "PrimaryColor", accent);
-            TrySetThemeColor(style, type, "SecondaryColor", accent);
-            TrySetThemeColor(style, type, "PrimaryMid", accent);
-            TrySetThemeColor(style, type, "SecondaryMid", accent);
-            TryInvokeThemeMethod(style, type, "SetPrimaryColor", accent);
-            TryInvokeThemeMethod(style, type, "SetSecondaryColor", accent);
+            TrySetThemeColor(style, type, "PrimaryColor", primary);
+            TrySetThemeColor(style, type, "SecondaryColor", secondary);
+            TrySetThemeColor(style, type, "PrimaryMid", primary);
+            TrySetThemeColor(style, type, "SecondaryMid", secondary);
+            TryInvokeThemeMethod(style, type, "SetPrimaryColor", primary);
+            TryInvokeThemeMethod(style, type, "SetSecondaryColor", secondary);
         }
     }
 
-    private static void ApplyMaterialPaletteResources(Application app, Color accent, Color accentForeground)
+    private static void ApplyMaterialPaletteResources(Application app, Color primary, Color primaryForeground, Color secondary, Color secondaryForeground)
     {
-        Color light = Lighten(accent, 0.1);
-        Color dark = Darken(accent, 0.12);
+        Color primaryLight = Lighten(primary, 0.1);
+        Color primaryDark = Darken(primary, 0.12);
+        Color secondaryLight = Lighten(secondary, 0.1);
+        Color secondaryDark = Darken(secondary, 0.12);
 
         // Material.Avalonia uses MaterialPrimary*/MaterialSecondary* resources in templates.
-        SetColorResource(app, "MaterialPrimaryLightColor", light);
-        SetColorResource(app, "MaterialPrimaryMidColor", accent);
-        SetColorResource(app, "MaterialPrimaryDarkColor", dark);
-        SetColorResource(app, "MaterialSecondaryLightColor", light);
-        SetColorResource(app, "MaterialSecondaryMidColor", accent);
-        SetColorResource(app, "MaterialSecondaryDarkColor", dark);
+        SetColorResource(app, "MaterialPrimaryLightColor", primaryLight);
+        SetColorResource(app, "MaterialPrimaryMidColor", primary);
+        SetColorResource(app, "MaterialPrimaryDarkColor", primaryDark);
+        SetColorResource(app, "MaterialSecondaryLightColor", secondaryLight);
+        SetColorResource(app, "MaterialSecondaryMidColor", secondary);
+        SetColorResource(app, "MaterialSecondaryDarkColor", secondaryDark);
 
-        SetColorResource(app, "MaterialPrimaryLightForegroundColor", accentForeground);
-        SetColorResource(app, "MaterialPrimaryMidForegroundColor", accentForeground);
-        SetColorResource(app, "MaterialPrimaryForegroundColor", accentForeground);
-        SetColorResource(app, "MaterialSecondaryLightForegroundColor", accentForeground);
-        SetColorResource(app, "MaterialSecondaryMidForegroundColor", accentForeground);
-        SetColorResource(app, "MaterialSecondaryDarkForegroundColor", accentForeground);
+        SetColorResource(app, "MaterialPrimaryLightForegroundColor", primaryForeground);
+        SetColorResource(app, "MaterialPrimaryMidForegroundColor", primaryForeground);
+        SetColorResource(app, "MaterialPrimaryForegroundColor", primaryForeground);
+        SetColorResource(app, "MaterialSecondaryLightForegroundColor", secondaryForeground);
+        SetColorResource(app, "MaterialSecondaryMidForegroundColor", secondaryForeground);
+        SetColorResource(app, "MaterialSecondaryDarkForegroundColor", secondaryForeground);
 
-        SetColorResource(app, "MaterialPrimaryColor", accent);
-        SetColorResource(app, "MaterialSecondaryColor", accent);
-        SetColorResource(app, "MaterialSelectionColor", Color.FromArgb(0x55, accent.R, accent.G, accent.B));
-        SetColorResource(app, "MaterialFlatButtonClickColor", Color.FromArgb(0x66, accent.R, accent.G, accent.B));
-        SetColorResource(app, "MaterialFlatButtonRippleColor", Color.FromArgb(0x33, accent.R, accent.G, accent.B));
+        SetColorResource(app, "MaterialPrimaryColor", primary);
+        SetColorResource(app, "MaterialSecondaryColor", secondary);
+        SetColorResource(app, "MaterialSelectionColor", Color.FromArgb(0x55, primary.R, primary.G, primary.B));
+        SetColorResource(app, "MaterialFlatButtonClickColor", Color.FromArgb(0x66, primary.R, primary.G, primary.B));
+        SetColorResource(app, "MaterialFlatButtonRippleColor", Color.FromArgb(0x33, primary.R, primary.G, primary.B));
     }
 
     private static void SetColorResource(Application app, string colorKey, Color color)
     {
+        // Some templates bind Color keys, others bind Brush keys. Writing both avoids
+        // hidden drift when a control expects one representation.
         app.Resources[colorKey] = color;
 
         if (colorKey.EndsWith("Color", StringComparison.Ordinal))

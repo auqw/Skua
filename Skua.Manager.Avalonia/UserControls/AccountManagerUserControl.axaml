@@ -61,47 +61,6 @@
 
         <TabControl Grid.Row="1"
                     Padding="0">
-            <TabControl.Styles>
-                <Style Selector="TabControl">
-                    <Setter Property="BorderThickness" Value="0" />
-                    <Setter Property="Padding" Value="0" />
-                </Style>
-                <Style Selector="TabControl ContentPresenter">
-                    <Setter Property="Margin" Value="0" />
-                    <Setter Property="Padding" Value="0" />
-                </Style>
-                <Style Selector="TabItem">
-                    <Setter Property="Padding" Value="10,3" />
-                    <Setter Property="MinHeight" Value="24" />
-                    <Setter Property="Margin" Value="0,0,4,0" />
-                    <Setter Property="Background" Value="{DynamicResource SkuaNavChipBrush}" />
-                    <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
-                    <Setter Property="BorderThickness" Value="1" />
-                    <Setter Property="CornerRadius" Value="5" />
-                    <Setter Property="Template">
-                        <ControlTemplate>
-                            <Border Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="{TemplateBinding CornerRadius}"
-                                    Padding="{TemplateBinding Padding}">
-                                <ContentPresenter Content="{TemplateBinding Header}"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter>
-                </Style>
-                <Style Selector="TabItem:selected">
-                    <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
-                    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
-                    <Setter Property="BorderThickness" Value="1" />
-                </Style>
-                <Style Selector="TabItem TextBlock">
-                    <Setter Property="FontSize" Value="12" />
-                    <Setter Property="FontWeight" Value="SemiBold" />
-                </Style>
-            </TabControl.Styles>
             <TabItem Header="Accounts">
                 <Grid RowDefinitions="Auto,*" Margin="0,4,0,0">
                     <Grid Grid.Row="0" Margin="0,0,0,3" ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto,Auto,Auto">
@@ -191,7 +150,8 @@
                                       Margin="0,0,4,0">
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <materialIcons:MaterialIcon Kind="Tag" Width="14" Height="14" VerticalAlignment="Center" />
-                                <TextBlock Text="Tags" VerticalAlignment="Center" />
+                                <TextBlock Text="Tags"
+                                           VerticalAlignment="Center" />
                             </StackPanel>
                         </ToggleButton>
 
@@ -205,7 +165,8 @@
                                       ToolTip.Tip="Tag filters">
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <materialIcons:MaterialIcon Kind="FilterOutline" Width="14" Height="14" VerticalAlignment="Center" />
-                                <TextBlock Text="Filter" VerticalAlignment="Center" />
+                                <TextBlock Text="Filter"
+                                           VerticalAlignment="Center" />
                             </StackPanel>
                         </ToggleButton>
 
@@ -217,7 +178,8 @@
                                       Margin="4,0,0,0">
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <materialIcons:MaterialIcon Kind="ViewGrid" Width="14" Height="14" VerticalAlignment="Center" />
-                                <TextBlock Text="Grid" VerticalAlignment="Center" />
+                                <TextBlock Text="Grid"
+                                           VerticalAlignment="Center" />
                             </StackPanel>
                         </ToggleButton>
 
@@ -229,7 +191,8 @@
                     </Grid>
 
                     <Grid Grid.Row="1">
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                        <ScrollViewer
+                                      HorizontalScrollBarVisibility="Disabled"
                                       IsVisible="{Binding !ShowGridView}"
                                       VerticalScrollBarVisibility="Auto">
                             <ScrollViewer.ContextMenu>
@@ -244,7 +207,8 @@
                             </ItemsControl>
                         </ScrollViewer>
 
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                        <ScrollViewer
+                                      HorizontalScrollBarVisibility="Disabled"
                                       IsVisible="{Binding ShowGridView}"
                                       VerticalScrollBarVisibility="Auto">
                             <ScrollViewer.ContextMenu>

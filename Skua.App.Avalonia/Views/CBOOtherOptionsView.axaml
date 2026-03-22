@@ -2,7 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:uc="clr-namespace:Skua.App.Avalonia.UserControls"
              x:Class="Skua.App.Avalonia.Views.CBOOtherOptionsView">
-  <ScrollViewer Margin="8"
+  <ScrollViewer
+                Margin="8"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
     <ItemsControl ItemsSource="{Binding Options}">

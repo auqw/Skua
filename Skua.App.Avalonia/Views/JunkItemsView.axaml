@@ -52,7 +52,8 @@
     <StackPanel Grid.Row="2"
                 Orientation="Horizontal"
                 Spacing="16">
-      <TextBlock Text="{Binding TotalJunk, StringFormat='Total junk: {0}'}" />
+      <TextBlock
+                 Text="{Binding TotalJunk, StringFormat='Total junk: {0}'}" />
       <CheckBox IsChecked="{Binding SkipSellWarning}"
                 Content="Skip sell warning" />
     </StackPanel>

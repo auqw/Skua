@@ -9,7 +9,9 @@
              d:DesignWidth="900"
              d:DesignHeight="600"
              mc:Ignorable="d">
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="8" Spacing="10">
             <Border Classes="card">
                 <Grid ColumnDefinitions="*,Auto">
@@ -42,7 +44,8 @@
 
             <Expander IsExpanded="False">
                 <Expander.Header>
-                    <TextBlock FontWeight="SemiBold" Text="Backgrounds" />
+                    <TextBlock FontWeight="SemiBold"
+                               Text="Backgrounds" />
                 </Expander.Header>
                 <Border Margin="0,8,0,0"
                         Padding="4"

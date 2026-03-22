@@ -21,6 +21,7 @@
         ExtendClientAreaTitleBarHeightHint="32"
         >
 
+  <!-- This root class enables shared shell selectors from Theme.axaml (Window.skua ...). -->
   <Grid RowDefinitions="Auto,*">
 
     <sharedShell:WindowTitleBar Grid.Row="0"
@@ -75,8 +76,10 @@
 
             <sharedShell:TopbarPopupPanel x:Name="JumpPanel">
               <StackPanel Spacing="8">
-                <TextBox x:Name="JumpCellTextBox" Watermark="Cell" />
-                <TextBox x:Name="JumpPadTextBox" Watermark="Pad" />
+                <TextBox x:Name="JumpCellTextBox"
+                         Watermark="Cell" />
+                <TextBox x:Name="JumpPadTextBox"
+                         Watermark="Pad" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
                   <Button x:Name="JumpCurrentButton" Classes="skua-button" Content="Current" />
                   <Button x:Name="JumpRefreshButton" Classes="skua-button" Content="Refresh" />

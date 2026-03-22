@@ -1,7 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Skua.App.Avalonia.Views.CBOLoadoutView">
-  <ScrollViewer Margin="8"
+  <ScrollViewer
+                Margin="8"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
     <StackPanel Spacing="8">
@@ -13,7 +14,8 @@
 
       <Expander IsExpanded="False">
         <Expander.Header>
-          <TextBlock FontWeight="SemiBold"
+          <TextBlock
+                     FontWeight="SemiBold"
                      Text="Equipment" />
         </Expander.Header>
         <Border Margin="0,8,0,0"

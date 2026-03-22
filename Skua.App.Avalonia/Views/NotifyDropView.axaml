@@ -25,12 +25,16 @@
                 Orientation="Horizontal"
                 Spacing="8"
                 Margin="0,0,0,8">
-      <TextBlock VerticalAlignment="Center" Text="Beep count" />
+      <TextBlock
+                 VerticalAlignment="Center"
+                 Text="Beep count" />
       <NumericUpDown Width="70"
                      Minimum="1"
                      Maximum="25"
                      Value="{Binding SoundCount}" />
-      <TextBlock VerticalAlignment="Center" Text="Delay (ms)" />
+      <TextBlock
+                 VerticalAlignment="Center"
+                 Text="Delay (ms)" />
       <NumericUpDown Width="90"
                      Minimum="10"
                      Maximum="2000"

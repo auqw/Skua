@@ -64,31 +64,74 @@ public partial class App : Application
         mainWindow.Show();
     }
 
+    // Full theme changes can include base theme + multiple palette slots, so we always
+    // republish the complete resource map here (see ThemeResourceApplicator).
     private void OnThemeChanged(object? theme)
     {
         IThemeService themeService = Ioc.Default.GetRequiredService<IThemeService>();
         RequestedThemeVariant = themeService.IsDarkTheme ? ThemeVariant.Dark : ThemeVariant.Light;
-        string? accentHex = theme?.ToString();
-        string? fgHex = themeService is AvaloniaThemeService ats ? ats.ForegroundHex : null;
-        ThemeResourceApplicator.ApplyAccentBrushes(this, accentHex, fgHex, isDarkTheme: themeService.IsDarkTheme);
+        if (themeService is AvaloniaThemeService ats)
+        {
+            ThemeResourceApplicator.ApplyAccentBrushes(
+                this,
+                ats.PrimaryHex,
+                ats.ForegroundHex,
+                ats.SecondaryHex,
+                ats.SecondaryForegroundHex,
+                isDarkTheme: themeService.IsDarkTheme);
+        }
+        else
+        {
+            string? accentHex = theme?.ToString();
+            ThemeResourceApplicator.ApplyAccentBrushes(this, accentHex, isDarkTheme: themeService.IsDarkTheme);
+        }
     }
 
+    // Single-scheme edits still republish all known colors when AvaloniaThemeService is active.
+    // This keeps Material and Skua resources in lockstep and prevents partial updates.
     private void OnSchemeChanged(Core.Models.ColorScheme scheme, object? color)
     {
         bool isDark = RequestedThemeVariant == ThemeVariant.Dark;
+        IThemeService themeService = Ioc.Default.GetRequiredService<IThemeService>();
+        if (themeService is AvaloniaThemeService ats)
+        {
+            ThemeResourceApplicator.ApplyAccentBrushes(
+                this,
+                ats.PrimaryHex,
+                ats.ForegroundHex,
+                ats.SecondaryHex,
+                ats.SecondaryForegroundHex,
+                isDarkTheme: isDark);
+            return;
+        }
+
+        // Non-AvaloniaThemeService fallback can only target one path at a time.
         if (scheme == Core.Models.ColorScheme.PrimaryForeground)
             ThemeResourceApplicator.ApplyAccentBrushes(this, accentForegroundHex: color?.ToString(), isDarkTheme: isDark);
         else
             ThemeResourceApplicator.ApplyAccentBrushes(this, accentHex: color?.ToString(), isDarkTheme: isDark);
     }
 
+    // Apply theme resources before first window render so root styles and previews do not
+    // flash default colors on startup.
     private void ApplyThemeFromService(IThemeService themeService)
     {
         bool isDark = themeService.IsDarkTheme;
         RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
+        if (themeService is AvaloniaThemeService ats)
+        {
+            ThemeResourceApplicator.ApplyAccentBrushes(
+                this,
+                ats.PrimaryHex,
+                ats.ForegroundHex,
+                ats.SecondaryHex,
+                ats.SecondaryForegroundHex,
+                isDarkTheme: isDark);
+            return;
+        }
+
         string? accentHex = themeService.SelectedColor?.ToString();
-        string? fgHex = themeService is AvaloniaThemeService ats ? ats.ForegroundHex : null;
-        ThemeResourceApplicator.ApplyAccentBrushes(this, accentHex, fgHex, isDarkTheme: isDark);
+        ThemeResourceApplicator.ApplyAccentBrushes(this, accentHex, isDarkTheme: isDark);
     }
 
     private void TrayShowManager_Click(object? sender, EventArgs e)

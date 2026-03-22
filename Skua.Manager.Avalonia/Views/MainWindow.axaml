@@ -17,6 +17,7 @@
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="32">
 
+    <!-- This root class enables shared shell selectors from Theme.axaml (Window.skua ...). -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

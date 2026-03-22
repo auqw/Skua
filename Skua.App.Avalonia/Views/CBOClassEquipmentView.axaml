@@ -17,13 +17,21 @@
             BorderThickness="1"
             BorderBrush="{DynamicResource SkuaNavHoverBrush}">
       <StackPanel Spacing="6">
-        <TextBlock Text="Solo Equipment" FontWeight="SemiBold" />
-        <ComboBox ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedSoloHelm}" />
-        <ComboBox ItemsSource="{Binding Armors}" SelectedItem="{Binding SelectedSoloArmor}" />
-        <ComboBox ItemsSource="{Binding Capes}" SelectedItem="{Binding SelectedSoloCape}" />
-        <ComboBox ItemsSource="{Binding Weapons}" SelectedItem="{Binding SelectedSoloWeapon}" />
-        <ComboBox ItemsSource="{Binding Pets}" SelectedItem="{Binding SelectedSoloPet}" />
-        <ComboBox ItemsSource="{Binding GroundItems}" SelectedItem="{Binding SelectedSoloGroundItem}" />
+        <TextBlock
+                   Text="Solo Equipment"
+                   FontWeight="SemiBold" />
+        <ComboBox
+                  ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedSoloHelm}" />
+        <ComboBox
+                  ItemsSource="{Binding Armors}" SelectedItem="{Binding SelectedSoloArmor}" />
+        <ComboBox
+                  ItemsSource="{Binding Capes}" SelectedItem="{Binding SelectedSoloCape}" />
+        <ComboBox
+                  ItemsSource="{Binding Weapons}" SelectedItem="{Binding SelectedSoloWeapon}" />
+        <ComboBox
+                  ItemsSource="{Binding Pets}" SelectedItem="{Binding SelectedSoloPet}" />
+        <ComboBox
+                  ItemsSource="{Binding GroundItems}" SelectedItem="{Binding SelectedSoloGroundItem}" />
       </StackPanel>
     </Border>
 
@@ -34,13 +42,21 @@
             BorderThickness="1"
             BorderBrush="{DynamicResource SkuaNavHoverBrush}">
       <StackPanel Spacing="6">
-        <TextBlock Text="Farm Equipment" FontWeight="SemiBold" />
-        <ComboBox ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedFarmHelm}" />
-        <ComboBox ItemsSource="{Binding Armors}" SelectedItem="{Binding SelectedFarmArmor}" />
-        <ComboBox ItemsSource="{Binding Capes}" SelectedItem="{Binding SelectedFarmCape}" />
-        <ComboBox ItemsSource="{Binding Weapons}" SelectedItem="{Binding SelectedFarmWeapon}" />
-        <ComboBox ItemsSource="{Binding Pets}" SelectedItem="{Binding SelectedFarmPet}" />
-        <ComboBox ItemsSource="{Binding GroundItems}" SelectedItem="{Binding SelectedFarmGroundItem}" />
+        <TextBlock
+                   Text="Farm Equipment"
+                   FontWeight="SemiBold" />
+        <ComboBox
+                  ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedFarmHelm}" />
+        <ComboBox
+                  ItemsSource="{Binding Armors}" SelectedItem="{Binding SelectedFarmArmor}" />
+        <ComboBox
+                  ItemsSource="{Binding Capes}" SelectedItem="{Binding SelectedFarmCape}" />
+        <ComboBox
+                  ItemsSource="{Binding Weapons}" SelectedItem="{Binding SelectedFarmWeapon}" />
+        <ComboBox
+                  ItemsSource="{Binding Pets}" SelectedItem="{Binding SelectedFarmPet}" />
+        <ComboBox
+                  ItemsSource="{Binding GroundItems}" SelectedItem="{Binding SelectedFarmGroundItem}" />
       </StackPanel>
     </Border>
 
@@ -51,13 +67,21 @@
             BorderThickness="1"
             BorderBrush="{DynamicResource SkuaNavHoverBrush}">
       <StackPanel Spacing="6">
-        <TextBlock Text="Dodge Equipment" FontWeight="SemiBold" />
-        <ComboBox ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedDodgeHelm}" />
-        <ComboBox ItemsSource="{Binding Armors}" SelectedItem="{Binding SelectedDodgeArmor}" />
-        <ComboBox ItemsSource="{Binding Capes}" SelectedItem="{Binding SelectedDodgeCape}" />
-        <ComboBox ItemsSource="{Binding Weapons}" SelectedItem="{Binding SelectedDodgeWeapon}" />
-        <ComboBox ItemsSource="{Binding Pets}" SelectedItem="{Binding SelectedDodgePet}" />
-        <ComboBox ItemsSource="{Binding GroundItems}" SelectedItem="{Binding SelectedDodgeGroundItem}" />
+        <TextBlock
+                   Text="Dodge Equipment"
+                   FontWeight="SemiBold" />
+        <ComboBox
+                  ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedDodgeHelm}" />
+        <ComboBox
+                  ItemsSource="{Binding Armors}" SelectedItem="{Binding SelectedDodgeArmor}" />
+        <ComboBox
+                  ItemsSource="{Binding Capes}" SelectedItem="{Binding SelectedDodgeCape}" />
+        <ComboBox
+                  ItemsSource="{Binding Weapons}" SelectedItem="{Binding SelectedDodgeWeapon}" />
+        <ComboBox
+                  ItemsSource="{Binding Pets}" SelectedItem="{Binding SelectedDodgePet}" />
+        <ComboBox
+                  ItemsSource="{Binding GroundItems}" SelectedItem="{Binding SelectedDodgeGroundItem}" />
       </StackPanel>
     </Border>
 
@@ -68,13 +92,21 @@
             BorderThickness="1"
             BorderBrush="{DynamicResource SkuaNavHoverBrush}">
       <StackPanel Spacing="6">
-        <TextBlock Text="Boss Equipment" FontWeight="SemiBold" />
-        <ComboBox ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedBossHelm}" />
-        <ComboBox ItemsSource="{Binding Armors}" SelectedItem="{Binding SelectedBossArmor}" />
-        <ComboBox ItemsSource="{Binding Capes}" SelectedItem="{Binding SelectedBossCape}" />
-        <ComboBox ItemsSource="{Binding Weapons}" SelectedItem="{Binding SelectedBossWeapon}" />
-        <ComboBox ItemsSource="{Binding Pets}" SelectedItem="{Binding SelectedBossPet}" />
-        <ComboBox ItemsSource="{Binding GroundItems}" SelectedItem="{Binding SelectedBossGroundItem}" />
+        <TextBlock
+                   Text="Boss Equipment"
+                   FontWeight="SemiBold" />
+        <ComboBox
+                  ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedBossHelm}" />
+        <ComboBox
+                  ItemsSource="{Binding Armors}" SelectedItem="{Binding SelectedBossArmor}" />
+        <ComboBox
+                  ItemsSource="{Binding Capes}" SelectedItem="{Binding SelectedBossCape}" />
+        <ComboBox
+                  ItemsSource="{Binding Weapons}" SelectedItem="{Binding SelectedBossWeapon}" />
+        <ComboBox
+                  ItemsSource="{Binding Pets}" SelectedItem="{Binding SelectedBossPet}" />
+        <ComboBox
+                  ItemsSource="{Binding GroundItems}" SelectedItem="{Binding SelectedBossGroundItem}" />
       </StackPanel>
     </Border>
   </Grid>

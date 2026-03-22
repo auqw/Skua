@@ -2,7 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:sharedTheming="clr-namespace:Skua.Shared.Avalonia.Controls.Theming;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.App.Avalonia.Views.ApplicationThemesView">
-  <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+  <ScrollViewer
+                HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="8"
                 Spacing="10">
@@ -45,7 +46,8 @@
 
       <Expander IsExpanded="False">
         <Expander.Header>
-          <TextBlock FontWeight="SemiBold"
+          <TextBlock
+                     FontWeight="SemiBold"
                      Text="Backgrounds" />
         </Expander.Header>
         <Border Margin="0,8,0,0"

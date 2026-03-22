@@ -20,7 +20,8 @@
             Margin="0,0,0,8"
             BorderThickness="1"
             BorderBrush="{DynamicResource SkuaNavHoverBrush}">
-      <ScrollViewer VerticalScrollBarVisibility="Auto">
+      <ScrollViewer
+                    VerticalScrollBarVisibility="Auto">
         <ItemsControl ItemsSource="{Binding PacketFilters}">
           <ItemsControl.ItemTemplate>
             <DataTemplate>

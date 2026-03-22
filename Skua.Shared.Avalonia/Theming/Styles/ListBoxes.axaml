@@ -15,46 +15,4 @@
         </Style>
     </ControlTheme>
     
-    <!--<Style Selector="ListBox.top-tabs">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-    </Style>
-
-    <Style Selector="ListBox.top-tabs ListBoxItem">
-        <Setter Property="Background" Value="{DynamicResource SkuaNavChipBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
-        <Setter Property="BorderThickness" Value="1,1,1,2" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="Margin" Value="0,0,3,0" />
-        <Setter Property="CornerRadius" Value="5" />
-    </Style>
-
-    <Style Selector="ListBox.top-tabs ListBoxItem:selected">
-        <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
-        <Setter Property="BorderThickness" Value="1,1,1,2" />
-    </Style>
-
-    <Style Selector="ListBox.top-tabs ListBoxItem:selected TextBlock">
-        <Setter Property="FontWeight" Value="SemiBold" />
-    </Style>
-    
-    ~1~ TODO(style-scope): Replace Window.skua ListBox with an opt-in class style (e.g. ListBox.skua-list). @1@
-    <Style Selector="Window.skua ListBox">
-        <Setter Property="Background" Value="{DynamicResource SkuaSurfaceBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="6" />
-    </Style>
-
-    ~1~ TODO(style-scope): Replace Window.skua ListBoxItem with class-scoped list item styling (e.g. ListBox.skua-list ListBoxItem). @1@
-    <Style Selector="Window.skua ListBoxItem">
-        <Setter Property="Padding" Value="4,3" />
-        <Setter Property="CornerRadius" Value="4" />
-    </Style>
-
-    ~1~ TODO(style-scope): Scope selected state to the classed list selector (e.g. ListBox.skua-list ListBoxItem:selected). @1@
-    <Style Selector="Window.skua ListBoxItem:selected">
-        <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
-    </Style>-->
 </ResourceDictionary>

@@ -1,13 +1,15 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Skua.App.Avalonia.Views.AdvancedSkillsView">
-  <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+  <ScrollViewer
+                HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="8"
                 Spacing="10">
       <Expander IsExpanded="{Binding EditExpanded}">
         <Expander.Header>
-          <TextBlock FontWeight="SemiBold"
+          <TextBlock
+                     FontWeight="SemiBold"
                      Text="Create/Edit Skill" />
         </Expander.Header>
         <Border Margin="0,8,0,0"
@@ -76,7 +78,8 @@
                         Orientation="Horizontal"
                         Spacing="6"
                         Margin="0,0,0,8">
-                <TextBlock VerticalAlignment="Center"
+                <TextBlock
+                           VerticalAlignment="Center"
                            Opacity="0.8"
                            Text="Quick add:" />
                 <Button Classes="skua-button"
@@ -137,7 +140,8 @@
                   <StackPanel Grid.Row="0"
                               Grid.Column="0"
                               Spacing="4">
-                    <TextBlock Text="Wait (ms)" />
+                    <TextBlock
+                               Text="Wait (ms)" />
                     <NumericUpDown Minimum="0"
                                    Maximum="5000"
                                    Increment="10"
@@ -147,7 +151,8 @@
                   <StackPanel Grid.Row="0"
                               Grid.Column="1"
                               Spacing="4">
-                    <TextBlock Text="Health" />
+                    <TextBlock
+                               Text="Health" />
                     <Grid ColumnDefinitions="Auto,*,Auto">
                       <CheckBox Grid.Column="0"
                                 Margin="0,0,6,0"
@@ -169,7 +174,8 @@
                   <StackPanel Grid.Row="0"
                               Grid.Column="2"
                               Spacing="4">
-                    <TextBlock Text="Mana" />
+                    <TextBlock
+                               Text="Mana" />
                     <Grid ColumnDefinitions="Auto,*,Auto">
                       <CheckBox Grid.Column="0"
                                 Margin="0,0,6,0"
@@ -191,7 +197,8 @@
                   <StackPanel Grid.Row="1"
                               Grid.Column="0"
                               Spacing="4">
-                    <TextBlock Text="Party HP" />
+                    <TextBlock
+                               Text="Party HP" />
                     <Grid ColumnDefinitions="Auto,*,Auto">
                       <CheckBox Grid.Column="0"
                                 Margin="0,0,6,0"
@@ -214,7 +221,8 @@
                               Grid.Column="1"
                               Grid.ColumnSpan="2"
                               Spacing="4">
-                    <TextBlock Text="Single Aura" />
+                    <TextBlock
+                               Text="Single Aura" />
                     <Grid ColumnDefinitions="Auto,2*,*,Auto,*">
                       <CheckBox Grid.Column="0"
                                 Margin="0,0,6,0"
@@ -245,7 +253,8 @@
                               Grid.Column="0"
                               Orientation="Horizontal"
                               Spacing="8">
-                    <TextBlock VerticalAlignment="Center"
+                    <TextBlock
+                               VerticalAlignment="Center"
                                Text="Multi Aura Operator" />
                     <ComboBox Width="120"
                               SelectedIndex="{Binding MultiAuraOperatorIndex}">
@@ -343,7 +352,8 @@
 
       <Expander IsExpanded="True">
         <Expander.Header>
-          <TextBlock FontWeight="SemiBold"
+          <TextBlock
+                     FontWeight="SemiBold"
                      Text="Saved Skills" />
         </Expander.Header>
         <Border Margin="0,8,0,0"

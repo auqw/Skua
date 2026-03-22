@@ -4,13 +4,23 @@ using Skua.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Globalization;
-using System.Linq;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Skua.Shared.Avalonia.Services;
 
-public class AvaloniaThemeService : IThemeService
+public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
 {
+    private const string ColorSelectionNone = "None";
+    private const string ColorSelectionPrimary = "Primary";
+    private const string ColorSelectionSecondary = "Secondary";
+    private const string ColorSelectionAll = "All";
+
+    private const string ContrastNone = "None";
+    private const string ContrastLow = "Low";
+    private const string ContrastMedium = "Medium";
+    private const string ContrastHigh = "High";
+
     private readonly ISettingsService _settingsService;
     private static readonly Dictionary<string, Color> AccentMap = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -30,9 +40,11 @@ public class AvaloniaThemeService : IThemeService
     {
         _settingsService = settingsService;
 
-        // Theme state is loaded from shared keys only.
-
-        // Seed DefaultThemes if absent
+        // These keys are shared with WPF theme snapshots, so we keep one storage shape
+        // across both UI stacks (see ThemeItem.FromString/ConvertToString).
+        // Related files:
+        // - Skua.Shared.Avalonia/Services/ThemeItem.cs
+        // - Skua.Shared.Avalonia/Services/ThemeResourceApplicator.cs
         StringCollection? defaultThemesColl = _settingsService.Get<StringCollection>("DefaultThemes");
         if (defaultThemesColl is null || defaultThemesColl.Count == 0)
         {
@@ -74,33 +86,57 @@ public class AvaloniaThemeService : IThemeService
 
     public event ThemeChangedEventHandler? ThemeChanged;
     public event SchemeChangedEventHandler? SchemeChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     public List<object> Presets { get; } = [];
     public List<object> UserThemes { get; } = [];
-    public IEnumerable<object> ColorSelectionValues { get; } = ["Pink", "Blue", "Green", "Orange", "Red", "Gray"];
-    private object _colorSelectionValue = "Pink";
+    public IEnumerable<object> ColorSelectionValues { get; } = [ColorSelectionNone, ColorSelectionPrimary, ColorSelectionSecondary, ColorSelectionAll];
+    private object _colorSelectionValue = ColorSelectionAll;
     public object ColorSelectionValue
     {
         get => _colorSelectionValue;
         set
         {
-            if (Equals(_colorSelectionValue, value))
+            string normalized = NormalizeColorSelectionValue(value);
+            if (Equals(_colorSelectionValue, normalized))
                 return;
-            _colorSelectionValue = value;
-            ChangeCustomColor(value);
+            _colorSelectionValue = normalized;
+            OnPropertyChanged();
+            if (IsColorAdjusted)
+                ApplyColorAdjustmentIfEnabled();
+            else
+                SaveCurrentThemeSnapshot();
         }
     }
-    public IEnumerable<object> ContrastValues { get; } = ["Low", "Medium", "High"];
-    private object _contrastValue = "Medium";
+    public IEnumerable<object> ContrastValues { get; } = [ContrastNone, ContrastLow, ContrastMedium, ContrastHigh];
+    private object _contrastValue = ContrastMedium;
     public object ContrastValue
     {
         get => _contrastValue;
         set
         {
-            if (Equals(_contrastValue, value))
+            string normalized = NormalizeContrastValue(value);
+            if (Equals(_contrastValue, normalized))
                 return;
-            _contrastValue = value;
-            ApplyColorAdjustmentIfEnabled();
+            _contrastValue = normalized;
+            OnPropertyChanged();
+
+            // Keep slider and preset aligned in UI.
+            float presetRatio = normalized switch
+            {
+                ContrastNone => 1f,
+                ContrastLow => 3f,
+                ContrastHigh => 7f,
+                _ => 4.5f
+            };
+            if (Math.Abs(_desiredContrastRatio - presetRatio) > 0.001f)
+            {
+                _desiredContrastRatio = presetRatio;
+                OnPropertyChanged(nameof(DesiredContrastRatio));
+            }
+
+            if (IsColorAdjusted)
+                ApplyColorAdjustmentIfEnabled();
             SaveCurrentThemeSnapshot();
         }
     }
@@ -114,7 +150,9 @@ public class AvaloniaThemeService : IThemeService
             if (Math.Abs(_desiredContrastRatio - value) < 0.001f)
                 return;
             _desiredContrastRatio = value;
-            ApplyColorAdjustmentIfEnabled();
+            OnPropertyChanged();
+            if (IsColorAdjusted)
+                ApplyColorAdjustmentIfEnabled();
             SaveCurrentThemeSnapshot();
         }
     }
@@ -128,7 +166,19 @@ public class AvaloniaThemeService : IThemeService
             if (_isColorAdjusted == value)
                 return;
             _isColorAdjusted = value;
-            ApplyColorAdjustmentIfEnabled(forceRefreshWhenOff: true);
+            OnPropertyChanged();
+            if (_isColorAdjusted)
+            {
+                CaptureAdjustmentBaseline();
+                ApplyColorAdjustmentIfEnabled();
+            }
+            else
+            {
+                RestoreAdjustmentBaseline();
+                ThemeChanged?.Invoke(_primaryColor);
+                SchemeChanged?.Invoke(ActiveScheme, GetColorForScheme(ActiveScheme));
+            }
+            SaveCurrentThemeSnapshot();
         }
     }
 
@@ -141,13 +191,24 @@ public class AvaloniaThemeService : IThemeService
             if (_isDarkTheme == value)
                 return;
             _isDarkTheme = value;
+            OnPropertyChanged();
+            if (IsColorAdjusted)
+                ApplyColorAdjustmentIfEnabled();
+            else
+                ThemeChanged?.Invoke(SelectedColor);
             SaveCurrentThemeSnapshot();
-            ThemeChanged?.Invoke(SelectedColor);
         }
     }
 
     private Color _primaryColor;
     private Color _primaryForegroundColor;
+    private Color _secondaryColor;
+    private Color _secondaryForegroundColor;
+    private bool _hasAdjustmentBaseline;
+    private Color _baselinePrimaryColor;
+    private Color _baselinePrimaryForegroundColor;
+    private Color _baselineSecondaryColor;
+    private Color _baselineSecondaryForegroundColor;
     private Color _selectedColor;
     private bool _suppressSelectedColorApply;
 
@@ -161,6 +222,7 @@ public class AvaloniaThemeService : IThemeService
                 return;
 
             _selectedColor = color;
+            OnPropertyChanged();
             if (_suppressSelectedColorApply)
                 return;
 
@@ -171,7 +233,10 @@ public class AvaloniaThemeService : IThemeService
     public ColorScheme ActiveScheme { get; set; } = ColorScheme.Primary;
 
     /// <summary>Returns the current accent foreground color as a hex string for use by ThemeResourceApplicator.</summary>
+    public string PrimaryHex => $"#{_primaryColor.A:X2}{_primaryColor.R:X2}{_primaryColor.G:X2}{_primaryColor.B:X2}";
     public string ForegroundHex => $"#{_primaryForegroundColor.A:X2}{_primaryForegroundColor.R:X2}{_primaryForegroundColor.G:X2}{_primaryForegroundColor.B:X2}";
+    public string SecondaryHex => $"#{_secondaryColor.A:X2}{_secondaryColor.R:X2}{_secondaryColor.G:X2}{_secondaryColor.B:X2}";
+    public string SecondaryForegroundHex => $"#{_secondaryForegroundColor.A:X2}{_secondaryForegroundColor.R:X2}{_secondaryForegroundColor.G:X2}{_secondaryForegroundColor.B:X2}";
 
     public void ApplyBaseTheme(bool isDark)
     {
@@ -182,16 +247,20 @@ public class AvaloniaThemeService : IThemeService
     {
         Color color = ResolveAccentColor(obj);
         SetSelectedColorSilently(color);
-        if (ActiveScheme == ColorScheme.PrimaryForeground && IsColorAdjusted)
-            return;
-
         ApplyColorToActiveScheme(color);
     }
 
     public void ChangeScheme(ColorScheme scheme)
     {
         ActiveScheme = scheme;
-        Color selected = scheme == ColorScheme.PrimaryForeground ? _primaryForegroundColor : _primaryColor;
+        Color selected = scheme switch
+        {
+            ColorScheme.Primary => _primaryColor,
+            ColorScheme.Secondary => _secondaryColor,
+            ColorScheme.PrimaryForeground => _primaryForegroundColor,
+            ColorScheme.SecondaryForeground => _secondaryForegroundColor,
+            _ => _primaryColor
+        };
         SetSelectedColorSilently(selected);
         SchemeChanged?.Invoke(scheme, selected);
     }
@@ -201,18 +270,7 @@ public class AvaloniaThemeService : IThemeService
         if (string.IsNullOrWhiteSpace(name))
             return;
 
-        ThemeItem snapshot = new()
-        {
-            Name = name,
-            IsDarkTheme = _isDarkTheme,
-            PrimaryColor = _primaryColor,
-            SecondaryColor = _primaryColor,
-            PrimaryForegroundColor = _primaryForegroundColor,
-            SecondaryForegroundColor = _primaryForegroundColor,
-            UseColorAdjustment = _isColorAdjusted,
-            DesiredContrastRatio = _desiredContrastRatio,
-            ContrastValue = _contrastValue?.ToString() ?? "Medium"
-        };
+        ThemeItem snapshot = BuildThemeSnapshot(name);
         string csv = snapshot.ConvertToString();
 
         // Update UserThemes StringCollection in settings
@@ -255,10 +313,20 @@ public class AvaloniaThemeService : IThemeService
         }
 
         Color resolved2 = ResolveAccentColor(theme);
+        // Direct color picks come in without a full serialized theme; keep primary/secondary
+        // in lockstep here so runtime resources stay coherent until a named theme is loaded/saved.
         _primaryColor = resolved2;
-        _colorSelectionValue = FindClosestSelectionKey(resolved2);
-        if (ActiveScheme == ColorScheme.Primary)
+        _secondaryColor = resolved2;
+        _hasAdjustmentBaseline = false;
+        if (IsColorAdjusted)
+        {
+            CaptureAdjustmentBaseline();
+            ApplyColorAdjustmentIfEnabled();
+        }
+        else if (ActiveScheme == ColorScheme.Primary)
+        {
             SetSelectedColorSilently(resolved2);
+        }
         SaveCurrentThemeSnapshot();
 
         ThemeChanged?.Invoke(resolved2);
@@ -295,14 +363,26 @@ public class AvaloniaThemeService : IThemeService
         _isDarkTheme = item.IsDarkTheme;
         _isColorAdjusted = item.UseColorAdjustment;
         _desiredContrastRatio = item.DesiredContrastRatio;
-        _contrastValue = item.ContrastValue;
+        _contrastValue = NormalizeContrastValue(item.ContrastValue);
+        _colorSelectionValue = NormalizeColorSelectionValue(item.ColorSelectionValue);
         _primaryColor = item.PrimaryColor;
-        _primaryForegroundColor = item.UseColorAdjustment
-            ? ComputeForeground(item.PrimaryColor, GetTargetContrastRatio())
-            : item.PrimaryForegroundColor;
-        _colorSelectionValue = FindClosestSelectionKey(_primaryColor);
+        _secondaryColor = item.SecondaryColor;
+        _primaryForegroundColor = item.PrimaryForegroundColor;
+        _secondaryForegroundColor = item.SecondaryForegroundColor;
+        _hasAdjustmentBaseline = false;
+        if (_isColorAdjusted)
+        {
+            CaptureAdjustmentBaseline();
+            ApplyColorAdjustmentIfEnabled();
+        }
         ActiveScheme = ColorScheme.Primary;
         SetSelectedColorSilently(_primaryColor);
+        OnPropertyChanged(nameof(IsDarkTheme));
+        OnPropertyChanged(nameof(IsColorAdjusted));
+        OnPropertyChanged(nameof(DesiredContrastRatio));
+        OnPropertyChanged(nameof(ContrastValue));
+        OnPropertyChanged(nameof(ColorSelectionValue));
+        OnPropertyChanged(nameof(SelectedColor));
     }
 
     private void LegacyDevNoOp()
@@ -350,6 +430,25 @@ public class AvaloniaThemeService : IThemeService
         };
     }
 
+    private ThemeItem BuildThemeSnapshot(string name)
+    {
+        // Snapshot stores both adjusted and baseline-aware values so toggling color adjustment
+        // can round-trip back to the original theme colors when disabled.
+        return new ThemeItem
+        {
+            Name = name,
+            IsDarkTheme = _isDarkTheme,
+            PrimaryColor = _hasAdjustmentBaseline ? _baselinePrimaryColor : _primaryColor,
+            SecondaryColor = _hasAdjustmentBaseline ? _baselineSecondaryColor : _secondaryColor,
+            PrimaryForegroundColor = _hasAdjustmentBaseline ? _baselinePrimaryForegroundColor : _primaryForegroundColor,
+            SecondaryForegroundColor = _hasAdjustmentBaseline ? _baselineSecondaryForegroundColor : _secondaryForegroundColor,
+            UseColorAdjustment = _isColorAdjusted,
+            DesiredContrastRatio = _desiredContrastRatio,
+            ContrastValue = NormalizeContrastValue(_contrastValue),
+            ColorSelectionValue = NormalizeColorSelectionValue(_colorSelectionValue)
+        };
+    }
+
     private static Color ResolveAccentColor(object? obj)
     {
         if (obj is string s)
@@ -372,54 +471,70 @@ public class AvaloniaThemeService : IThemeService
         return Color.Parse("#FF607D8B");
     }
 
-    private static string FindClosestSelectionKey(Color target)
-    {
-        foreach (KeyValuePair<string, Color> kvp in AccentMap)
-        {
-            if (kvp.Value == target)
-                return kvp.Key;
-        }
-
-        return "Pink";
-    }
-
-    private static Color ParseColor(string? value, Color fallback)
-    {
-        try
-        {
-            return Color.Parse(string.IsNullOrWhiteSpace(value) ? fallback.ToString() : value);
-        }
-        catch
-        {
-            return fallback;
-        }
-    }
-
     private void SetSelectedColorSilently(Color color)
     {
         _suppressSelectedColorApply = true;
         _selectedColor = color;
         _suppressSelectedColorApply = false;
+        OnPropertyChanged(nameof(SelectedColor));
     }
 
     private void ApplyColorToActiveScheme(Color color)
     {
         if (ActiveScheme == ColorScheme.PrimaryForeground)
         {
-            _primaryForegroundColor = color;
-            SaveCurrentThemeSnapshot();
+            if (IsColorAdjusted)
+            {
+                CaptureAdjustmentBaseline();
+                _baselinePrimaryForegroundColor = color;
+                ApplyColorAdjustmentIfEnabled();
+            }
+            else
+            {
+                _primaryForegroundColor = color;
+            }
+        }
+        else if (ActiveScheme == ColorScheme.SecondaryForeground)
+        {
+            if (IsColorAdjusted)
+            {
+                CaptureAdjustmentBaseline();
+                _baselineSecondaryForegroundColor = color;
+                ApplyColorAdjustmentIfEnabled();
+            }
+            else
+            {
+                _secondaryForegroundColor = color;
+            }
+        }
+        else if (ActiveScheme == ColorScheme.Secondary)
+        {
+            if (IsColorAdjusted)
+            {
+                CaptureAdjustmentBaseline();
+                _baselineSecondaryColor = color;
+                ApplyColorAdjustmentIfEnabled();
+            }
+            else
+            {
+                _secondaryColor = color;
+            }
         }
         else
         {
-            _primaryColor = color;
-            _colorSelectionValue = FindClosestSelectionKey(color);
             if (IsColorAdjusted)
             {
-                _primaryForegroundColor = ComputeForeground(color, GetTargetContrastRatio());
-                SetSelectedColorSilently(_primaryColor);
+                CaptureAdjustmentBaseline();
+                _baselinePrimaryColor = color;
+                ApplyColorAdjustmentIfEnabled();
             }
-            SaveCurrentThemeSnapshot();
+            else
+            {
+                _primaryColor = color;
+            }
         }
+
+        SaveCurrentThemeSnapshot();
 
         if (IsColorAdjusted && ActiveScheme == ColorScheme.Primary)
         {
@@ -427,20 +542,31 @@ public class AvaloniaThemeService : IThemeService
             return;
         }
 
-        SchemeChanged?.Invoke(ActiveScheme, color);
+        SchemeChanged?.Invoke(ActiveScheme, GetColorForScheme(ActiveScheme));
     }
 
     private void ApplyColorAdjustmentIfEnabled(bool forceRefreshWhenOff = false)
     {
         if (IsColorAdjusted)
         {
-            _primaryForegroundColor = ComputeForeground(_primaryColor, GetTargetContrastRatio());
-            SaveCurrentThemeSnapshot();
+            CaptureAdjustmentBaseline();
+            _primaryColor = ShouldAdjustPrimaryColor() ? GetAdjustedBackgroundColor(_baselinePrimaryColor) : _baselinePrimaryColor;
+            _secondaryColor = ShouldAdjustSecondaryColor() ? GetAdjustedBackgroundColor(_baselineSecondaryColor) : _baselineSecondaryColor;
+            if (ShouldAdjustPrimaryForeground())
+                _primaryForegroundColor = GetAdjustedForegroundColor(_primaryColor);
+            else
+                _primaryForegroundColor = _baselinePrimaryForegroundColor;
+            if (ShouldAdjustSecondaryForeground())
+                _secondaryForegroundColor = GetAdjustedForegroundColor(_secondaryColor);
+            else
+                _secondaryForegroundColor = _baselineSecondaryForegroundColor;
+
+            SetSelectedColorSilently(GetColorForScheme(ActiveScheme));
             ThemeChanged?.Invoke(_primaryColor);
+            SchemeChanged?.Invoke(ActiveScheme, GetColorForScheme(ActiveScheme));
         }
         else if (forceRefreshWhenOff)
         {
-            SaveCurrentThemeSnapshot();
             ThemeChanged?.Invoke(_primaryColor);
         }
     }
@@ -462,46 +588,170 @@ public class AvaloniaThemeService : IThemeService
     private void SaveCurrentThemeSnapshot(string? name = null)
     {
         string themeName = !string.IsNullOrWhiteSpace(name) ? name : "Skua";
-        ThemeItem snapshot = new()
-        {
-            Name = themeName,
-            IsDarkTheme = _isDarkTheme,
-            PrimaryColor = _primaryColor,
-            SecondaryColor = _primaryColor,
-            PrimaryForegroundColor = _primaryForegroundColor,
-            SecondaryForegroundColor = _primaryForegroundColor,
-            UseColorAdjustment = _isColorAdjusted,
-            DesiredContrastRatio = _desiredContrastRatio,
-            ContrastValue = _contrastValue?.ToString() ?? "Medium"
-        };
+        ThemeItem snapshot = BuildThemeSnapshot(themeName);
         _settingsService.Set("CurrentTheme", snapshot.ConvertToString());
     }
 
-    private float GetTargetContrastRatio()
+    private void CaptureAdjustmentBaseline()
     {
-        float baseRatio = Math.Clamp(DesiredContrastRatio, 1f, 21f);
-        float factor = (_contrastValue?.ToString() ?? "Medium").ToLowerInvariant() switch
-        {
-            "low" => 0.8f,
-            "high" => 1.25f,
-            _ => 1.0f
-        };
-        return Math.Clamp(baseRatio * factor, 1f, 21f);
+        if (_hasAdjustmentBaseline)
+            return;
+
+        _baselinePrimaryColor = _primaryColor;
+        _baselinePrimaryForegroundColor = _primaryForegroundColor;
+        _baselineSecondaryColor = _secondaryColor;
+        _baselineSecondaryForegroundColor = _secondaryForegroundColor;
+        _hasAdjustmentBaseline = true;
     }
 
-    private static Color ComputeForeground(Color background, float targetContrast)
+    private void RestoreAdjustmentBaseline()
     {
-        double lb = RelativeLuminance(background);
-        double r = Math.Clamp(targetContrast, 1d, 21d);
+        if (!_hasAdjustmentBaseline)
+            return;
 
-        bool chooseLighter = lb < 0.5;
-        double lf = chooseLighter
-            ? (r * (lb + 0.05)) - 0.05
-            : ((lb + 0.05) / r) - 0.05;
+        _primaryColor = _baselinePrimaryColor;
+        _primaryForegroundColor = _baselinePrimaryForegroundColor;
+        _secondaryColor = _baselineSecondaryColor;
+        _secondaryForegroundColor = _baselineSecondaryForegroundColor;
+        _hasAdjustmentBaseline = false;
+        SetSelectedColorSilently(GetColorForScheme(ActiveScheme));
+    }
 
-        lf = Math.Clamp(lf, 0d, 1d);
-        byte c = LuminanceToSrgbByte(lf);
-        return Color.FromArgb(255, c, c, c);
+    private Color GetColorForScheme(ColorScheme scheme)
+    {
+        return scheme switch
+        {
+            ColorScheme.Primary => _primaryColor,
+            ColorScheme.Secondary => _secondaryColor,
+            ColorScheme.PrimaryForeground => _primaryForegroundColor,
+            ColorScheme.SecondaryForeground => _secondaryForegroundColor,
+            _ => _primaryColor
+        };
+    }
+
+    private bool ShouldAdjustPrimaryForeground()
+    {
+        string selection = NormalizeColorSelectionValue(_colorSelectionValue);
+        return selection is ColorSelectionPrimary or ColorSelectionAll;
+    }
+
+    private bool ShouldAdjustSecondaryForeground()
+    {
+        string selection = NormalizeColorSelectionValue(_colorSelectionValue);
+        return selection is ColorSelectionSecondary or ColorSelectionAll;
+    }
+
+    private bool ShouldAdjustPrimaryColor()
+    {
+        string selection = NormalizeColorSelectionValue(_colorSelectionValue);
+        return selection is ColorSelectionPrimary or ColorSelectionAll;
+    }
+
+    private bool ShouldAdjustSecondaryColor()
+    {
+        string selection = NormalizeColorSelectionValue(_colorSelectionValue);
+        return selection is ColorSelectionSecondary or ColorSelectionAll;
+    }
+
+    private Color GetAdjustedForegroundColor(Color background)
+    {
+        Color baseForeground = GetBaseForegroundColor(background);
+        double intensityScale = GetContrastIntensityScale(_contrastValue);
+        if (intensityScale <= 0d)
+            return baseForeground;
+
+        double targetRatio = Math.Clamp(_desiredContrastRatio, 1f, 21f) * intensityScale;
+        return ShiftForegroundTowardContrast(background, baseForeground, targetRatio);
+    }
+
+    private static Color GetBaseForegroundColor(Color background)
+    {
+        return RelativeLuminance(background) > 0.179d
+            ? Color.FromArgb(255, 0, 0, 0)
+            : Color.FromArgb(255, 255, 255, 255);
+    }
+
+    private static Color ShiftForegroundTowardContrast(Color background, Color baseForeground, double targetContrastRatio)
+    {
+        double bgLuminance = RelativeLuminance(background);
+        bool useDarkForeground = baseForeground.R == 0 && baseForeground.G == 0 && baseForeground.B == 0;
+
+        double targetLuminance = useDarkForeground
+            ? ((bgLuminance + 0.05d) / targetContrastRatio) - 0.05d
+            : (targetContrastRatio * (bgLuminance + 0.05d)) - 0.05d;
+
+        targetLuminance = Math.Clamp(targetLuminance, 0d, 1d);
+        byte channel = LuminanceToSrgbByte(targetLuminance);
+        return Color.FromArgb(255, channel, channel, channel);
+    }
+
+    private Color GetAdjustedBackgroundColor(Color color)
+    {
+        double intensityScale = GetContrastIntensityScale(_contrastValue);
+        if (intensityScale <= 0d)
+            return color;
+
+        double targetRatio = Math.Clamp(_desiredContrastRatio, 1f, 21f) * intensityScale;
+        double amount = Math.Clamp((targetRatio - 1d) / 10d, 0d, 0.85d);
+
+        return _isDarkTheme
+            ? Mix(color, Color.FromArgb(255, 255, 255, 255), amount)
+            : Mix(color, Color.FromArgb(255, 0, 0, 0), amount * 0.65d);
+    }
+
+    private static double GetContrastIntensityScale(object? contrastValue)
+    {
+        return NormalizeContrastValue(contrastValue) switch
+        {
+            ContrastNone => 0d,
+            ContrastLow => 0.8d,
+            ContrastHigh => 1.25d,
+            _ => 1.0d
+        };
+    }
+
+    private static string NormalizeColorSelectionValue(object? value)
+    {
+        string raw = value?.ToString() ?? ColorSelectionAll;
+        if (raw.Equals(ColorSelectionNone, StringComparison.OrdinalIgnoreCase))
+            return ColorSelectionNone;
+
+        if (raw.Equals(ColorSelectionPrimary, StringComparison.OrdinalIgnoreCase))
+            return ColorSelectionPrimary;
+
+        if (raw.Equals(ColorSelectionSecondary, StringComparison.OrdinalIgnoreCase))
+            return ColorSelectionSecondary;
+
+        return ColorSelectionAll;
+    }
+
+    private static string NormalizeContrastValue(object? value)
+    {
+        string raw = value?.ToString() ?? ContrastMedium;
+        if (raw.Equals(ContrastNone, StringComparison.OrdinalIgnoreCase))
+            return ContrastNone;
+
+        if (raw.Equals(ContrastLow, StringComparison.OrdinalIgnoreCase))
+            return ContrastLow;
+
+        if (raw.Equals(ContrastHigh, StringComparison.OrdinalIgnoreCase))
+            return ContrastHigh;
+
+        return ContrastMedium;
+    }
+
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private static byte LuminanceToSrgbByte(double luminance)
+    {
+        double srgb = luminance <= 0.0031308d
+            ? luminance * 12.92d
+            : 1.055d * Math.Pow(luminance, 1d / 2.4d) - 0.055d;
+
+        return (byte)Math.Clamp((int)Math.Round(srgb * 255d), 0, 255);
     }
 
     private static double RelativeLuminance(Color color)
@@ -518,11 +768,11 @@ public class AvaloniaThemeService : IThemeService
         return 0.2126 * r + 0.7152 * g + 0.0722 * b;
     }
 
-    private static byte LuminanceToSrgbByte(double luminance)
+    private static Color Mix(Color from, Color to, double amount)
     {
-        double s = luminance <= 0.0031308
-            ? luminance * 12.92
-            : 1.055 * Math.Pow(luminance, 1.0 / 2.4) - 0.055;
-        return (byte)Math.Clamp(Math.Round(s * 255), 0, 255);
+        amount = Math.Clamp(amount, 0d, 1d);
+        byte M(byte a, byte b) => (byte)Math.Clamp((int)Math.Round(a + (b - a) * amount), 0, 255);
+        return Color.FromArgb(255, M(from.R, to.R), M(from.G, to.G), M(from.B, to.B));
     }
+
 }

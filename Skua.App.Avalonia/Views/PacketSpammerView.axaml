@@ -33,8 +33,10 @@
       <Button Classes="skua-button"
               Content="Save"
               Command="{Binding SaveSpammerCommand}" />
-      <TextBlock Text="Delay (ms)" />
-      <TextBox Text="{Binding SpamDelay}" />
+      <TextBlock
+                 Text="Delay (ms)" />
+      <TextBox
+               Text="{Binding SpamDelay}" />
       <Button Classes="skua-button"
               Content="Start / Stop"
               Command="{Binding ToggleSpammerCommand}" />
