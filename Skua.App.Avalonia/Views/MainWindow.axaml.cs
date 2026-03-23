@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
@@ -7,6 +6,7 @@ using Skua.App.Avalonia.Services;
 using Skua.App.Avalonia.ViewModels;
 using Skua.App.Avalonia.ViewModels.MainMenu;
 using Skua.Core.Interfaces;
+using Skua.Core.Messaging;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -15,7 +15,6 @@ using System.Runtime.InteropServices;
 #if IS_WINDOWS
 using Avalonia.Input;
 using AxShockwaveFlashObjects;
-using Skua.Core.Messaging;
 using System.Runtime.Versioning;
 #endif
 
@@ -33,6 +32,7 @@ public partial class MainWindow : Window
     private MenuItem? _pluginsMenuItem;
     private readonly DispatcherTimer _metricsTimer;
     private bool _isFlashLoaded;
+    private bool _isMetricsCollapsed;
 
     public MainWindow()
     {
@@ -45,56 +45,16 @@ public partial class MainWindow : Window
         _metricsTimer = new DispatcherTimer(MetricRefreshInterval, DispatcherPriority.Background, (_, _) => UpdateMetrics());
         
         DataContext = _mainViewModel;
-        ConfigureTopActions();
+        MainMenuBar.DataContext = _mainMenuVm;
+        MetricsStrip.CollapseRequested += MetricsStrip_CollapseRequested;
+        StrongReferenceMessenger.Default.Register<MainWindow, TogglePerformanceStripMessage>(this, static (r, _) => r.ToggleMetricsCollapsed());
+        SetMetricsCollapsed(true);
         ConfigureMainMenu();
         RegisterLifecycleHandlers();
         
         #if IS_WINDOWS
         RegisterMessages();
         #endif
-    }
-
-    private void ConfigureTopActions()
-    {
-        BotWindowButton.Command = _mainMenuVm.ShowBotWindowCommand;
-        ConfigureAutoActions(_mainMenuVm.AutoViewModel);
-        ConfigureJumpActions(_mainMenuVm.JumpViewModel);
-    }
-
-    private void ConfigureAutoActions(AutoViewModel viewModel)
-    {
-        AutoAttackButton.Command = viewModel.StartAutoAttackCommand;
-        AutoHuntButton.Command = viewModel.StartAutoHuntCommand;
-        AutoStopButton.Command = viewModel.StopAutoAsyncCommand;
-        BindTextBlock(AutoClassText, nameof(AutoViewModel.SelectedClassString), viewModel, "Class: {0}");
-    }
-
-    private void ConfigureJumpActions(JumpViewModel viewModel)
-    {
-        JumpCurrentButton.Command = viewModel.GetCurrentCommand;
-        JumpRefreshButton.Command = viewModel.UpdateCellsCommand;
-        JumpGoButton.Command = viewModel.JumpToCommand;
-        BindTextBoxTwoWay(JumpCellTextBox, nameof(JumpViewModel.SelectedCell), viewModel);
-        BindTextBoxTwoWay(JumpPadTextBox, nameof(JumpViewModel.SelectedPad), viewModel);
-    }
-
-    private static void BindTextBlock(TextBlock textBlock, string path, object source, string? stringFormat = null)
-    {
-        textBlock[!TextBlock.TextProperty] = new Binding(path)
-        {
-            Source = source,
-            Mode = BindingMode.OneWay,
-            StringFormat = stringFormat
-        };
-    }
-
-    private static void BindTextBoxTwoWay(TextBox textBox, string path, object source)
-    {
-        textBox[!TextBox.TextProperty] = new Binding(path)
-        {
-            Source = source,
-            Mode = BindingMode.TwoWay
-        };
     }
 
     private void ConfigureMainMenu()
@@ -124,17 +84,22 @@ public partial class MainWindow : Window
         
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) _flash.InitializeFlash();
         
-        UpdateMetrics();
-        _metricsTimer.Start();
+        if (!_isMetricsCollapsed)
+        {
+            UpdateMetrics();
+            _metricsTimer.Start();
+        }
     }
 
     private void MainWindow_Closed(object? sender, EventArgs e)
     {
         _flash.FlashCall -= OnFlashCall;
         _metricsTimer.Stop();
+        MetricsStrip.CollapseRequested -= MetricsStrip_CollapseRequested;
         _startup.Dispose();
         _mainMenuVm.MainMenuItems.CollectionChanged -= MainMenuItemsChanged;
         _mainMenuVm.Plugins.CollectionChanged -= PluginsChanged;
+        StrongReferenceMessenger.Default.UnregisterAll(this);
         WeakReferenceMessenger.Default.UnregisterAll(this);
     }
     
@@ -237,5 +202,33 @@ public partial class MainWindow : Window
         MetricsStrip.WorkingSetText = $"RAM: {workingSetMb:0.0} MB";
         MetricsStrip.PrivateText = $"Private: {privateMb:0.0} MB";
         MetricsStrip.ManagedText = $"Managed: {managedMb:0.0} MB";
+    }
+
+    private void MetricsStrip_CollapseRequested(object? sender, EventArgs e)
+    {
+        SetMetricsCollapsed(true);
+    }
+
+    private void ToggleMetricsCollapsed()
+    {
+        SetMetricsCollapsed(!_isMetricsCollapsed);
+    }
+
+    private void SetMetricsCollapsed(bool collapsed)
+    {
+        if (_isMetricsCollapsed == collapsed)
+            return;
+
+        _isMetricsCollapsed = collapsed;
+        MetricsStrip.IsVisible = !collapsed;
+        if (collapsed)
+        {
+            _metricsTimer.Stop();
+            return;
+        }
+
+        UpdateMetrics();
+        if (!_metricsTimer.IsEnabled)
+            _metricsTimer.Start();
     }
 }

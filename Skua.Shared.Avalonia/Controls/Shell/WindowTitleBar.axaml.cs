@@ -2,6 +2,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using System;
 
 namespace Skua.Shared.Avalonia.Controls.Shell;
 
@@ -10,8 +14,10 @@ public partial class WindowTitleBar : UserControl
     public static readonly StyledProperty<string> TitleTextProperty =
         AvaloniaProperty.Register<WindowTitleBar, string>(nameof(TitleText), "Skua");
 
-    public static readonly StyledProperty<string> IconSourceProperty =
-        AvaloniaProperty.Register<WindowTitleBar, string>(nameof(IconSource), "avares://Skua.Shared.Avalonia/Assets/SkuaImage.png");
+    private static readonly IImage DefaultIconSource = LoadDefaultIconSource();
+
+    public static readonly StyledProperty<IImage?> IconSourceProperty =
+        AvaloniaProperty.Register<WindowTitleBar, IImage?>(nameof(IconSource), DefaultIconSource);
 
     public string TitleText
     {
@@ -19,7 +25,7 @@ public partial class WindowTitleBar : UserControl
         set => SetValue(TitleTextProperty, value);
     }
 
-    public string IconSource
+    public IImage? IconSource
     {
         get => GetValue(IconSourceProperty);
         set => SetValue(IconSourceProperty, value);
@@ -62,5 +68,12 @@ public partial class WindowTitleBar : UserControl
     {
         if (TopLevel.GetTopLevel(this) is Window window)
             window.Close();
+    }
+
+    private static IImage LoadDefaultIconSource()
+    {
+        // Keep shell icon parity with WPF title bar artwork so badge tint behavior matches.
+        using var stream = AssetLoader.Open(new Uri("avares://Skua.Shared.Avalonia/Assets/SkuaShellImage.png"));
+        return new Bitmap(stream);
     }
 }

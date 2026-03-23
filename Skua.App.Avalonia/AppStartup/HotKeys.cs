@@ -25,6 +25,7 @@ internal static class HotKeys
             { "LoadScript", new RelayCommand(LoadScript, CanExecuteHotKey) },
             { "OpenBank", new RelayCommand(Ioc.Default.GetRequiredService<IScriptBank>().Open, CanExecuteHotKey) },
             { "OpenConsole", new RelayCommand(OpenConsole, CanExecuteHotKey) },
+            { "TogglePerformanceStrip", new RelayCommand(TogglePerformanceStrip, CanExecuteHotKey) },
             { "ToggleAutoAttack", new RelayCommand(ToggleAutoAttack, CanExecuteHotKey) },
             { "ToggleAutoHunt", new RelayCommand(ToggleAutoHunt, CanExecuteHotKey) },
             { "ToggleLagKiller", new RelayCommand(ToggleLagKiller, CanExecuteHotKey) }
@@ -89,5 +90,10 @@ internal static class HotKeys
     {
         IScriptOption options = Ioc.Default.GetRequiredService<IScriptOption>();
         options.LagKiller = !options.LagKiller;
+    }
+
+    private static void TogglePerformanceStrip()
+    {
+        StrongReferenceMessenger.Default.Send<TogglePerformanceStripMessage>();
     }
 }

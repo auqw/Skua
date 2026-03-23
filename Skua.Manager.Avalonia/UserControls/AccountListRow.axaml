@@ -3,33 +3,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:materialAssists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              xmlns:managerUc="clr-namespace:Skua.Manager.Avalonia.UserControls"
              xmlns:uc="clr-namespace:Skua.Manager.Avalonia.UserControls"
              x:Class="Skua.Manager.Avalonia.UserControls.AccountListRow"
              mc:Ignorable="d"
              d:DesignWidth="700"
              d:DesignHeight="40">
-    <Border Classes="account-row"
-            BorderBrush="{DynamicResource SkuaBorderBrush}"
-            BorderThickness="0"
-            Padding="6,5"
+    <Border Classes="account-row account-row-list"
+            Classes.selected="{Binding UseCheck}"
+            Padding="8,6"
             Margin="0,0,0,1"
             PointerPressed="Border_PointerPressed">
         <Border.ContextMenu>
             <uc:AccountItemContextMenu />
         </Border.ContextMenu>
 
-        <Grid ColumnDefinitions="Auto,*,Auto" MinHeight="26">
+        <Grid ColumnDefinitions="Auto,*,Auto" MinHeight="28">
             <CheckBox Grid.Column="0"
                       IsChecked="{Binding UseCheck}"
+                      materialAssists:SelectionControlAssist.Size="18"
                       VerticalAlignment="Center"
-                      Margin="0,0,6,0" />
+                      Margin="0,0,8,0" />
 
             <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
                 <TextBlock Text="{Binding DisplayOrUsername}"
                            VerticalAlignment="Center"
-                           FontWeight="SemiBold" />
+                           FontSize="13"
+                           FontWeight="Medium" />
                 <ItemsControl ItemsSource="{Binding Tags}"
+                              Margin="0,3,0,0"
                               IsVisible="{Binding DataContext.ShowTags, RelativeSource={RelativeSource AncestorType=managerUc:AccountManagerUserControl}}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -38,13 +41,9 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="{DynamicResource SkuaAccentBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="7"
-                                    Padding="3,1"
-                                    Margin="0,0,2,1"
-                                    Background="{DynamicResource SkuaSurfaceAltBrush}">
-                                <TextBlock Text="{Binding}" />
+                            <Border Classes="tag-chip">
+                                <TextBlock Text="{Binding}"
+                                           Classes="tag-chip-text" />
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -53,14 +52,14 @@
 
             <Button Grid.Column="2"
                     Command="{Binding RemoveCommand}"
-                    Classes="danger-icon"
-                    Width="24"
-                    Height="24"
-                    Padding="0"
-                    Margin="4,0,0,0"
+                    Classes="icon"
+                    Margin="8,0,0,0"
                     VerticalAlignment="Center"
                     ToolTip.Tip="Remove">
-                <materialIcons:MaterialIcon Kind="DeleteOutline" Width="14" Height="14" Foreground="{DynamicResource SkuaAccentBrush}" />
+                <materialIcons:MaterialIcon Kind="DeleteOutline"
+                                            Width="14"
+                                            Height="14"
+                                            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
             </Button>
         </Grid>
     </Border>

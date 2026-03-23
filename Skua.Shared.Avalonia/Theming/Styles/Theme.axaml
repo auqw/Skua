@@ -6,12 +6,14 @@
            Primary -> SkuaAccentColor / SkuaAccentBrush
            Text on Primary -> SkuaAccentForegroundColor / SkuaAccentForegroundBrush
            These are updated at runtime by ThemeResourceApplicator via theme editor selections. -->
-      <Color x:Key="SkuaAccentColor">#7D9AA9</Color>
-      <Color x:Key="SkuaAccentForegroundColor">#FFFFFFFF</Color>
+      <Color x:Key="SkuaAccentColor">#FF607D8B</Color>
+      <Color x:Key="SkuaAccentForegroundColor">#FF000000</Color>
       <SolidColorBrush x:Key="SkuaAccentBrush" Color="{StaticResource SkuaAccentColor}" />
       <SolidColorBrush x:Key="SkuaAccentForegroundBrush" Color="{StaticResource SkuaAccentForegroundColor}" />
-      <SolidColorBrush x:Key="SkuaAccentHoverBrush" Color="#8BAAB8" />
-      <SolidColorBrush x:Key="SkuaAccentPressedBrush" Color="#6C8794" />
+      <SolidColorBrush x:Key="SkuaAccentHoverBrush" Color="#FF78909C" />
+      <SolidColorBrush x:Key="SkuaAccentPressedBrush" Color="#FF546E7A" />
+      <SolidColorBrush x:Key="SkuaDangerHoverBrush" Color="#CCB93A32" />
+      <SolidColorBrush x:Key="SkuaDangerForegroundBrush" Color="#FFFFFFFF" />
 
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
@@ -22,33 +24,41 @@
           <SolidColorBrush x:Key="SkuaNavHoverBrush" Color="#FFECEFF1" />
           <SolidColorBrush x:Key="SkuaTextBrush" Color="#FF212121" />
           <SolidColorBrush x:Key="SkuaMutedTextBrush" Color="#FF616161" />
-          <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#337D9AA9" />
+          <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#33607D8B" />
+          <SolidColorBrush x:Key="SkuaHoverBrush" Color="#14000000" />
+          <SolidColorBrush x:Key="SkuaHoverPressedBrush" Color="#22000000" />
           <SolidColorBrush x:Key="SkuaNavChipBrush" Color="#FFF1F3F4" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
           <SolidColorBrush x:Key="SkuaPageBrush" Color="#424242" />
-          <SolidColorBrush x:Key="SkuaSurfaceBrush" Color="#424242" />
+          <SolidColorBrush x:Key="SkuaSurfaceBrush" Color="#4E4E4E" />
           <SolidColorBrush x:Key="SkuaSurfaceAltBrush" Color="#303030" />
           <SolidColorBrush x:Key="SkuaBorderBrush" Color="#303030" />
           <SolidColorBrush x:Key="SkuaNavHoverBrush" Color="#303030" />
           <SolidColorBrush x:Key="SkuaTextBrush" Color="#ECEFF4" />
           <SolidColorBrush x:Key="SkuaMutedTextBrush" Color="#C3CAD0" />
-          <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#667D9AA9" />
+          <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#66607D8B" />
+          <SolidColorBrush x:Key="SkuaHoverBrush" Color="#1FFFFFFF" />
+          <SolidColorBrush x:Key="SkuaHoverPressedBrush" Color="#2AFFFFFF" />
           <SolidColorBrush x:Key="SkuaNavChipBrush" Color="#303030" />
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
     </ResourceDictionary>
   </Styles.Resources>
 
+  <!-- This is the shared theme root. Token resources live above, and focused control
+       rules are split into includes below so style behavior is easier to audit by file. -->
+  <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/TextBlocks.axaml" />
+  <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/TextBoxes.axaml" />
+  <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ComboBoxes.axaml" />
+  <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ScrollViewers.axaml" />
+
+  <!-- Root shell scope. Windows opt into shared theming with Classes="skua", then
+       descendants inherit these defaults and scoped control rules. -->
   <Style Selector="Window.skua">
     <Setter Property="Background" Value="{DynamicResource SkuaPageBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
     <Setter Property="FontSize" Value="12" />
-  </Style>
-
-  <!-- TODO(style-scope): Replace Window.skua TextBlock with an opt-in class style (e.g. TextBlock.skua-text) and apply only where intended. -->
-  <Style Selector="Window.skua TextBlock">
-    <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
   </Style>
 
   <Style Selector="Button.skua-button">
@@ -88,38 +98,30 @@
     <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
   </Style>
 
+  <Style Selector="ToggleButton.app-toggle:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaHoverBrush}" />
+  </Style>
+
+  <Style Selector="ToggleButton.app-toggle:pressed">
+    <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
   <Style Selector="ToggleButton.app-toggle:checked">
     <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
 
-  <!-- TODO(style-scope): Replace Window.skua TextBox with an opt-in class style (e.g. TextBox.skua-input) and tag specific inputs. -->
-  <Style Selector="Window.skua TextBox">
-    <Setter Property="Height" Value="24" />
-    <Setter Property="Padding" Value="6,2" />
-    <Setter Property="CornerRadius" Value="4" />
-    <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
-    <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
-  </Style>
-
-  <!-- TODO(style-scope): Pair focus style with class-scoped input selector (e.g. TextBox.skua-input:focus). -->
-  <Style Selector="Window.skua TextBox:focus">
+  <Style Selector="ToggleButton.app-toggle:checked:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
 
-  <!-- TODO(style-scope): Replace Window.skua ComboBox with an opt-in class style (e.g. ComboBox.skua-input). -->
-  <Style Selector="Window.skua ComboBox">
-    <Setter Property="Height" Value="24" />
-    <Setter Property="Padding" Value="6,2" />
-    <Setter Property="CornerRadius" Value="4" />
-    <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
-    <Setter Property="BorderThickness" Value="1" />
+  <Style Selector="ToggleButton.app-toggle:checked:pressed">
+    <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
 
-  <!-- TODO(style-scope): Replace Window.skua ListBox with an opt-in class style (e.g. ListBox.skua-list). -->
   <Style Selector="Window.skua ListBox">
     <Setter Property="Background" Value="{DynamicResource SkuaSurfaceBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
@@ -127,25 +129,17 @@
     <Setter Property="CornerRadius" Value="6" />
   </Style>
 
-  <!-- TODO(style-scope): Replace Window.skua ListBoxItem with class-scoped list item styling (e.g. ListBox.skua-list ListBoxItem). -->
   <Style Selector="Window.skua ListBoxItem">
     <Setter Property="Padding" Value="4,3" />
     <Setter Property="CornerRadius" Value="4" />
   </Style>
 
-  <!-- TODO(style-scope): Scope selected state to the classed list selector (e.g. ListBox.skua-list ListBoxItem:selected). -->
   <Style Selector="Window.skua ListBoxItem:selected">
     <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
   </Style>
 
-  <!-- TODO(style-scope): Replace Window.skua CheckBox with an opt-in class style (e.g. CheckBox.skua-check). -->
   <Style Selector="Window.skua CheckBox">
     <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
-  </Style>
-
-  <!-- TODO(style-scope): Replace Window.skua ScrollViewer with an opt-in class style (e.g. ScrollViewer.skua-scroll). -->
-  <Style Selector="Window.skua ScrollViewer">
-    <Setter Property="Background" Value="Transparent" />
   </Style>
 
   <Style Selector="ToolTip">
@@ -171,6 +165,34 @@
     <Setter Property="FontSize" Value="15" />
   </Style>
 
+  <Style Selector="Button.top-nav-item">
+    <Setter Property="Theme" Value="{StaticResource MaterialFlatButton}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="MinHeight" Value="25" />
+    <Setter Property="Height" Value="25" />
+    <Setter Property="MaxHeight" Value="25" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="FontSize" Value="15" />
+  </Style>
+
+  <Style Selector="ToggleButton.top-nav-item">
+    <Setter Property="Theme" Value="{StaticResource MaterialFlatToggleButton}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="MinHeight" Value="25" />
+    <Setter Property="Height" Value="25" />
+    <Setter Property="MaxHeight" Value="25" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="FontSize" Value="15" />
+  </Style>
+
   <Style Selector="MenuItem.top-nav-item /template/ Border#PART_Presenter">
     <Setter Property="Background" Value="Transparent" />
   </Style>
@@ -178,6 +200,39 @@
   <Style Selector="MenuItem.top-nav-item:pointerover">
     <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item:pointerover, ToggleButton.top-nav-item:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item /template/ ContentPresenter, ToggleButton.top-nav-item /template/ ContentPresenter">
+    <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item /template/ Border#PART_RootBorder, ToggleButton.top-nav-item /template/ Border#PART_RootBorder">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item:pointerover /template/ Border#PART_RootBorder, ToggleButton.top-nav-item:pointerover /template/ Border#PART_RootBorder">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item /template/ Border#PART_HoverEffect">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item:pointerover /template/ Border#PART_HoverEffect">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item:focus-visible /template/ Border#PART_HoverEffect">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+
+  <Style Selector="ToggleButton.top-nav-item:checked /template/ Border#PART_RootBorder">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
   </Style>
 
   <Style Selector="MenuItem.top-nav-item:pointerover /template/ Border#PART_Presenter">
@@ -189,6 +244,11 @@
   </Style>
 
   <Style Selector="MenuItem.top-nav-item:selected">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="ToggleButton.top-nav-item:checked">
     <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
@@ -212,15 +272,6 @@
 
   <Style Selector="MenuItem.top-nav-item:submenuopen /template/ ContentPresenter#PART_HeaderPresenter">
     <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-  </Style>
-
-  <Style Selector="Border.topbar-popup">
-    <Setter Property="MinWidth" Value="280" />
-    <Setter Property="Padding" Value="10" />
-    <Setter Property="Background" Value="{DynamicResource SkuaPageBrush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource SkuaNavHoverBrush}" />
-    <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="CornerRadius" Value="6" />
   </Style>
 
   <Style Selector="Border.titlebar-app-badge">
@@ -250,7 +301,7 @@
   </Style>
 
   <Style Selector="Button.titlebar-close:pointerover">
-    <Setter Property="Background" Value="#CCB93A32" />
-    <Setter Property="Foreground" Value="#FFFFFFFF" />
+    <Setter Property="Background" Value="{DynamicResource SkuaDangerHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaDangerForegroundBrush}" />
   </Style>
 </Styles>

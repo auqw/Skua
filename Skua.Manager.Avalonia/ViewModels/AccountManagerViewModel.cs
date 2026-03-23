@@ -35,6 +35,7 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         IMessengerExtensions.Register<AccountManagerViewModel, RemoveGroupMessage>(Messenger, this, (r, m) => r._RemoveGroup(m.Group));
         IMessengerExtensions.Register<AccountManagerViewModel, RenameGroupMessage>(Messenger, this, (r, m) => r._RenameGroup(m.Group));
         IMessengerExtensions.Register<AccountManagerViewModel, RemoveAccountFromGroupMessage>(Messenger, this, (r, m) => r._RemoveAccountFromGroup(m.Group, m.Account));
+        IMessengerExtensions.Register<AccountManagerViewModel, ReplaceAccountInGroupMessage>(Messenger, this, (r, m) => r._ReplaceAccountInGroup(m.Group, m.CurrentAccount, m.ReplacementAccount));
         IMessengerExtensions.Register<AccountManagerViewModel, RefreshAccountDisplayNamesMessage>(Messenger, this, (r, _) => r.RefreshAccountDisplayNames());
         IMessengerExtensions.Register<AccountManagerViewModel, StartGroupMessage>(Messenger, this, (r, m) => r._StartGroup(m.Group, m.WithScript));
         StrongReferenceMessenger.Default.Register<AccountManagerViewModel, LoadScriptMessage, int>(this,
@@ -82,6 +83,16 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
 
     [ObservableProperty]
     private int _columns = 3;
+
+    public IReadOnlyList<int> ColumnOptions { get; } = [2, 3, 4, 5, 6];
+
+    partial void OnColumnsChanged(int value)
+    {
+        if (value < 2)
+            Columns = 2;
+        else if (value > 6)
+            Columns = 6;
+    }
 
     // Tag Filtering Properties
     [ObservableProperty]
@@ -423,6 +434,22 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
             group.Accounts.Remove(account);
             _SaveGroups();
         }
+    }
+
+    private void _ReplaceAccountInGroup(IGroupItemViewModel group, IAccountItemViewModel currentAccount, IAccountItemViewModel replacementAccount)
+    {
+        int index = group.Accounts.IndexOf(currentAccount);
+        if (index < 0)
+            return;
+
+        bool duplicate = group.Accounts
+            .Where((_, i) => i != index)
+            .Any(a => string.Equals(a.Username, replacementAccount.Username, StringComparison.OrdinalIgnoreCase));
+        if (duplicate)
+            return;
+
+        group.Accounts[index] = replacementAccount;
+        _SaveGroups();
     }
 
     // Tag Filtering

@@ -3,6 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:Skua.App.Avalonia.Controls"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:uc="clr-namespace:Skua.App.Avalonia.UserControls"
         xmlns:sharedShell="clr-namespace:Skua.Shared.Avalonia.Controls.Shell;assembly=Skua.Shared.Avalonia"
         x:Class="Skua.App.Avalonia.Views.MainWindow"
         Classes="skua"
@@ -15,12 +17,13 @@
         Title="{Binding Title}"
         Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
 
-        SystemDecorations="None"
+        SystemDecorations="BorderOnly"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="32"
         >
 
+  <!-- This root class enables shared shell selectors from Theme.axaml (Window.skua ...). -->
   <Grid RowDefinitions="Auto,*">
 
     <sharedShell:WindowTitleBar Grid.Row="0"
@@ -30,68 +33,74 @@
     <Grid Grid.Row="1"
       RowDefinitions="Auto,*,Auto">
 
-      <Grid Grid.Row="0" ColumnDefinitions="*,Auto"
+      <Grid Grid.Row="0"
             Background="{DynamicResource SkuaSurfaceAltBrush}"
-            Height="25"
-            >
-
-        <Menu
-          x:Name="MainMenuControl"
-          Classes="top-toolbar"
-          />
-
-        <StackPanel x:Name="TopActionsPanel"
-                    Grid.Column="1"
-                    Orientation="Horizontal">
-
-          <ToggleButton x:Name="AutoToggle" Classes="topbar-action flat" Content="Auto" />
-          <Popup x:Name="AutoPopup"
-                 IsOpen="{Binding IsChecked, ElementName=AutoToggle}"
-                 Placement="Bottom"
-                 PlacementTarget="{Binding ElementName=AutoToggle}"
-                 HorizontalOffset="-220"
-                 IsLightDismissEnabled="True">
-
-             <sharedShell:TopbarPopupPanel x:Name="AutoPanel">
-               <StackPanel Spacing="8">
-                 <StackPanel Spacing="8">
-                   <Button x:Name="AutoAttackButton" Classes="skua-button" Content="Attack" />
-                   <Button x:Name="AutoHuntButton" Classes="skua-button" Content="Hunt" />
-                   <Button x:Name="AutoStopButton" Classes="skua-button" Content="Stop" />
-                 </StackPanel>
-                 <TextBlock x:Name="AutoClassText" />
-               </StackPanel>
-            </sharedShell:TopbarPopupPanel>
-
-          </Popup>
-
-          <ToggleButton x:Name="JumpToggle" Classes="topbar-action flat" Content="Jump" />
-          <Popup x:Name="JumpPopup"
-                 IsOpen="{Binding IsChecked, ElementName=JumpToggle}"
-                 Placement="Bottom"
-                 PlacementTarget="{Binding ElementName=JumpToggle}"
-                 HorizontalOffset="-185"
-                 IsLightDismissEnabled="True">
-
-            <sharedShell:TopbarPopupPanel x:Name="JumpPanel">
-              <StackPanel Spacing="8">
-                <TextBox x:Name="JumpCellTextBox" Watermark="Cell" />
-                <TextBox x:Name="JumpPadTextBox" Watermark="Pad" />
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                  <Button x:Name="JumpCurrentButton" Classes="skua-button" Content="Current" />
-                  <Button x:Name="JumpRefreshButton" Classes="skua-button" Content="Refresh" />
-                  <Button x:Name="JumpGoButton" Classes="skua-button" Content="Jump" />
-                </StackPanel>
+            Height="30">
+        <DockPanel x:Name="MainMenuBar"
+                   LastChildFill="True">
+          <StackPanel DockPanel.Dock="Right"
+                      Margin="0,0,6,0"
+                      Orientation="Horizontal"
+                      Spacing="4"
+                      VerticalAlignment="Center">
+            <ToggleButton x:Name="AutoToggle"
+                          Classes="top-nav-item"
+                          ToolTip.Tip="Auto tools">
+              <StackPanel Orientation="Horizontal"
+                          Spacing="4">
+                <materialIcons:MaterialIcon Kind="ProgressCheck"
+                                            Width="12"
+                                            Height="12"
+                                            VerticalAlignment="Center"
+                                            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"
+                                            IsVisible="{Binding AutoViewModel.Auto.IsRunning}" />
+                <TextBlock Text="Auto"
+                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"
+                           VerticalAlignment="Center" />
               </StackPanel>
-            </sharedShell:TopbarPopupPanel>
+            </ToggleButton>
+            <Popup Placement="Bottom"
+                   IsLightDismissEnabled="True"
+                   IsOpen="{Binding IsChecked, ElementName=AutoToggle, Mode=TwoWay}"
+                   PlacementTarget="{Binding ElementName=AutoToggle}">
+              <sharedShell:TopbarPopupPanel>
+                <uc:AutoUserControl DataContext="{Binding AutoViewModel}" />
+              </sharedShell:TopbarPopupPanel>
+            </Popup>
 
-          </Popup>
+            <ToggleButton x:Name="JumpToggle"
+                          Classes="top-nav-item"
+                          ToolTip.Tip="Jump tools">
+              <TextBlock Text="Jump"
+                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"
+                         VerticalAlignment="Center" />
+            </ToggleButton>
+            <Popup Placement="Bottom"
+                   IsLightDismissEnabled="True"
+                   IsOpen="{Binding IsChecked, ElementName=JumpToggle, Mode=TwoWay}"
+                   PlacementTarget="{Binding ElementName=JumpToggle}">
+              <sharedShell:TopbarPopupPanel>
+                <uc:JumpUserControl DataContext="{Binding JumpViewModel}" />
+              </sharedShell:TopbarPopupPanel>
+            </Popup>
 
-          <Button x:Name="BotWindowButton" Classes="topbar-action flat" Content="+" />
-        </StackPanel>
+            <Button Classes="top-nav-item"
+                    Command="{Binding ShowBotWindowCommand}"
+                    ToolTip.Tip="Show bot window">
+              <materialIcons:MaterialIcon Kind="Plus"
+                                          Width="12"
+                                          Height="12"
+                                          VerticalAlignment="Center" />
+            </Button>
+          </StackPanel>
+
+          <Menu x:Name="MainMenuControl"
+                Classes="top-toolbar" />
+        </DockPanel>
       </Grid>
 
-      <Grid Grid.Row="1" Background="#000000">
+      <Grid Grid.Row="1"
+            Background="{DynamicResource SkuaPageBrush}">
         <controls:WinFormsFlashHost x:Name="FlashHost" IsVisible="False" />
         <ProgressBar x:Name="LoadingBar"
                      Width="150"
@@ -108,3 +117,4 @@
   </Grid>
 
 </Window>
+

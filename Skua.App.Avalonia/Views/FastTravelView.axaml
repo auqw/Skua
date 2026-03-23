@@ -41,12 +41,10 @@
     <Border Grid.Row="2"
             Grid.ColumnSpan="3"
             Margin="0,0,0,8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="list-frame">
       <ListBox ItemsSource="{Binding FastTravelItems}"
                SelectedIndex="{Binding SelectedIndex}"
-               BorderThickness="0"
-               Background="Transparent">
+               Classes="embedded">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Grid Margin="8,6"
@@ -55,19 +53,16 @@
                          VerticalAlignment="Center"
                          Text="{Binding DescriptionName}" />
               <Button Grid.Column="1"
-                      Classes="skua-button"
-                      Margin="8,0,0,0"
+                      Classes="skua-button gap-left-8"
                       Content="Go"
                       Command="{Binding TravelCommand}"
                       CommandParameter="{Binding}" />
               <Button Grid.Column="2"
-                      Classes="skua-button"
-                      Margin="8,0,0,0"
+                      Classes="skua-button gap-left-8"
                       Content="Edit"
                       Command="{Binding EditCommand}" />
               <Button Grid.Column="3"
-                      Classes="skua-button"
-                      Margin="8,0,0,0"
+                      Classes="skua-button gap-left-8"
                       Content="Remove"
                       Command="{Binding RemoveCommand}" />
             </Grid>

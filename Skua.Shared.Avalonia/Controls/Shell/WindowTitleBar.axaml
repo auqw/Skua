@@ -11,7 +11,7 @@
       <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
 
-    <Grid Column="0"
+    <Grid Grid.Column="0"
           Width="30"
           Height="30"
           Margin="6,0"
@@ -21,8 +21,10 @@
               Classes="titlebar-app-badge"
               CornerRadius="15" />
       <Image Source="{Binding IconSource, ElementName=Root}"
-             Width="32"
-             Height="32"
+             Width="30"
+             Height="30"
+             Stretch="Uniform"
+             HorizontalAlignment="Center"
              VerticalAlignment="Center" />
     </Grid>
 
@@ -34,6 +36,8 @@
     </Viewbox>
 
     <StackPanel Grid.Column="2"
+                Height="28"
+                VerticalAlignment="Top"
                 Orientation="Horizontal">
       <Button x:Name="MinimizeButton"
               Classes="titlebar flat"

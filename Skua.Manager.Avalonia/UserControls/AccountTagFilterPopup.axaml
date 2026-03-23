@@ -6,12 +6,11 @@
            Placement="Bottom"
            IsLightDismissEnabled="True"
            PlacementTarget="{Binding Anchor, ElementName=Root}">
-        <Border BorderBrush="{DynamicResource SkuaBorderBrush}"
-                BorderThickness="1"
+        <Border Classes="card"
                 CornerRadius="4"
-                Background="{DynamicResource SkuaSurfaceBrush}"
                 Padding="8"
-                Width="260"
+                MinWidth="240"
+                MaxWidth="360"
                 MaxHeight="330">
             <Grid RowDefinitions="Auto,Auto,*,Auto">
                 <TextBlock Grid.Row="0"

@@ -72,6 +72,7 @@ public class DialogService : IDialogService
         {
             InputDialogViewModel input => ShowInputDialog(input, title),
             SelectGroupDialogViewModel selectGroup => ShowSelectGroupDialog(selectGroup, title),
+            SelectAccountDialogViewModel selectAccount => ShowSelectAccountDialog(selectAccount, title),
             MessageBoxDialogViewModel messageBox => ShowMessageBox(messageBox.Message, messageBox.Title, messageBox.YesAndNo),
             CustomDialogViewModel custom => ShowCustomDialog(custom, title),
             _ => ShowFallbackDialog(viewModel, title)
@@ -158,6 +159,72 @@ public class DialogService : IDialogService
             {
                 new TextBlock { Text = "Select group" },
                 groups,
+                new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Spacing = 8,
+                    Children = { cancel, ok }
+                }
+            }
+        };
+        dialog.Content = WrapWithShell(title, content);
+        Show(dialog);
+        return result;
+    }
+
+    private static bool? ShowSelectAccountDialog(SelectAccountDialogViewModel vm, string title)
+    {
+        Window dialog = CreateBaseDialog(title);
+        TextBox searchBox = new()
+        {
+            Watermark = "Search accounts...",
+            Text = vm.SearchText
+        };
+        searchBox.TextChanged += (_, _) =>
+        {
+            vm.SearchText = searchBox.Text ?? string.Empty;
+        };
+
+        ListBox accounts = new()
+        {
+            MaxHeight = 260,
+            ItemsSource = vm.FilteredAccounts,
+            SelectedItem = vm.SelectedAccount,
+            ItemTemplate = new FuncDataTemplate<IAccountItemViewModel>((a, _) =>
+            {
+                return new TextBlock { Text = a?.DisplayOrUsername ?? string.Empty };
+            }, true)
+        };
+        accounts.SelectionChanged += (_, _) =>
+        {
+            vm.SelectedAccount = accounts.SelectedItem as IAccountItemViewModel;
+        };
+
+        bool? result = null;
+        Button ok = new() { Content = "OK", MinWidth = 84 };
+        Button cancel = new() { Content = "Cancel", MinWidth = 84, IsCancel = true };
+        ok.IsDefault = true;
+        ok.Click += (_, _) =>
+        {
+            result = vm.SelectedAccount != null;
+            dialog.Close();
+        };
+        cancel.Click += (_, _) =>
+        {
+            result = false;
+            dialog.Close();
+        };
+
+        StackPanel content = new()
+        {
+            Margin = new Thickness(14),
+            Spacing = 10,
+            Children =
+            {
+                new TextBlock { Text = "Select replacement account" },
+                searchBox,
+                accounts,
                 new StackPanel
                 {
                     Orientation = Orientation.Horizontal,
@@ -276,8 +343,7 @@ public class DialogService : IDialogService
 
         WindowTitleBar titleBar = new()
         {
-            TitleText = title,
-            IconSource = "avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
+            TitleText = title
         };
 
         Grid.SetRow(titleBar, 0);

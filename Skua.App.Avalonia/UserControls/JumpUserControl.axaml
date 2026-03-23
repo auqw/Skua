@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Skua.App.Avalonia.UserControls.JumpUserControl">
+  <Border Background="{DynamicResource SkuaSurfaceBrush}"
+          Padding="8">
+    <Grid Margin="0"
+          ColumnDefinitions="1.5*,*"
+          RowDefinitions="Auto,Auto">
+      <ComboBox x:Name="Cells"
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="0,0,4,4"
+                ItemsSource="{Binding Cells}"
+                SelectedItem="{Binding SelectedCell}" />
+
+      <ComboBox x:Name="Pads"
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="4,0,0,4"
+                ItemsSource="{Binding Pads}"
+                SelectedItem="{Binding SelectedPad}" />
+
+      <Button Grid.Row="1"
+              Grid.Column="0"
+              Classes="skua-button"
+              Margin="0,4,4,0"
+              Command="{Binding GetCurrentCommand}"
+              Content="Current" />
+
+      <Button Grid.Row="1"
+              Grid.Column="1"
+              Classes="skua-button"
+              Margin="4,4,0,0"
+              Command="{Binding JumpToCommand}"
+              Content="Jump" />
+    </Grid>
+  </Border>
+</UserControl>

@@ -5,54 +5,48 @@
         RowDefinitions="Auto,Auto,*">
     <Grid Grid.Row="0"
           ColumnDefinitions="*,Auto,Auto,Auto"
-          Margin="0,0,0,8">
+          Classes="gap-bottom-8">
       <TextBlock Grid.Column="0"
                  VerticalAlignment="Center"
                  Text="{Binding CurrentPlayer}" />
       <Button Grid.Column="1"
-              Classes="skua-button"
-              Margin="8,0,0,0"
+              Classes="skua-button gap-left-8"
               Content="Load"
               Command="{Binding LoadCommand}" />
       <Button Grid.Column="2"
-              Classes="skua-button"
-              Margin="8,0,0,0"
+              Classes="skua-button gap-left-8"
               Content="Save"
               Command="{Binding SaveCommand}" />
       <Button Grid.Column="3"
-              Classes="skua-button"
-              Margin="8,0,0,0"
+              Classes="skua-button gap-left-8"
               Content="Load Character"
               Command="{Binding LoadCharacterCommand}" />
     </Grid>
 
     <ListBox Grid.Row="1"
-             Margin="0,0,0,8"
-             BorderThickness="0"
-             Background="Transparent"
+             Classes="top-tabs"
              ItemsSource="{Binding CoreBotsTabs}"
-             SelectedItem="{Binding SelectedTab}">
+             SelectedItem="{Binding SelectedTab}"
+             HorizontalAlignment="Stretch"
+             ScrollViewer.HorizontalScrollBarVisibility="Auto"
+             ScrollViewer.VerticalScrollBarVisibility="Disabled">
       <ListBox.ItemsPanel>
         <ItemsPanelTemplate>
-          <StackPanel Orientation="Horizontal" />
+          <StackPanel Orientation="Horizontal"
+                      Spacing="2" />
         </ItemsPanelTemplate>
       </ListBox.ItemsPanel>
       <ListBox.ItemTemplate>
         <DataTemplate>
-          <Border Margin="0,0,8,0"
-                  Padding="10,6"
-                  BorderThickness="1"
-                  BorderBrush="{DynamicResource SkuaNavHoverBrush}">
-            <TextBlock Text="{Binding Header}" />
-          </Border>
+          <TextBlock Text="{Binding Header}"
+                     Classes="top-tabs-label" />
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
 
     <Border Grid.Row="2"
-            Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="card"
+            Padding="8">
       <ContentControl Content="{Binding SelectedTab.Content}" />
     </Border>
   </Grid>

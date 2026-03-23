@@ -5,32 +5,34 @@
         RowDefinitions="Auto,Auto,*,Auto">
     <Grid Grid.Row="0"
           ColumnDefinitions="*,Auto,Auto"
-          Margin="0,0,0,8">
+          Classes="gap-bottom-8">
       <TextBox Grid.Column="0"
                Watermark="Drop names separated by |"
                Text="{Binding AddDropInput}" />
       <Button Grid.Column="1"
-              Classes="skua-button"
-              Margin="8,0,0,0"
+              Classes="skua-button gap-left-8"
               Content="Add"
               Command="{Binding AddDropCommand}" />
       <Button Grid.Column="2"
-              Classes="skua-button"
-              Margin="8,0,0,0"
+              Classes="skua-button gap-left-8"
               Content="Clear"
               Command="{Binding RemoveAllDropsCommand}" />
     </Grid>
 
     <StackPanel Grid.Row="1"
+                Classes="gap-bottom-8"
                 Orientation="Horizontal"
-                Spacing="8"
-                Margin="0,0,0,8">
-      <TextBlock VerticalAlignment="Center" Text="Beep count" />
+                Spacing="8">
+      <TextBlock
+                 VerticalAlignment="Center"
+                 Text="Beep count" />
       <NumericUpDown Width="70"
                      Minimum="1"
                      Maximum="25"
                      Value="{Binding SoundCount}" />
-      <TextBlock VerticalAlignment="Center" Text="Delay (ms)" />
+      <TextBlock
+                 VerticalAlignment="Center"
+                 Text="Delay (ms)" />
       <NumericUpDown Width="90"
                      Minimum="10"
                      Maximum="2000"
@@ -43,15 +45,14 @@
 
     <Border Grid.Row="2"
             Margin="0,0,0,8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="list-frame">
       <ListBox ItemsSource="{Binding NotifyDropList}"
-               BorderThickness="0"
-               Background="Transparent" />
+               Classes="embedded" />
     </Border>
 
     <TextBlock Grid.Row="3"
+               Classes="hint"
                Text="Use in-game exact item names."
-               Opacity="0.7" />
+               />
   </Grid>
 </UserControl>

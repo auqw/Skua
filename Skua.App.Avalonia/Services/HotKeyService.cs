@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Messaging;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Interactivity;
 using Avalonia.Input;
+using Avalonia.Threading;
 using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.Models;
@@ -13,6 +15,9 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+#if IS_WINDOWS
+using System.Runtime.InteropServices;
+#endif
 
 namespace Skua.App.Avalonia.Services;
 
@@ -30,7 +35,12 @@ public class HotKeyService : IHotKeyService, IDisposable
     private readonly IDecamelizer _decamelizer;
     private readonly List<HotKeyBinding> _bindings = [];
     private Window? _mainWindow;
+    private bool _isMainWindowActive;
     private bool _disposed;
+#if IS_WINDOWS
+    private IntPtr _keyboardHook = IntPtr.Zero;
+    private LowLevelKeyboardProc? _keyboardProc;
+#endif
 
     public void Reload()
     {
@@ -61,8 +71,12 @@ public class HotKeyService : IHotKeyService, IDisposable
                 continue;
             }
 
-            _bindings.Add(new HotKeyBinding(binding, command, parsed.Key, parsed.Modifiers));
+            _bindings.Add(new HotKeyBinding(binding, command, parsed.Key, parsed.Modifiers, TryToVirtualKey(parsed.Key)));
         }
+
+#if IS_WINDOWS
+        EnsureWindowsKeyboardHook();
+#endif
     }
 
     public List<T> GetHotKeys<T>()
@@ -134,6 +148,8 @@ public class HotKeyService : IHotKeyService, IDisposable
             string gesture = string.Empty;
             if (string.Equals(key, "ToggleLagKiller", StringComparison.Ordinal) && !usedGestures.Contains("F6"))
                 gesture = "F6";
+            else if (string.Equals(key, "TogglePerformanceStrip", StringComparison.Ordinal) && !usedGestures.Contains("F7"))
+                gesture = "F7";
 
             hotkeys.Add($"{key}|{gesture}");
         }
@@ -147,13 +163,24 @@ public class HotKeyService : IHotKeyService, IDisposable
         if (!ReferenceEquals(_mainWindow, desktop.MainWindow))
         {
             if (_mainWindow is not null)
-                _mainWindow.KeyDown -= MainWindowOnKeyDown;
+            {
+                _mainWindow.RemoveHandler(InputElement.KeyDownEvent, MainWindowOnKeyDown);
+                _mainWindow.Activated -= MainWindowOnActivated;
+                _mainWindow.Deactivated -= MainWindowOnDeactivated;
+            }
 
             _mainWindow = desktop.MainWindow;
-            _mainWindow.KeyDown -= MainWindowOnKeyDown;
-            _mainWindow.KeyDown += MainWindowOnKeyDown;
+            _mainWindow.RemoveHandler(InputElement.KeyDownEvent, MainWindowOnKeyDown);
+            _mainWindow.AddHandler(InputElement.KeyDownEvent, MainWindowOnKeyDown, RoutingStrategies.Tunnel, handledEventsToo: true);
+            _mainWindow.Activated += MainWindowOnActivated;
+            _mainWindow.Deactivated += MainWindowOnDeactivated;
+            _isMainWindowActive = _mainWindow.IsActive;
         }
     }
+
+    private void MainWindowOnActivated(object? sender, EventArgs e) => _isMainWindowActive = true;
+
+    private void MainWindowOnDeactivated(object? sender, EventArgs e) => _isMainWindowActive = false;
 
     private void MainWindowOnKeyDown(object? sender, KeyEventArgs e)
     {
@@ -166,14 +193,73 @@ public class HotKeyService : IHotKeyService, IDisposable
             if (binding.Key != e.Key || binding.Modifiers != modifiers)
                 continue;
 
-            if (!binding.Command.CanExecute(null))
-                continue;
-
-            binding.Command.Execute(null);
-            e.Handled = true;
+            if (ExecuteBinding(binding))
+                e.Handled = true;
             return;
         }
     }
+
+#if IS_WINDOWS
+    private void EnsureWindowsKeyboardHook()
+    {
+        if (_keyboardHook != IntPtr.Zero)
+            return;
+
+        _keyboardProc = KeyboardHookCallback;
+        _keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, _keyboardProc, GetModuleHandle(null), 0);
+        if (_keyboardHook == IntPtr.Zero)
+        {
+            int error = Marshal.GetLastWin32Error();
+            Console.Error.WriteLine($"HotKeyService keyboard hook install failed (Win32: {error}). Falling back to Avalonia KeyDown routing only.");
+        }
+    }
+
+    private IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+    {
+        if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
+        {
+            int vkCode = Marshal.ReadInt32(lParam);
+            KeyModifiers modifiers = GetCurrentModifiers();
+
+            if (_isMainWindowActive && TryExecuteVirtualBinding(vkCode, modifiers))
+            {
+                // Match WPF behavior: consume hotkey once matched.
+                return (IntPtr)1;
+            }
+        }
+
+        return CallNextHookEx(_keyboardHook, nCode, wParam, lParam);
+    }
+
+    private bool TryExecuteVirtualBinding(int vkCode, KeyModifiers modifiers)
+    {
+        foreach (HotKeyBinding binding in _bindings)
+        {
+            if (binding.VirtualKey != vkCode || binding.Modifiers != modifiers)
+                continue;
+
+            if (!binding.Command.CanExecute(null))
+                continue;
+
+            Dispatcher.UIThread.Post(() => ExecuteBinding(binding), DispatcherPriority.Input);
+            return true;
+        }
+
+        return false;
+    }
+
+    private static KeyModifiers GetCurrentModifiers()
+    {
+        KeyModifiers modifiers = KeyModifiers.None;
+        if ((GetKeyState(VK_CONTROL) & 0x8000) != 0)
+            modifiers |= KeyModifiers.Control;
+        if ((GetKeyState(VK_MENU) & 0x8000) != 0)
+            modifiers |= KeyModifiers.Alt;
+        if ((GetKeyState(VK_SHIFT) & 0x8000) != 0)
+            modifiers |= KeyModifiers.Shift;
+        return modifiers;
+    }
+#endif
 
     private static KeyGestureBinding? ParseGesture(string gesture)
     {
@@ -218,6 +304,47 @@ public class HotKeyService : IHotKeyService, IDisposable
         return new KeyGestureBinding(key, modifiers);
     }
 
+    private static int? TryToVirtualKey(Key key)
+    {
+        if (key is >= Key.A and <= Key.Z)
+            return 'A' + (int)(key - Key.A);
+        if (key is >= Key.D0 and <= Key.D9)
+            return 0x30 + (int)(key - Key.D0);
+        if (key is >= Key.NumPad0 and <= Key.NumPad9)
+            return 0x60 + (int)(key - Key.NumPad0);
+        if (key is >= Key.F1 and <= Key.F24)
+            return 0x70 + (int)(key - Key.F1);
+
+        return key switch
+        {
+            Key.Enter => 0x0D,
+            Key.Tab => 0x09,
+            Key.Escape => 0x1B,
+            Key.Space => 0x20,
+            Key.Back => 0x08,
+            Key.Delete => 0x2E,
+            Key.Insert => 0x2D,
+            Key.Home => 0x24,
+            Key.End => 0x23,
+            Key.PageUp => 0x21,
+            Key.PageDown => 0x22,
+            Key.Left => 0x25,
+            Key.Up => 0x26,
+            Key.Right => 0x27,
+            Key.Down => 0x28,
+            _ => null
+        };
+    }
+
+    private static bool ExecuteBinding(HotKeyBinding binding)
+    {
+        if (!binding.Command.CanExecute(null))
+            return false;
+
+        binding.Command.Execute(null);
+        return true;
+    }
+
     public void Dispose()
     {
         if (_disposed)
@@ -225,13 +352,51 @@ public class HotKeyService : IHotKeyService, IDisposable
 
         _disposed = true;
         if (_mainWindow is not null)
-            _mainWindow.KeyDown -= MainWindowOnKeyDown;
+        {
+            _mainWindow.RemoveHandler(InputElement.KeyDownEvent, MainWindowOnKeyDown);
+            _mainWindow.Activated -= MainWindowOnActivated;
+            _mainWindow.Deactivated -= MainWindowOnDeactivated;
+        }
+
+#if IS_WINDOWS
+        if (_keyboardHook != IntPtr.Zero)
+        {
+            UnhookWindowsHookEx(_keyboardHook);
+            _keyboardHook = IntPtr.Zero;
+        }
+#endif
 
         _bindings.Clear();
         GC.SuppressFinalize(this);
     }
 
-    private sealed record HotKeyBinding(string Binding, IRelayCommand Command, Key Key, KeyModifiers Modifiers);
+    private sealed record HotKeyBinding(string Binding, IRelayCommand Command, Key Key, KeyModifiers Modifiers, int? VirtualKey);
 
     private sealed record KeyGestureBinding(Key Key, KeyModifiers Modifiers);
+
+#if IS_WINDOWS
+    private const int WH_KEYBOARD_LL = 13;
+    private const int WM_KEYDOWN = 0x0100;
+    private const int WM_SYSKEYDOWN = 0x0104;
+    private const int VK_SHIFT = 0x10;
+    private const int VK_CONTROL = 0x11;
+    private const int VK_MENU = 0x12;
+
+    private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("user32.dll")]
+    private static extern short GetKeyState(int nVirtKey);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    private static extern IntPtr GetModuleHandle(string? lpModuleName);
+#endif
 }
