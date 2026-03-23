@@ -1,5 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Manager shell top navigation (MainWindow ListBox tabs). -->
   <Style Selector="ListBox.top-tabs">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
@@ -27,7 +28,6 @@
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
   </Style>
 
-  <!-- Prevent Material's internal selection visuals from bleeding through as the default blue. -->
   <Style Selector="ListBox.top-tabs ListBoxItem:selected /template/ Border">
     <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
@@ -45,5 +45,48 @@
   <Style Selector="ListBox.top-tabs ListBoxItem:selected TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
     <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+
+  <!-- Keep selected top-tabs visually stable while hovered. -->
+  <Style Selector="ListBox.top-tabs ListBoxItem:selected:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="ListBox.top-tabs ListBoxItem:selected:pointerover /template/ Border">
+    <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <!-- Account/Groups switcher inside Account Manager (Material TabControl). -->
+  <!-- Hide Material's strip-wide separator while preserving selected underline behavior. -->
+  <Style Selector="TabControl.account-groups-switcher /template/ Panel#PART_TabsPanel > Rectangle#PART_Separator">
+    <Setter Property="IsVisible" Value="False" />
+  </Style>
+
+  <Style Selector="TabControl.account-groups-switcher /template/ UniformGrid#PART_TabContainer">
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+  </Style>
+
+  <Style Selector="TabControl.account-groups-switcher TabItem">
+    <Setter Property="MinWidth" Value="0" />
+    <Setter Property="MinHeight" Value="36" />
+    <Setter Property="MaxWidth" Value="10000" />
+  </Style>
+
+  <Style Selector="TabControl.account-groups-switcher TabItem /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Margin" Value="12,6" />
+  </Style>
+
+  <Style Selector="TabControl.account-groups-switcher TabItem:selected /template/ Border#PART_RootBorder">
+    <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
+  </Style>
+
+  <Style Selector="TabControl.account-groups-switcher TabItem:pointerover /template/ Border#PART_RootBorder">
+    <Setter Property="Background" Value="{DynamicResource SkuaHoverBrush}" />
+  </Style>
+
+  <Style Selector="TabControl.account-groups-switcher TabItem:selected:pointerover /template/ Border#PART_RootBorder">
+    <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
   </Style>
 </Styles>

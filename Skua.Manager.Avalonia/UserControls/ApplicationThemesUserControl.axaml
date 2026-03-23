@@ -47,11 +47,9 @@
                     <TextBlock FontWeight="SemiBold"
                                Text="Backgrounds" />
                 </Expander.Header>
-                <Border Margin="0,8,0,0"
-                        Padding="4"
-                        BorderBrush="{DynamicResource SkuaBorderBrush}"
-                        BorderThickness="1"
-                        Background="{DynamicResource SkuaSurfaceBrush}">
+                <Border Classes="card"
+                        Margin="0,8,0,0"
+                        Padding="4">
                     <Grid DataContext="{Binding BackgroundTheme}" ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto">
                         <ComboBox Grid.Row="0"
                                   Grid.Column="0"

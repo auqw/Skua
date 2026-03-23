@@ -19,7 +19,7 @@ public static class ThemeResourceApplicator
         bool? isDarkTheme = null)
     {
         // Keep both Skua* and Material* resources in sync because custom shell controls
-        // and Material templates read different keys at runtime (see Theme.axaml + Buttons.axaml).
+        // and Material templates read different keys at runtime (see Theme.axaml + Controls.axaml).
         Color primary = ParseColorSafe(accentHex, GetResourceColor(app, "SkuaAccentColor", fallbackAccentHex));
         Color primaryForeground = ParseColorSafe(accentForegroundHex, GetResourceColor(app, "SkuaAccentForegroundColor", "#FF000000"));
         Color secondary = ParseColorSafe(secondaryHex, GetResourceColor(app, "MaterialSecondaryColor", primary.ToString()));
@@ -34,6 +34,8 @@ public static class ThemeResourceApplicator
 
         Color selectionLight = Color.FromArgb(0x33, primary.R, primary.G, primary.B);
         Color selectionDark = Color.FromArgb(0x66, primary.R, primary.G, primary.B);
+        bool useDarkSelection = isDarkTheme ?? false;
+        app.Resources["SkuaSelectionBrush"] = new SolidColorBrush(useDarkSelection ? selectionDark : selectionLight);
         if (app.Resources.ThemeDictionaries.TryGetValue(ThemeVariant.Light, out IThemeVariantProvider? selLightProvider) && selLightProvider is IResourceDictionary selLightDict)
             selLightDict["SkuaSelectionBrush"] = new SolidColorBrush(selectionLight);
         if (app.Resources.ThemeDictionaries.TryGetValue(ThemeVariant.Dark, out IThemeVariantProvider? selDarkProvider) && selDarkProvider is IResourceDictionary selDarkDict)

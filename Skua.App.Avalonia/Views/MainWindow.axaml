@@ -15,7 +15,7 @@
         Title="{Binding Title}"
         Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
 
-        SystemDecorations="None"
+        SystemDecorations="BorderOnly"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="32"

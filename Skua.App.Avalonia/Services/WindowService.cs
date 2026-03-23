@@ -80,7 +80,7 @@ public class WindowService : IWindowService
         Window window = new()
         {
             Title = title,
-            SystemDecorations = SystemDecorations.None,
+            SystemDecorations = SystemDecorations.BorderOnly,
             ExtendClientAreaToDecorationsHint = true,
             ExtendClientAreaChromeHints = global::Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome,
             ExtendClientAreaTitleBarHeightHint = 32,
@@ -118,8 +118,7 @@ public class WindowService : IWindowService
 
         WindowTitleBar titleBar = new()
         {
-            TitleText = title,
-            IconSource = "avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
+            TitleText = title
         };
         Grid.SetRow(titleBar, 0);
         Grid.SetRow(contentHost, 1);

@@ -16,6 +16,8 @@ public class ThemeItem
     public float DesiredContrastRatio { get; set; } = 4.5f;
     public string ContrastValue { get; set; } = "Medium";
     public string ColorSelectionValue { get; set; } = "All";
+    public ISolidColorBrush PrimaryBrush => new SolidColorBrush(PrimaryColor);
+    public ISolidColorBrush PrimaryForegroundBrush => new SolidColorBrush(PrimaryForegroundColor);
 
     /// <summary>
     /// Parse WPF-compatible CSV. Handles both #AARRGGBB and #RRGGBB color formats.
@@ -97,5 +99,10 @@ public class ThemeItem
         // Emit #AARRGGBB (WPF-compatible format).
         static string Hex(byte b) => b.ToString("X2").ToLowerInvariant();
         return $"#{Hex(color.A)}{Hex(color.R)}{Hex(color.G)}{Hex(color.B)}";
+    }
+
+    public override string ToString()
+    {
+        return Name;
     }
 }

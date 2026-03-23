@@ -51,11 +51,15 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
             defaultThemesColl = BuildDefaultThemesCollection();
             _settingsService.Set("DefaultThemes", defaultThemesColl);
         }
+        else if (EnsureBuiltInDefaultThemes(defaultThemesColl))
+        {
+            _settingsService.Set("DefaultThemes", defaultThemesColl);
+        }
         foreach (string? csv in defaultThemesColl)
         {
             ThemeItem? t = ThemeItem.FromString(csv);
             if (t is not null)
-                Presets.Add(t.Name);
+                Presets.Add(t);
         }
 
         // Load UserThemes
@@ -66,7 +70,7 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
             {
                 ThemeItem? t = ThemeItem.FromString(csv);
                 if (t is not null)
-                    UserThemes.Add(t.Name);
+                    UserThemes.Add(t);
             }
         }
 
@@ -288,8 +292,8 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
         _settingsService.Set("UserThemes", updated);
 
         // Update in-memory list
-        UserThemes.RemoveAll(t => string.Equals(t?.ToString(), name, StringComparison.OrdinalIgnoreCase));
-        UserThemes.Add(name);
+        UserThemes.RemoveAll(t => ThemeNameEquals(t, name));
+        UserThemes.Add(snapshot);
 
         // Write CurrentTheme with the name
         SaveCurrentThemeSnapshot(name);
@@ -299,6 +303,15 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
     {
         if (theme is null)
             return;
+
+        if (theme is ThemeItem themeItem)
+        {
+            ApplyThemeItem(themeItem);
+            SaveCurrentThemeSnapshot(themeItem.Name);
+            ThemeChanged?.Invoke(_primaryColor);
+            SchemeChanged?.Invoke(ColorScheme.Primary, _primaryColor);
+            return;
+        }
 
         if (theme is string themeString)
         {
@@ -338,7 +351,7 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
         if (theme is null)
             return;
 
-        string? name = theme.ToString();
+        string? name = GetThemeName(theme);
         if (string.IsNullOrWhiteSpace(name))
             return;
 
@@ -355,7 +368,7 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
         }
         _settingsService.Set("UserThemes", updated);
 
-        UserThemes.RemoveAll(t => string.Equals(t?.ToString(), name, StringComparison.OrdinalIgnoreCase));
+        UserThemes.RemoveAll(t => ThemeNameEquals(t, name));
     }
 
     private void ApplyThemeItem(ThemeItem item)
@@ -426,8 +439,43 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
             "RBot,Light,#FF9C934E,#FF9C934E,#FF000000,#FF000000",
             "Grimoire,Dark,#FFCC1F41,#FFCC1F41,#FFFFFFFF,#FFFFFFFF",
             "Purple,Dark,#FF9651D6,#FF9651D6,#FFFFFFFF,#FFFFFFFF,true,4.5,Medium,All",
-            "Phonk,Dark,#FFFE27D7,#FF607D8B,#FF000000,#FF000000,true,4.5,Medium,All"
+            "Phonk,Dark,#FFFE27D7,#FF607D8B,#FF000000,#FF000000,true,4.5,Medium,All",
+            "Arrow,Dark,#ffeaeaea,#ff607d8b,#ff000000,#ff000000"
         };
+    }
+
+    private static bool EnsureBuiltInDefaultThemes(StringCollection defaults)
+    {
+        bool changed = false;
+        StringCollection builtIns = BuildDefaultThemesCollection();
+        foreach (string csv in builtIns)
+        {
+            ThemeItem? builtIn = ThemeItem.FromString(csv);
+            if (builtIn is null)
+                continue;
+
+            bool exists = false;
+            foreach (string? existingCsv in defaults)
+            {
+                ThemeItem? existing = ThemeItem.FromString(existingCsv);
+                if (existing is null)
+                    continue;
+
+                if (string.Equals(existing.Name, builtIn.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists)
+            {
+                defaults.Add(csv);
+                changed = true;
+            }
+        }
+
+        return changed;
     }
 
     private ThemeItem BuildThemeSnapshot(string name)
@@ -773,6 +821,20 @@ public class AvaloniaThemeService : IThemeService, INotifyPropertyChanged
         amount = Math.Clamp(amount, 0d, 1d);
         byte M(byte a, byte b) => (byte)Math.Clamp((int)Math.Round(a + (b - a) * amount), 0, 255);
         return Color.FromArgb(255, M(from.R, to.R), M(from.G, to.G), M(from.B, to.B));
+    }
+
+    private static string? GetThemeName(object? theme)
+    {
+        if (theme is ThemeItem item)
+            return item.Name;
+        return theme?.ToString();
+    }
+
+    private static bool ThemeNameEquals(object? theme, string name)
+    {
+        string? themeName = GetThemeName(theme);
+        return !string.IsNullOrWhiteSpace(themeName) &&
+               string.Equals(themeName, name, StringComparison.OrdinalIgnoreCase);
     }
 
 }

@@ -12,6 +12,8 @@
       <SolidColorBrush x:Key="SkuaAccentForegroundBrush" Color="{StaticResource SkuaAccentForegroundColor}" />
       <SolidColorBrush x:Key="SkuaAccentHoverBrush" Color="#FF78909C" />
       <SolidColorBrush x:Key="SkuaAccentPressedBrush" Color="#FF546E7A" />
+      <SolidColorBrush x:Key="SkuaDangerHoverBrush" Color="#CCB93A32" />
+      <SolidColorBrush x:Key="SkuaDangerForegroundBrush" Color="#FFFFFFFF" />
 
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
@@ -23,6 +25,8 @@
           <SolidColorBrush x:Key="SkuaTextBrush" Color="#FF212121" />
           <SolidColorBrush x:Key="SkuaMutedTextBrush" Color="#FF616161" />
           <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#33607D8B" />
+          <SolidColorBrush x:Key="SkuaHoverBrush" Color="#14000000" />
+          <SolidColorBrush x:Key="SkuaHoverPressedBrush" Color="#22000000" />
           <SolidColorBrush x:Key="SkuaNavChipBrush" Color="#FFF1F3F4" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Dark">
@@ -34,6 +38,8 @@
           <SolidColorBrush x:Key="SkuaTextBrush" Color="#ECEFF4" />
           <SolidColorBrush x:Key="SkuaMutedTextBrush" Color="#C3CAD0" />
           <SolidColorBrush x:Key="SkuaSelectionBrush" Color="#66607D8B" />
+          <SolidColorBrush x:Key="SkuaHoverBrush" Color="#1FFFFFFF" />
+          <SolidColorBrush x:Key="SkuaHoverPressedBrush" Color="#2AFFFFFF" />
           <SolidColorBrush x:Key="SkuaNavChipBrush" Color="#303030" />
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
@@ -92,7 +98,26 @@
     <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
   </Style>
 
+  <Style Selector="ToggleButton.app-toggle:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaHoverBrush}" />
+  </Style>
+
+  <Style Selector="ToggleButton.app-toggle:pressed">
+    <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
   <Style Selector="ToggleButton.app-toggle:checked">
+    <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="ToggleButton.app-toggle:checked:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaHoverBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="ToggleButton.app-toggle:checked:pressed">
     <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
@@ -219,7 +244,7 @@
   </Style>
 
   <Style Selector="Button.titlebar-close:pointerover">
-    <Setter Property="Background" Value="#CCB93A32" />
-    <Setter Property="Foreground" Value="#FFFFFFFF" />
+    <Setter Property="Background" Value="{DynamicResource SkuaDangerHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaDangerForegroundBrush}" />
   </Style>
 </Styles>

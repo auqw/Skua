@@ -11,6 +11,7 @@
              x:Class="Skua.Manager.Avalonia.App"
              RequestedThemeVariant="Default">
     <Application.Resources>
+        <conv:AccountGridItemWidthConverter x:Key="AccountGridItemWidthConverter" />
         <conv:IntGreaterThanZeroConverter x:Key="IntGreaterThanZeroConverter" />
         <conv:ServerMembershipTextConverter x:Key="ServerMembershipTextConverter" />
         <conv:ServerPingTextConverter x:Key="ServerPingTextConverter" />
@@ -19,6 +20,8 @@
         <material:MaterialTheme BaseTheme="Dark" PrimaryColor="BlueGrey" SecondaryColor="Red"/>
         <materialIcons:MaterialIconStyles />
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
+        <!-- Shared Skua style manifest.
+             Keep theme/style ownership in these loaded files to avoid stale or duplicate selectors. -->
         <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Theme.axaml" />
         <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Controls.axaml" />
         <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Navigation.axaml" />

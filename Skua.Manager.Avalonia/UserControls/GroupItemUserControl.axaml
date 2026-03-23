@@ -8,22 +8,7 @@
              mc:Ignorable="d"
              d:DesignWidth="700"
              d:DesignHeight="220">
-    <UserControl.Styles>
-        <Style Selector="Button.group-action-button">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-            <Setter Property="Padding" Value="0" />
-        </Style>
-        <Style Selector="Button.group-action-button:pointerover">
-            <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-        </Style>
-    </UserControl.Styles>
-
-    <Expander Margin="8,0,8,6"
+    <Expander Margin="0,0,0,6"
               IsExpanded="{Binding IsExpanded}"
               Background="{DynamicResource SkuaSurfaceAltBrush}"
               BorderBrush="{DynamicResource SkuaBorderBrush}"
@@ -39,10 +24,8 @@
                            Text="{Binding Name}" />
 
                 <Button Grid.Column="1"
-                        Width="28"
-                        Height="28"
                         Margin="4,0"
-                        Classes="group-action-button"
+                        Classes="icon icon-28"
                         Command="{Binding StartCommand}"
                         ToolTip.Tip="Start Group">
                     <materialIcons:MaterialIcon Kind="PlayCircleOutline"
@@ -51,10 +34,8 @@
                 </Button>
 
                 <Button Grid.Column="2"
-                        Width="28"
-                        Height="28"
                         Margin="0,0,4,0"
-                        Classes="group-action-button"
+                        Classes="icon icon-28"
                         Command="{Binding StartWithScriptCommand}"
                         ToolTip.Tip="Start Group With Script">
                     <materialIcons:MaterialIcon Kind="ScriptTextPlayOutline"
@@ -63,25 +44,19 @@
                 </Button>
 
                 <Button Grid.Column="3"
-                        Width="28"
-                        Height="28"
                         Margin="0,0,4,0"
-                        Classes="group-action-button"
+                        Classes="icon icon-28 icon-muted"
                         Command="{Binding RenameCommand}"
-                        ToolTip.Tip="Rename Group"
-                        Opacity="0.8">
+                        ToolTip.Tip="Rename Group">
                     <materialIcons:MaterialIcon Kind="PencilOutline"
                                                 Width="16"
                                                 Height="16" />
                 </Button>
 
                 <Button Grid.Column="4"
-                        Width="28"
-                        Height="28"
-                        Classes="group-action-button"
+                        Classes="icon icon-28 icon-muted"
                         Command="{Binding RemoveCommand}"
-                        ToolTip.Tip="Remove Group"
-                        Opacity="0.8">
+                        ToolTip.Tip="Remove Group">
                     <materialIcons:MaterialIcon Kind="DeleteOutline"
                                                 Width="16"
                                                 Height="16" />
@@ -90,10 +65,15 @@
         </Expander.Header>
 
         <ItemsControl ItemsSource="{Binding Accounts}"
-                      Margin="0,4">
+                      Margin="6,4,6,0">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="2" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <uc:GroupAccountRow Margin="8,0,8,4" />
+                    <uc:GroupAccountRow Margin="0,0,4,4" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
