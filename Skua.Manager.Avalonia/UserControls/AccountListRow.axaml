@@ -3,6 +3,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:materialAssists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              xmlns:managerUc="clr-namespace:Skua.Manager.Avalonia.UserControls"
              xmlns:uc="clr-namespace:Skua.Manager.Avalonia.UserControls"
              x:Class="Skua.Manager.Avalonia.UserControls.AccountListRow"
@@ -21,6 +22,7 @@
         <Grid ColumnDefinitions="Auto,*,Auto" MinHeight="28">
             <CheckBox Grid.Column="0"
                       IsChecked="{Binding UseCheck}"
+                      materialAssists:SelectionControlAssist.Size="18"
                       VerticalAlignment="Center"
                       Margin="0,0,8,0" />
 
@@ -50,13 +52,13 @@
 
             <Button Grid.Column="2"
                     Command="{Binding RemoveCommand}"
-                    Classes="icon icon-28"
+                    Classes="icon"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
                     ToolTip.Tip="Remove">
                 <materialIcons:MaterialIcon Kind="DeleteOutline"
-                                            Width="16"
-                                            Height="16"
+                                            Width="14"
+                                            Height="14"
                                             Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
             </Button>
         </Grid>

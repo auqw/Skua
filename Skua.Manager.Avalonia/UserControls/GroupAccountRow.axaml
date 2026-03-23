@@ -50,7 +50,6 @@
                     Margin="2,0,0,0"
                     Classes="icon icon-muted"
                     VerticalAlignment="Center"
-                    Foreground="{DynamicResource SkuaMutedTextBrush}"
                     Click="ReplaceButton_Click"
                     ToolTip.Tip="Replace account in group">
                 <materialIcons:MaterialIcon Kind="Refresh"
@@ -63,7 +62,6 @@
                     Margin="2,0,0,0"
                     Classes="icon icon-muted"
                     VerticalAlignment="Center"
-                    Foreground="{DynamicResource SkuaMutedTextBrush}"
                     Click="RemoveButton_Click"
                     ToolTip.Tip="Remove from group">
                 <materialIcons:MaterialIcon Kind="Close"

@@ -22,8 +22,12 @@ public static class ThemeResourceApplicator
         // and Material templates read different keys at runtime (see Theme.axaml + Controls.axaml).
         Color primary = ParseColorSafe(accentHex, GetResourceColor(app, "SkuaAccentColor", fallbackAccentHex));
         Color primaryForeground = ParseColorSafe(accentForegroundHex, GetResourceColor(app, "SkuaAccentForegroundColor", "#FF000000"));
-        Color secondary = ParseColorSafe(secondaryHex, GetResourceColor(app, "MaterialSecondaryColor", primary.ToString()));
-        Color secondaryForeground = ParseColorSafe(secondaryForegroundHex, GetResourceColor(app, "MaterialSecondaryMidForegroundColor", primaryForeground.ToString()));
+        
+        // Note: We do not currently support any custom secondary colour via UI. This is a holdover from the legacy WPF Version which had some logic for secondary colour but no UI for it.
+        // If no explicit secondary is provided, mirror the current primary instead of
+        // inheriting any stale Material secondary value left in resources.
+        Color secondary = ParseColorSafe(secondaryHex, primary);
+        Color secondaryForeground = ParseColorSafe(secondaryForegroundHex, primaryForeground);
 
         app.Resources["SkuaAccentColor"] = primary;
         app.Resources["SkuaAccentForegroundColor"] = primaryForeground;
