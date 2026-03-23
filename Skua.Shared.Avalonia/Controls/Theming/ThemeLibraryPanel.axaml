@@ -15,9 +15,12 @@
       <ItemsControl.ItemTemplate>
         <DataTemplate>
           <Button Margin="3"
+                  Background="{Binding PrimaryBrush}"
+                  BorderBrush="{Binding PrimaryBrush}"
+                  Foreground="{Binding PrimaryForegroundBrush}"
                   Command="{Binding DataContext.SetCurrentThemeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                   CommandParameter="{Binding}"
-                  Content="{Binding}" />
+                  Content="{Binding Name}" />
         </DataTemplate>
       </ItemsControl.ItemTemplate>
     </ItemsControl>
@@ -28,15 +31,24 @@
         <DataTemplate>
           <Grid Margin="3" ColumnDefinitions="*,Auto">
             <Button Grid.Column="0"
+                    Background="{Binding PrimaryBrush}"
+                    BorderBrush="{Binding PrimaryBrush}"
+                    Foreground="{Binding PrimaryForegroundBrush}"
                     Command="{Binding DataContext.SetCurrentThemeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                     CommandParameter="{Binding}"
-                    Content="{Binding}" />
+                    Content="{Binding Name}" />
             <Button Grid.Column="1"
                     Width="34"
                     Margin="4,0,0,0"
+                    Background="{Binding PrimaryBrush}"
+                    BorderBrush="{Binding PrimaryBrush}"
+                    Foreground="{Binding PrimaryForegroundBrush}"
                     Command="{Binding DataContext.RemoveThemeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                     CommandParameter="{Binding}">
-              <materialIcons:MaterialIcon Kind="DeleteOutline" Width="14" Height="14" Foreground="{DynamicResource SkuaAccentBrush}" />
+              <materialIcons:MaterialIcon Kind="DeleteOutline"
+                                          Width="14"
+                                          Height="14"
+                                          Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
             </Button>
           </Grid>
         </DataTemplate>

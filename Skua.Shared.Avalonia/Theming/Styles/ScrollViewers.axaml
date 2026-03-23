@@ -6,7 +6,6 @@
         </Border>
     </Design.PreviewWith>
 
-    <!-- TODO(style-scope): Replace Window.skua ScrollViewer with an opt-in class style (e.g. ScrollViewer.skua-scroll). -->
     <Style Selector="Window.skua ScrollViewer">
         <Setter Property="Background" Value="Transparent" />
     </Style>

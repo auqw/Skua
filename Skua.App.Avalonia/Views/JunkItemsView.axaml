@@ -26,11 +26,9 @@
 
     <Border Grid.Row="1"
             Margin="0,0,0,8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="list-frame">
       <ListBox ItemsSource="{Binding Items}"
-               BorderThickness="0"
-               Background="Transparent">
+               Classes="embedded">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Grid ColumnDefinitions="Auto,Auto,*"
@@ -52,7 +50,8 @@
     <StackPanel Grid.Row="2"
                 Orientation="Horizontal"
                 Spacing="16">
-      <TextBlock Text="{Binding TotalJunk, StringFormat='Total junk: {0}'}" />
+      <TextBlock
+                 Text="{Binding TotalJunk, StringFormat='Total junk: {0}'}" />
       <CheckBox IsChecked="{Binding SkipSellWarning}"
                 Content="Skip sell warning" />
     </StackPanel>

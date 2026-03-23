@@ -1,23 +1,23 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:uc="clr-namespace:Skua.App.Avalonia.UserControls"
+             xmlns:sharedOptions="clr-namespace:Skua.Shared.Avalonia.Controls.Options;assembly=Skua.Shared.Avalonia"
              x:Class="Skua.App.Avalonia.Views.CBOOtherOptionsView">
-  <ScrollViewer Margin="8"
+  <ScrollViewer
+                Margin="4"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
     <ItemsControl ItemsSource="{Binding Options}">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
-          <Expander Margin="0,0,0,8"
+          <Expander Margin="0,0,0,4"
                     Header="{Binding Category}">
-            <Border Margin="0,8,0,0"
-                    Padding="8"
-                    BorderThickness="1"
-                    BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            <Border Classes="card"
+                    Margin="0,4,0,0"
+                    Padding="4">
               <ItemsControl ItemsSource="{Binding Items}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <uc:CBOOptionItemUserControl />
+                    <sharedOptions:OptionItemControl />
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>

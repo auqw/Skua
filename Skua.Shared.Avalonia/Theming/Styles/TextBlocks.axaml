@@ -6,12 +6,18 @@
         </Border>
     </Design.PreviewWith>
     
-    <Style Selector="TextBlock.titlebar-title">
-        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-    </Style>
-
-    <!-- TODO(style-scope): Replace Window.skua TextBlock with an opt-in class style (e.g. TextBlock.skua-text) and apply only where intended. -->
+    <!-- Default text foreground for shell content. Controls that intentionally render
+         accent/scheme text should set Foreground explicitly where used. -->
     <Style Selector="Window.skua TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+    </Style>
+
+    <Style Selector="TextBlock.section-title">
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TextBlock.hint">
+        <Setter Property="Foreground" Value="{DynamicResource SkuaMutedTextBrush}" />
+        <Setter Property="Opacity" Value="0.75" />
     </Style>
 </Styles>

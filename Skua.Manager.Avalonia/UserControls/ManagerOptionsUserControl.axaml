@@ -8,7 +8,9 @@
              d:DesignWidth="900"
              d:DesignHeight="600"
              mc:Ignorable="d">
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="8" Spacing="8">
             <sharedSettings:OptionSectionControl Title="General"
                                                  ItemsSource="{Binding ManagerOptions}" />

@@ -1,0 +1,90 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="Skua.App.Avalonia.UserControls.AutoUserControl">
+  <Border Background="{DynamicResource SkuaSurfaceBrush}"
+          Padding="8">
+    <Grid Margin="0"
+          RowDefinitions="Auto,Auto,Auto"
+          ColumnDefinitions="*,*">
+      <Button Grid.Row="0"
+              Grid.Column="0"
+              Classes="skua-button"
+              Margin="0,0,4,4"
+              Command="{Binding StartAutoAttackCommand}"
+              IsVisible="{Binding !Auto.IsRunning}">
+        <StackPanel Orientation="Horizontal"
+                    Spacing="4">
+          <materialIcons:MaterialIcon Kind="PlayCircleOutline"
+                                      Width="12"
+                                      Height="12"
+                                      VerticalAlignment="Center"
+                                      Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+          <TextBlock Text="Auto Attack"
+                     VerticalAlignment="Center" />
+        </StackPanel>
+      </Button>
+
+      <Button Grid.Row="0"
+              Grid.Column="1"
+              Classes="skua-button"
+              Margin="4,0,0,4"
+              Command="{Binding StartAutoHuntCommand}"
+              IsVisible="{Binding !Auto.IsRunning}">
+        <StackPanel Orientation="Horizontal"
+                    Spacing="4">
+          <materialIcons:MaterialIcon Kind="ScriptTextPlayOutline"
+                                      Width="12"
+                                      Height="12"
+                                      VerticalAlignment="Center"
+                                      Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+          <TextBlock Text="Auto Hunt"
+                     VerticalAlignment="Center" />
+        </StackPanel>
+      </Button>
+
+      <Button Grid.Row="0"
+              Grid.Column="0"
+              Grid.ColumnSpan="2"
+              Classes="skua-button"
+              Margin="0,0,0,4"
+              Command="{Binding StopAutoAsyncCommand}"
+              IsVisible="{Binding Auto.IsRunning}">
+        <StackPanel Orientation="Horizontal"
+                    Spacing="4">
+          <materialIcons:MaterialIcon Kind="CloseCircleOutline"
+                                      Width="12"
+                                      Height="12"
+                                      VerticalAlignment="Center"
+                                      Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+          <TextBlock Text="Stop"
+                     VerticalAlignment="Center" />
+        </StackPanel>
+      </Button>
+
+      <Grid Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            ColumnDefinitions="2*,2*"
+            Margin="0,0,0,4">
+        <ComboBox x:Name="ClassComboBox"
+                  Grid.Column="0"
+                  Margin="0,0,4,0"
+                  ItemsSource="{Binding PlayerClasses}"
+                  SelectedItem="{Binding SelectedClass}" />
+        <ComboBox Grid.Column="1"
+                  Margin="4,0,0,0"
+                  ItemsSource="{Binding CurrentClassModeStrings}"
+                  SelectedItem="{Binding SelectedClassModeString}" />
+      </Grid>
+
+      <TextBox Grid.Row="2"
+               Grid.Column="0"
+               Grid.ColumnSpan="2"
+               Margin="0,2,0,0"
+               Text="{Binding ManualMapIDs, UpdateSourceTrigger=PropertyChanged}"
+               Watermark="Manual MapIDs (optional)"
+               ToolTip.Tip="Enter MapIDs separated by commas for priority targeting." />
+    </Grid>
+  </Border>
+</UserControl>

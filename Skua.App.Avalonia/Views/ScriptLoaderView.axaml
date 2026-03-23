@@ -7,7 +7,7 @@
                 Spacing="3"
                 HorizontalAlignment="Center">
       <TextBlock HorizontalAlignment="Center"
-                 FontWeight="SemiBold"
+                 Classes="section-title"
                  Text="{Binding ScriptStatus, StringFormat='Status: {0}', TargetNullValue='Status: '}" />
       <TextBlock HorizontalAlignment="Center"
                  Text="{Binding LoadedScript}" />

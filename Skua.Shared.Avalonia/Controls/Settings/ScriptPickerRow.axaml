@@ -3,7 +3,7 @@
              xmlns:buttonControls="clr-namespace:Skua.Shared.Avalonia.Controls.Buttons"
              x:Class="Skua.Shared.Avalonia.Controls.Settings.ScriptPickerRow"
              x:Name="Root">
-  <Border Padding="5,2">
+  <Border Padding="0,2">
     <Grid ColumnDefinitions="*,Auto,Auto,Auto"
           VerticalAlignment="Center">
       <Border Grid.Column="0"

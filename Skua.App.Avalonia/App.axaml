@@ -26,6 +26,8 @@
     <materialIcons:MaterialIconStyles />
 
     <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
+    <!-- Shared Skua style manifest.
+         Keep theme/style ownership in these loaded files to avoid stale or duplicate selectors. -->
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Theme.axaml" />
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Controls.axaml" />
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Navigation.axaml" />
@@ -55,15 +57,12 @@
             RowDefinitions="*"
             Margin="8">
         <Border Grid.Column="0"
-                Margin="0,0,8,0"
+                Classes="list-frame"
                 Padding="6"
-                Background="{DynamicResource SkuaPageBrush}"
-                BorderBrush="{DynamicResource SkuaNavHoverBrush}"
-                BorderThickness="1">
-          <ListBox ItemsSource="{Binding BotViews}"
-                   SelectedItem="{Binding SelectedItem}"
-                   BorderThickness="0"
-                   Background="Transparent">
+                Margin="0,0,8,0">
+          <ListBox Classes="embedded"
+                   ItemsSource="{Binding BotViews}"
+                   SelectedItem="{Binding SelectedItem}">
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <TextBlock Text="{Binding Title}" Margin="6,4" />
@@ -72,10 +71,8 @@
           </ListBox>
         </Border>
         <Border Grid.Column="1"
-                Padding="8"
-                Background="{DynamicResource SkuaPageBrush}"
-                BorderBrush="{DynamicResource SkuaNavHoverBrush}"
-                BorderThickness="1">
+                Classes="card"
+                Padding="8">
           <ContentControl Content="{Binding SelectedItem}" />
         </Border>
       </Grid>
@@ -165,10 +162,8 @@
       <uc:LogTabUserControl />
     </DataTemplate>
     <DataTemplate DataType="viewModels:BotControlViewModelBase">
-      <Border Padding="10"
-              Background="{DynamicResource SkuaPageBrush}"
-              BorderBrush="{DynamicResource SkuaNavHoverBrush}"
-              BorderThickness="1">
+      <Border Classes="card"
+              Padding="10">
         <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
       </Border>
     </DataTemplate>

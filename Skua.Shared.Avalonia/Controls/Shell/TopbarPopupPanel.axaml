@@ -2,7 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Skua.Shared.Avalonia.Controls.Shell.TopbarPopupPanel"
              x:Name="Root">
-    <Border Classes="topbar-popup">
+    <Border Classes="topbar-popup"
+            MinWidth="280"
+            Padding="10"
+            Background="{DynamicResource SkuaSurfaceBrush}"
+            BorderBrush="{DynamicResource SkuaBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="6">
         <ContentPresenter Content="{Binding Content, ElementName=Root}" />
     </Border>
 </UserControl>

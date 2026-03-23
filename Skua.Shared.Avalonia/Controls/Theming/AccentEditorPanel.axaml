@@ -12,14 +12,15 @@
         <sharedSettings:LabeledToggleRow Label="Dark Mode"
                                          IsChecked="{Binding ThemeService.IsDarkTheme}" />
 
-        <sharedSettings:LabeledToggleRow Label="Color Adjustment"
+        <sharedSettings:LabeledToggleRow x:Name="ColorAdjustmentToggle"
+                                         Label="Color Adjustment"
                                          IsChecked="{Binding ThemeService.IsColorAdjusted}" />
 
         <Border Margin="0,2,0,2"
                 Height="1"
                 Background="{Binding SeparatorBrush, ElementName=Root}" />
 
-        <StackPanel IsVisible="{Binding ThemeService.IsColorAdjusted}" Spacing="6">
+        <StackPanel IsVisible="{Binding IsChecked, ElementName=ColorAdjustmentToggle}" Spacing="6">
           <TextBlock FontWeight="SemiBold" Text="Advanced Color Adjustment" />
           <TextBlock Margin="0,2,0,0" Text="Desired Contrast Ratio" />
 
@@ -32,6 +33,10 @@
           <TextBlock Margin="0,2,0,0" Text="Contrast" />
           <ComboBox ItemsSource="{Binding ThemeService.ContrastValues}"
                     SelectedItem="{Binding ThemeService.ContrastValue}" />
+
+          <TextBlock Margin="0,2,0,0" Text="Color Selection" />
+          <ComboBox ItemsSource="{Binding ThemeService.ColorSelectionValues}"
+                    SelectedItem="{Binding ThemeService.ColorSelectionValue}" />
         </StackPanel>
       </StackPanel>
 

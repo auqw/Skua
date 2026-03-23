@@ -16,11 +16,9 @@
     </StackPanel>
 
     <Border Grid.Row="1"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="list-frame">
       <ListBox ItemsSource="{Binding Plugins}"
-               BorderThickness="0"
-               Background="Transparent">
+               Classes="embedded">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Grid Margin="8,6"
@@ -29,14 +27,12 @@
                          VerticalAlignment="Center"
                          Text="{Binding Container.Plugin.Name}" />
               <Button Grid.Column="1"
-                      Classes="skua-button"
-                      Margin="8,0,0,0"
+                      Classes="skua-button gap-left-8"
                       Content="Options"
                       IsVisible="{Binding HasOptions}"
                       Command="{Binding EditPluginOptionsCommand}" />
               <Button Grid.Column="2"
-                      Classes="skua-button"
-                      Margin="8,0,0,0"
+                      Classes="skua-button gap-left-8"
                       Content="Unload"
                       Command="{Binding UnloadCommand}" />
             </Grid>

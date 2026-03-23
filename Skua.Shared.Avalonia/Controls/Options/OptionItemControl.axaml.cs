@@ -23,29 +23,29 @@ public partial class OptionItemControl : UserControl
             return;
         }
 
-        OptionHost.Content = vm.Tag switch
+        OptionHost.Content = CreateDefaultContent(vm);
+    }
+
+    public static Control CreateDefaultContent(DisplayOptionItemViewModelBase vm)
+    {
+        return vm.Tag switch
         {
             "1" => BuildBooleanItem(vm),
             "2" => BuildTextItem(vm),
             "3" => BuildNumberItem(vm),
             "4" => BuildActionItem(vm),
-            _ => BuildActionItem(vm)
+            _ => BuildFallbackItem(vm)
         };
     }
 
-    private static Control BuildBooleanItem(DisplayOptionItemViewModelBase vm)
+    public static CheckBox CreateBoundCheckBox(DisplayOptionItemViewModelBase vm, object? content = null)
     {
         CheckBox checkBox = new()
         {
-            Content = vm.Content,
-            Margin = new Thickness(6, 4),
+            Content = content ?? vm.Content,
             IsThreeState = false
         };
-        checkBox[!CheckBox.IsCheckedProperty] = new Binding(nameof(DisplayOptionItemViewModelBase.Value))
-        {
-            Source = vm,
-            Mode = BindingMode.TwoWay
-        };
+        BindValue(checkBox, vm);
 
         if (vm is CommandOptionItemViewModel commandVm)
             checkBox.IsCheckedChanged += (_, _) => commandVm.Command.Execute(checkBox.IsChecked == true);
@@ -53,28 +53,62 @@ public partial class OptionItemControl : UserControl
         return checkBox;
     }
 
-    private static Control BuildTextItem(DisplayOptionItemViewModelBase vm)
+    public static TextBox CreateBoundTextBox(DisplayOptionItemViewModelBase vm, bool numericOnly = false)
     {
-        TextBox textBox = new()
-        {
-            Watermark = vm.Content,
-            MinWidth = 220
-        };
-        textBox[!TextBox.TextProperty] = new Binding(nameof(DisplayOptionItemViewModelBase.Value))
-        {
-            Source = vm,
-            Mode = BindingMode.TwoWay
-        };
+        TextBox textBox = new();
+        BindValue(textBox, vm);
 
+        if (numericOnly)
+        {
+            textBox.TextInput += (_, e) =>
+            {
+                if (!char.IsDigit(e.Text?[0] ?? '\0'))
+                    e.Handled = true;
+            };
+        }
+
+        return textBox;
+    }
+
+    public static Button CreateBoundButton(DisplayOptionItemViewModelBase vm, object? content = null, Func<string?>? commandArgumentFactory = null)
+    {
         Button button = new()
         {
-            Content = "Set",
-            MinWidth = 64,
-            Margin = new Thickness(8, 0, 0, 0)
+            Content = content ?? vm.Content
         };
         button.Classes.Add("skua-button");
+
         if (vm is CommandOptionItemViewModel commandVm)
-            button.Click += (_, _) => commandVm.Command.Execute(textBox.Text ?? string.Empty);
+        {
+            if (commandArgumentFactory is null)
+            {
+                button.Command = commandVm.Command;
+            }
+            else
+            {
+                button.Click += (_, _) => commandVm.Command.Execute(commandArgumentFactory());
+            }
+        }
+
+        return button;
+    }
+
+    private static Control BuildBooleanItem(DisplayOptionItemViewModelBase vm)
+    {
+        CheckBox checkBox = CreateBoundCheckBox(vm);
+        checkBox.Margin = new Thickness(6, 4);
+        return checkBox;
+    }
+
+    private static Control BuildTextItem(DisplayOptionItemViewModelBase vm)
+    {
+        TextBox textBox = CreateBoundTextBox(vm);
+        textBox.Watermark = vm.Content;
+        textBox.MinWidth = 220;
+
+        Button button = CreateBoundButton(vm, "Set", () => textBox.Text ?? string.Empty);
+        button.MinWidth = 64;
+        button.Margin = new Thickness(8, 0, 0, 0);
 
         Grid grid = new()
         {
@@ -89,21 +123,9 @@ public partial class OptionItemControl : UserControl
 
     private static Control BuildNumberItem(DisplayOptionItemViewModelBase vm)
     {
-        TextBox textBox = new()
-        {
-            Width = 90,
-            HorizontalAlignment = HorizontalAlignment.Left
-        };
-        textBox[!TextBox.TextProperty] = new Binding(nameof(DisplayOptionItemViewModelBase.Value))
-        {
-            Source = vm,
-            Mode = BindingMode.TwoWay
-        };
-        textBox.TextInput += (_, e) =>
-        {
-            if (!char.IsDigit(e.Text?[0] ?? '\0'))
-                e.Handled = true;
-        };
+        TextBox textBox = CreateBoundTextBox(vm, numericOnly: true);
+        textBox.Width = 90;
+        textBox.HorizontalAlignment = HorizontalAlignment.Left;
 
         TextBlock suffix = new()
         {
@@ -113,14 +135,8 @@ public partial class OptionItemControl : UserControl
             IsVisible = !string.IsNullOrWhiteSpace(vm.SuffixText)
         };
 
-        Button button = new()
-        {
-            Content = vm.Content,
-            MinWidth = 96
-        };
-        button.Classes.Add("skua-button");
-        if (vm is CommandOptionItemViewModel commandVm)
-            button.Click += (_, _) => commandVm.Command.Execute(textBox.Text ?? string.Empty);
+        Button button = CreateBoundButton(vm, vm.Content, () => textBox.Text ?? string.Empty);
+        button.MinWidth = 96;
 
         StackPanel row = new()
         {
@@ -134,17 +150,53 @@ public partial class OptionItemControl : UserControl
 
     private static Control BuildActionItem(DisplayOptionItemViewModelBase vm)
     {
-        Button button = new()
-        {
-            Content = vm.Content,
-            Margin = new Thickness(6, 4),
-            HorizontalAlignment = HorizontalAlignment.Stretch
-        };
-        button.Classes.Add("skua-button");
-
-        if (vm is CommandOptionItemViewModel commandVm)
-            button.Command = commandVm.Command;
-
+        Button button = CreateBoundButton(vm);
+        button.Margin = new Thickness(6, 4);
+        button.HorizontalAlignment = HorizontalAlignment.Stretch;
         return button;
+    }
+
+    private static Control BuildFallbackItem(DisplayOptionItemViewModelBase vm)
+    {
+        if (vm.DisplayType == typeof(bool))
+            return BuildBooleanItem(vm);
+
+        if (vm.DisplayType == typeof(string))
+            return BuildTextItem(vm);
+
+        if (IsNumericDisplayType(vm.DisplayType))
+            return BuildNumberItem(vm);
+
+        return BuildActionItem(vm);
+    }
+
+    private static void BindValue(TextBox textBox, DisplayOptionItemViewModelBase vm)
+    {
+        textBox[!TextBox.TextProperty] = new Binding(nameof(DisplayOptionItemViewModelBase.Value))
+        {
+            Source = vm,
+            Mode = BindingMode.TwoWay
+        };
+    }
+
+    private static void BindValue(CheckBox checkBox, DisplayOptionItemViewModelBase vm)
+    {
+        checkBox[!CheckBox.IsCheckedProperty] = new Binding(nameof(DisplayOptionItemViewModelBase.Value))
+        {
+            Source = vm,
+            Mode = BindingMode.TwoWay
+        };
+    }
+
+    private static bool IsNumericDisplayType(Type displayType)
+    {
+        return displayType == typeof(byte)
+            || displayType == typeof(sbyte)
+            || displayType == typeof(short)
+            || displayType == typeof(ushort)
+            || displayType == typeof(int)
+            || displayType == typeof(uint)
+            || displayType == typeof(long)
+            || displayType == typeof(ulong);
     }
 }

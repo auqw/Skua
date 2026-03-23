@@ -12,24 +12,20 @@
 
   <DockPanel Margin="8">
     <ListBox DockPanel.Dock="Top"
+             Classes="top-tabs gap-bottom-8"
              ItemsSource="{Binding GrabberTabs}"
              SelectedItem="{Binding SelectedTab}"
-             BorderThickness="0"
-             Background="Transparent"
-             Margin="0,0,0,8">
+             ScrollViewer.HorizontalScrollBarVisibility="Auto"
+             ScrollViewer.VerticalScrollBarVisibility="Disabled">
       <ListBox.ItemsPanel>
         <ItemsPanelTemplate>
-          <StackPanel Orientation="Horizontal" />
+          <StackPanel Orientation="Horizontal" Spacing="2" />
         </ItemsPanelTemplate>
       </ListBox.ItemsPanel>
       <ListBox.ItemTemplate>
         <DataTemplate>
-          <Border Padding="8,4"
-                  Margin="0,0,6,0"
-                  Background="{DynamicResource SkuaNavHoverBrush}"
-                  CornerRadius="4">
-            <TextBlock Text="{Binding Title}" />
-          </Border>
+          <TextBlock Text="{Binding Title}"
+                     Classes="top-tabs-label" />
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>

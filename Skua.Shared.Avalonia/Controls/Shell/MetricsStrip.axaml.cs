@@ -1,5 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using System;
 
 namespace Skua.Shared.Avalonia.Controls.Shell;
 
@@ -21,6 +24,8 @@ public partial class MetricsStrip : UserControl
     {
         InitializeComponent();
     }
+
+    public event EventHandler? CollapseRequested;
 
     public string? FpsText
     {
@@ -44,5 +49,11 @@ public partial class MetricsStrip : UserControl
     {
         get => GetValue(ManagedTextProperty);
         set => SetValue(ManagedTextProperty, value);
+    }
+
+    private void RootBorder_PointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            CollapseRequested?.Invoke(this, EventArgs.Empty);
     }
 }

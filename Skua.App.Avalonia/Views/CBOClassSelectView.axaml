@@ -15,13 +15,15 @@
             Grid.Column="0"
             Margin="0,0,4,8"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock Text="Solo Class" FontWeight="SemiBold" />
-        <ComboBox ItemsSource="{Binding PlayerClasses}"
+        <TextBlock Classes="section-title"
+                   Text="Solo Class" />
+        <ComboBox
+                  ItemsSource="{Binding PlayerClasses}"
                   SelectedItem="{Binding SelectedSoloClass}" />
-        <ComboBox ItemsSource="{Binding SoloModeStrings}"
+        <ComboBox
+                  ItemsSource="{Binding SoloModeStrings}"
                   SelectedItem="{Binding SelectedSoloModeString}" />
         <CheckBox Content="Specify Equipment"
                   IsChecked="{Binding UseSoloEquipment}" />
@@ -32,13 +34,15 @@
             Grid.Column="1"
             Margin="4,0,0,8"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock Text="Farm Class" FontWeight="SemiBold" />
-        <ComboBox ItemsSource="{Binding PlayerClasses}"
+        <TextBlock Classes="section-title"
+                   Text="Farm Class" />
+        <ComboBox
+                  ItemsSource="{Binding PlayerClasses}"
                   SelectedItem="{Binding SelectedFarmClass}" />
-        <ComboBox ItemsSource="{Binding FarmModeStrings}"
+        <ComboBox
+                  ItemsSource="{Binding FarmModeStrings}"
                   SelectedItem="{Binding SelectedFarmModeString}" />
         <CheckBox Content="Specify Equipment"
                   IsChecked="{Binding UseFarmEquipment}" />
@@ -49,13 +53,15 @@
             Grid.Column="0"
             Margin="0,0,4,0"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock Text="Dodge Class" FontWeight="SemiBold" />
-        <ComboBox ItemsSource="{Binding PlayerClasses}"
+        <TextBlock Classes="section-title"
+                   Text="Dodge Class" />
+        <ComboBox
+                  ItemsSource="{Binding PlayerClasses}"
                   SelectedItem="{Binding SelectedDodgeClass}" />
-        <ComboBox ItemsSource="{Binding DodgeModeStrings}"
+        <ComboBox
+                  ItemsSource="{Binding DodgeModeStrings}"
                   SelectedItem="{Binding SelectedDodgeModeString}" />
         <CheckBox Content="Specify Equipment"
                   IsChecked="{Binding UseDodgeEquipment}" />
@@ -66,13 +72,15 @@
             Grid.Column="1"
             Margin="4,0,0,0"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock Text="Boss Class" FontWeight="SemiBold" />
-        <ComboBox ItemsSource="{Binding PlayerClasses}"
+        <TextBlock Classes="section-title"
+                   Text="Boss Class" />
+        <ComboBox
+                  ItemsSource="{Binding PlayerClasses}"
                   SelectedItem="{Binding SelectedBossClass}" />
-        <ComboBox ItemsSource="{Binding BossModeStrings}"
+        <ComboBox
+                  ItemsSource="{Binding BossModeStrings}"
                   SelectedItem="{Binding SelectedBossModeString}" />
         <CheckBox Content="Specify Equipment"
                   IsChecked="{Binding UseBossEquipment}" />

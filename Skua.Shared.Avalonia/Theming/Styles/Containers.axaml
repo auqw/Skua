@@ -7,4 +7,26 @@
     <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
     <Setter Property="BorderThickness" Value="1" />
   </Style>
+
+  <Style Selector="Border.card-flat">
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Padding" Value="6" />
+    <Setter Property="Background" Value="{DynamicResource SkuaPageBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="Border.section-panel">
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="Border.list-frame">
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
 </Styles>

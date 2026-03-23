@@ -1,6 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <Style Selector="Button.topbar-action, Button.toolbar">
+  <Style Selector="Button.topbar-action">
     <Setter Property="Height" Value="25" />
     <Setter Property="MinWidth" Value="34" />
     <Setter Property="Padding" Value="10,0" />
@@ -11,12 +11,12 @@
     <Setter Property="VerticalAlignment" Value="Center" />
   </Style>
 
-  <Style Selector="Button.topbar-action:pointerover, Button.toolbar:pointerover">
+  <Style Selector="Button.topbar-action:pointerover">
     <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
 
-  <Style Selector="ToggleButton.topbar-action, ToggleButton.toolbar">
+  <Style Selector="ToggleButton.topbar-action">
     <Setter Property="Height" Value="25" />
     <Setter Property="MinWidth" Value="50" />
     <Setter Property="Padding" Value="10,0" />
@@ -27,50 +27,140 @@
     <Setter Property="VerticalAlignment" Value="Center" />
   </Style>
 
-  <Style Selector="ToggleButton.topbar-action:pointerover, ToggleButton.toolbar:pointerover">
+  <Style Selector="ToggleButton.topbar-action:pointerover">
     <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
 
-  <Style Selector="ToggleButton.topbar-action:checked, ToggleButton.toolbar:checked">
+  <Style Selector="ToggleButton.topbar-action:checked">
     <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
 
-  <Style Selector="Button.danger-icon, Button.icon, Button.danger">
+  <Style Selector="ToggleButton.app-toggle-compact">
+    <Setter Property="Height" Value="24" />
+    <Setter Property="MinWidth" Value="52" />
+  </Style>
+
+  <Style Selector="ToggleButton.app-toggle-filter">
+    <Setter Property="MinWidth" Value="56" />
+  </Style>
+
+  <Style Selector="Button.danger-icon, Button.icon">
     <Setter Property="Width" Value="24" />
     <Setter Property="Height" Value="24" />
     <Setter Property="Padding" Value="0" />
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="12" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
 
-  <Style Selector="Button.danger-icon TextBlock, Button.icon TextBlock, Button.danger TextBlock">
+  <Style Selector="Button.icon-28">
+    <Setter Property="Width" Value="28" />
+    <Setter Property="Height" Value="28" />
+  </Style>
+
+  <Style Selector="Button.icon-muted">
+    <Setter Property="Opacity" Value="0.65" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaMutedTextBrush}" />
+  </Style>
+
+  <Style Selector="Button.danger-icon TextBlock, Button.icon TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
 
-  <Style Selector="Button.danger-icon:pointerover, Button.icon:pointerover, Button.danger:pointerover">
-    <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+  <Style Selector="Button.danger-icon /template/ Border, Button.icon /template/ Border">
+    <Setter Property="CornerRadius" Value="12" />
+  </Style>
+
+  <Style Selector="Button.danger-icon:pointerover, Button.icon:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaHoverBrush}" />
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
 
-  <Style Selector="Button.danger-icon:pressed, Button.icon:pressed, Button.danger:pressed">
-    <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+  <Style Selector="Button.danger-icon:pressed, Button.icon:pressed">
+    <Setter Property="Background" Value="{DynamicResource SkuaHoverPressedBrush}" />
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentPressedBrush}" />
   </Style>
 
-  <Style Selector="Button.primary">
+  <Style Selector="Border.account-row">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="4" />
+  </Style>
+
+  <Style Selector="Border.account-row-list">
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+
+  <Style Selector="Border.account-row-list:pointerover">
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Border.account-row-list.selected">
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Border.account-row-grid">
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+
+  <Style Selector="Border.account-row-grid:pointerover, Border.account-row-grid.selected">
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Border.tag-chip">
     <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
     <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="2" />
+    <Setter Property="Padding" Value="4,1" />
+    <Setter Property="Margin" Value="0,0,3,2" />
+  </Style>
+
+  <Style Selector="TextBlock.tag-chip-text">
+    <Setter Property="FontSize" Value="10" />
+    <Setter Property="FontWeight" Value="Medium" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
   </Style>
 
-  <Style Selector="Button.secondary">
-    <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
-    <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+  <Style Selector="Grid.group-account-text">
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+
+  <Style Selector="Grid.group-account-text.tags-visible">
+    <Setter Property="VerticalAlignment" Value="Top" />
+  </Style>
+
+  <Style Selector="Grid.header-row, DockPanel.header-row">
+    <Setter Property="Margin" Value="0,0,0,3" />
+  </Style>
+
+  <Style Selector="Button.header-gap, ToggleButton.header-gap, ComboBox.header-gap">
+    <Setter Property="Margin" Value="0,0,4,0" />
+  </Style>
+
+  <Style Selector="Button.gap-left-8, ToggleButton.gap-left-8, ComboBox.gap-left-8, TextBox.gap-left-8, NumericUpDown.gap-left-8">
+    <Setter Property="Margin" Value="8,0,0,0" />
+  </Style>
+
+  <Style Selector="Button.gap-right-8, ToggleButton.gap-right-8, ComboBox.gap-right-8, TextBox.gap-right-8, NumericUpDown.gap-right-8">
+    <Setter Property="Margin" Value="0,0,8,0" />
+  </Style>
+
+  <Style Selector="Grid.gap-bottom-8, StackPanel.gap-bottom-8, Border.gap-bottom-8, ListBox.gap-bottom-8">
+    <Setter Property="Margin" Value="0,0,0,8" />
+  </Style>
+
+  <Style Selector="ListBox.embedded">
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
   </Style>
 </Styles>

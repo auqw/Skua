@@ -6,7 +6,6 @@
         </Border>
     </Design.PreviewWith>
 
-    <!-- TODO(style-scope): Replace Window.skua TextBox with an opt-in class style (e.g. TextBox.skua-input) and tag specific inputs. -->
     <Style Selector="Window.skua TextBox">
         <Setter Property="Height" Value="24" />
         <Setter Property="Padding" Value="6,2" />
@@ -17,7 +16,6 @@
         <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
     </Style>
 
-    <!-- TODO(style-scope): Pair focus style with class-scoped input selector (e.g. TextBox.skua-input:focus). -->
     <Style Selector="Window.skua TextBox:focus">
         <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
     </Style>

@@ -12,11 +12,12 @@
         Height="500"
         WindowStartupLocation="CenterScreen"
         Icon="avares://Skua.Shared.Avalonia/Assets/SkuaIcon.ico"
-        SystemDecorations="None"
+        SystemDecorations="BorderOnly"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="32">
 
+    <!-- This root class enables shared shell selectors from Theme.axaml (Window.skua ...). -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -28,7 +29,7 @@
                                     x:Name="TitleBar"
                                     TitleText="{Binding Title}" />
 
-        <!-- Tab Navigation -->
+        <!-- Top Nav -->
         <DockPanel Grid.Row="1"
                    Height="30"
                    Margin="4,4,4,1">

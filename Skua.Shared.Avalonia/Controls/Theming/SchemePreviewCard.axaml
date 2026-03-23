@@ -12,10 +12,12 @@
               HorizontalAlignment="Stretch"
               HorizontalContentAlignment="Stretch"
               VerticalContentAlignment="Stretch"
+              Foreground="{DynamicResource SkuaAccentForegroundBrush}"
               Command="{Binding ColorSchemeEditor.ChangeToPrimaryCommand}">
         <Grid RowDefinitions="Auto,*" Margin="10,8">
           <TextBlock Margin="0,0,0,6"
                      HorizontalAlignment="Left"
+                     Foreground="{DynamicResource SkuaAccentForegroundBrush}"
                      Text="Primary" />
           <Border Grid.Row="1"
                   Height="108"
@@ -39,10 +41,12 @@
               HorizontalAlignment="Stretch"
               HorizontalContentAlignment="Stretch"
               VerticalContentAlignment="Stretch"
+              Foreground="{DynamicResource SkuaAccentForegroundBrush}"
               Command="{Binding ColorSchemeEditor.ChangeToPrimaryForegroundCommand}">
         <Grid RowDefinitions="Auto,*" Margin="10,8">
           <TextBlock Margin="0,0,0,6"
                      HorizontalAlignment="Left"
+                     Foreground="{DynamicResource SkuaAccentForegroundBrush}"
                      Text="Text on Primary" />
           <Border Grid.Row="1"
                   Height="108"
