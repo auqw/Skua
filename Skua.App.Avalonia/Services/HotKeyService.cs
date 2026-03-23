@@ -206,7 +206,7 @@ public class HotKeyService : IHotKeyService, IDisposable
             return;
 
         _keyboardProc = KeyboardHookCallback;
-        _keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, _keyboardProc, IntPtr.Zero, 0);
+        _keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, _keyboardProc, GetModuleHandle(null), 0);
         if (_keyboardHook == IntPtr.Zero)
         {
             int error = Marshal.GetLastWin32Error();
@@ -395,5 +395,8 @@ public class HotKeyService : IHotKeyService, IDisposable
 
     [DllImport("user32.dll")]
     private static extern short GetKeyState(int nVirtKey);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    private static extern IntPtr GetModuleHandle(string? lpModuleName);
 #endif
 }

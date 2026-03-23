@@ -76,7 +76,7 @@ public class ThemeItem
         {
             string ratio = DesiredContrastRatio.ToString(CultureInfo.InvariantCulture);
             string selection = string.IsNullOrWhiteSpace(ColorSelectionValue) ? "All" : ColorSelectionValue;
-            csv += $",True,{ratio},{ContrastValue},{selection},";
+            csv += $",True,{ratio},{ContrastValue},{selection}";
         }
 
         return csv;

@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
+using System;
+using System.Linq;
 using Skua.Shared.Avalonia.ViewModels.Options;
 
 namespace Skua.Shared.Avalonia.Controls.Options;
@@ -64,6 +66,16 @@ public partial class OptionItemControl : UserControl
             {
                 if (!char.IsDigit(e.Text?[0] ?? '\0'))
                     e.Handled = true;
+            };
+            textBox.TextChanged += (_, _) =>
+            {
+                string original = textBox.Text ?? string.Empty;
+                string sanitized = SanitizeDigits(original);
+                if (!string.Equals(original, sanitized, StringComparison.Ordinal))
+                {
+                    textBox.Text = sanitized;
+                    textBox.CaretIndex = sanitized.Length;
+                }
             };
         }
 
@@ -198,5 +210,13 @@ public partial class OptionItemControl : UserControl
             || displayType == typeof(uint)
             || displayType == typeof(long)
             || displayType == typeof(ulong);
+    }
+
+    private static string SanitizeDigits(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return string.Empty;
+
+        return new string(value.Where(char.IsDigit).ToArray());
     }
 }
