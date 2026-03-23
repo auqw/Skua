@@ -14,12 +14,10 @@
             Grid.Column="0"
             Margin="0,0,4,8"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock
-                   Text="Solo Equipment"
-                   FontWeight="SemiBold" />
+        <TextBlock Classes="section-title"
+                   Text="Solo Equipment" />
         <ComboBox
                   ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedSoloHelm}" />
         <ComboBox
@@ -39,12 +37,10 @@
             Grid.Column="1"
             Margin="4,0,0,8"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock
-                   Text="Farm Equipment"
-                   FontWeight="SemiBold" />
+        <TextBlock Classes="section-title"
+                   Text="Farm Equipment" />
         <ComboBox
                   ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedFarmHelm}" />
         <ComboBox
@@ -64,12 +60,10 @@
             Grid.Column="0"
             Margin="0,0,4,0"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock
-                   Text="Dodge Equipment"
-                   FontWeight="SemiBold" />
+        <TextBlock Classes="section-title"
+                   Text="Dodge Equipment" />
         <ComboBox
                   ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedDodgeHelm}" />
         <ComboBox
@@ -89,12 +83,10 @@
             Grid.Column="1"
             Margin="4,0,0,0"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock
-                   Text="Boss Equipment"
-                   FontWeight="SemiBold" />
+        <TextBlock Classes="section-title"
+                   Text="Boss Equipment" />
         <ComboBox
                   ItemsSource="{Binding Helms}" SelectedItem="{Binding SelectedBossHelm}" />
         <ComboBox

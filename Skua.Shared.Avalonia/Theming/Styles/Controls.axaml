@@ -146,4 +146,21 @@
   <Style Selector="Button.header-gap, ToggleButton.header-gap, ComboBox.header-gap">
     <Setter Property="Margin" Value="0,0,4,0" />
   </Style>
+
+  <Style Selector="Button.gap-left-8, ToggleButton.gap-left-8, ComboBox.gap-left-8, TextBox.gap-left-8, NumericUpDown.gap-left-8">
+    <Setter Property="Margin" Value="8,0,0,0" />
+  </Style>
+
+  <Style Selector="Button.gap-right-8, ToggleButton.gap-right-8, ComboBox.gap-right-8, TextBox.gap-right-8, NumericUpDown.gap-right-8">
+    <Setter Property="Margin" Value="0,0,8,0" />
+  </Style>
+
+  <Style Selector="Grid.gap-bottom-8, StackPanel.gap-bottom-8, Border.gap-bottom-8, ListBox.gap-bottom-8">
+    <Setter Property="Margin" Value="0,0,0,8" />
+  </Style>
+
+  <Style Selector="ListBox.embedded">
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
 </Styles>

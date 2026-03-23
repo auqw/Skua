@@ -20,17 +20,15 @@
 
     <Border Grid.Row="1"
             Margin="0,0,0,8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="list-frame">
       <ListBox ItemsSource="{Binding CurrentDrops}"
                SelectedItem="{Binding SelectedDrop}"
-               BorderThickness="0"
-               Background="Transparent" />
+               Classes="embedded" />
     </Border>
 
     <TextBlock Grid.Row="2"
+               Classes="hint"
                Text="Tip: use Ctrl/Shift selection, then run pickup from script/runtime helpers for bulk actions."
-               Opacity="0.7"
                TextWrapping="Wrap" />
   </Grid>
 </UserControl>

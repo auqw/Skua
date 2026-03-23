@@ -25,9 +25,9 @@
           ColumnDefinitions="Auto,Auto,Auto,Auto,*"
           Margin="0,8,0,0">
       <Button Grid.Column="0" Classes="skua-button" Content="Get Quests" Command="{Binding GetQuestsCommand}" />
-      <Button Grid.Column="1" Classes="skua-button" Margin="8,0,0,0" Content="Update All" Click="UpdateAll_Click" />
-      <Button Grid.Column="2" Classes="skua-button" Margin="8,0,0,0" Content="Update Missing" Click="UpdateMissing_Click" />
-      <Button Grid.Column="3" Classes="skua-button" Margin="8,0,0,0" Content="Cancel" Command="{Binding CancelQuestLoadCommand}" />
+      <Button Grid.Column="1" Classes="skua-button gap-left-8" Content="Update All" Click="UpdateAll_Click" />
+      <Button Grid.Column="2" Classes="skua-button gap-left-8" Content="Update Missing" Click="UpdateMissing_Click" />
+      <Button Grid.Column="3" Classes="skua-button gap-left-8" Content="Cancel" Command="{Binding CancelQuestLoadCommand}" />
     </Grid>
 
     <Grid Grid.Row="2"
@@ -37,21 +37,18 @@
                Watermark="Quest range: startID endID"
                Text="{Binding QuestRange}" />
       <Button Grid.Column="1"
-              Classes="skua-button"
-              Margin="8,0,0,0"
+              Classes="skua-button gap-left-8"
               Content="Update Range"
               Command="{Binding UpdateQuestsRangeCommand}" />
     </Grid>
 
     <Border Grid.Row="3"
             Margin="0,8,0,0"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="list-frame">
       <ListBox x:Name="QuestList"
                ItemsSource="{Binding QuestIDs}"
                SelectionMode="Multiple"
-               BorderThickness="0"
-               Background="Transparent">
+               Classes="embedded">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <DockPanel Margin="6,3">
@@ -72,18 +69,15 @@
               Content="Load Selected"
               Click="LoadSelected_Click" />
       <Button Grid.Column="1"
-              Classes="skua-button"
-              Margin="8,0,0,0"
+              Classes="skua-button gap-left-8"
               Content="Copy Names"
               Click="CopyNames_Click" />
       <Button Grid.Column="2"
-              Classes="skua-button"
-              Margin="8,0,0,0"
+              Classes="skua-button gap-left-8"
               Content="Copy IDs"
               Click="CopyIds_Click" />
       <Button Grid.Column="3"
-              Classes="skua-button"
-              Margin="8,0,0,0"
+              Classes="skua-button gap-left-8"
               Content="Copy Name+ID"
               Click="CopyNamesAndIds_Click" />
     </Grid>

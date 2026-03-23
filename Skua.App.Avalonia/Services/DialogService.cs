@@ -2,12 +2,12 @@ using Skua.Core.Interfaces;
 using Skua.Core.Interfaces.ViewModels;
 using Skua.Core.Models;
 using Skua.Shared.Avalonia.ViewModels.Dialogs;
+using Skua.Shared.Avalonia.ViewModels.Options;
 using System;
 
 namespace Skua.App.Avalonia.Services;
 
 #if IS_WINDOWS
-using Skua.App.Avalonia.ViewModels;
 using Skua.App.Avalonia.ViewModels.AdvancedSkills;
 using Skua.App.Avalonia.ViewModels.Dialogs;
 using System.Drawing;

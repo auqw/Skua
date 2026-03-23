@@ -25,13 +25,11 @@
           ColumnDefinitions="Auto,Auto,*,Auto"
           Margin="0,8,0,0">
       <Button Grid.Column="0"
-              Classes="skua-button"
-              Margin="0,0,8,0"
+              Classes="skua-button gap-right-8"
               Content="Reset"
               Command="{Binding ResetOptionsCommand}" />
       <Button Grid.Column="1"
-              Classes="skua-button"
-              Margin="0,0,8,0"
+              Classes="skua-button gap-right-8"
               Content="Default"
               Command="{Binding ResetDefaultOptionsCommand}" />
       <Button Grid.Column="3"

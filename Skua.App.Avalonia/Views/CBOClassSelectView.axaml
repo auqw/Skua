@@ -15,12 +15,10 @@
             Grid.Column="0"
             Margin="0,0,4,8"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock
-                   Text="Solo Class"
-                   FontWeight="SemiBold" />
+        <TextBlock Classes="section-title"
+                   Text="Solo Class" />
         <ComboBox
                   ItemsSource="{Binding PlayerClasses}"
                   SelectedItem="{Binding SelectedSoloClass}" />
@@ -36,12 +34,10 @@
             Grid.Column="1"
             Margin="4,0,0,8"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock
-                   Text="Farm Class"
-                   FontWeight="SemiBold" />
+        <TextBlock Classes="section-title"
+                   Text="Farm Class" />
         <ComboBox
                   ItemsSource="{Binding PlayerClasses}"
                   SelectedItem="{Binding SelectedFarmClass}" />
@@ -57,12 +53,10 @@
             Grid.Column="0"
             Margin="0,0,4,0"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock
-                   Text="Dodge Class"
-                   FontWeight="SemiBold" />
+        <TextBlock Classes="section-title"
+                   Text="Dodge Class" />
         <ComboBox
                   ItemsSource="{Binding PlayerClasses}"
                   SelectedItem="{Binding SelectedDodgeClass}" />
@@ -78,12 +72,10 @@
             Grid.Column="1"
             Margin="4,0,0,0"
             Padding="8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="section-panel">
       <StackPanel Spacing="6">
-        <TextBlock
-                   Text="Boss Class"
-                   FontWeight="SemiBold" />
+        <TextBlock Classes="section-title"
+                   Text="Boss Class" />
         <ComboBox
                   ItemsSource="{Binding PlayerClasses}"
                   SelectedItem="{Binding SelectedBossClass}" />

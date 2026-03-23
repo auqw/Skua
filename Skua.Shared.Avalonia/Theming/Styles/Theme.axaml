@@ -165,6 +165,34 @@
     <Setter Property="FontSize" Value="15" />
   </Style>
 
+  <Style Selector="Button.top-nav-item">
+    <Setter Property="Theme" Value="{StaticResource MaterialFlatButton}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="MinHeight" Value="25" />
+    <Setter Property="Height" Value="25" />
+    <Setter Property="MaxHeight" Value="25" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="FontSize" Value="15" />
+  </Style>
+
+  <Style Selector="ToggleButton.top-nav-item">
+    <Setter Property="Theme" Value="{StaticResource MaterialFlatToggleButton}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="MinHeight" Value="25" />
+    <Setter Property="Height" Value="25" />
+    <Setter Property="MaxHeight" Value="25" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="4" />
+    <Setter Property="FontSize" Value="15" />
+  </Style>
+
   <Style Selector="MenuItem.top-nav-item /template/ Border#PART_Presenter">
     <Setter Property="Background" Value="Transparent" />
   </Style>
@@ -172,6 +200,39 @@
   <Style Selector="MenuItem.top-nav-item:pointerover">
     <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item:pointerover, ToggleButton.top-nav-item:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item /template/ ContentPresenter, ToggleButton.top-nav-item /template/ ContentPresenter">
+    <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item /template/ Border#PART_RootBorder, ToggleButton.top-nav-item /template/ Border#PART_RootBorder">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item:pointerover /template/ Border#PART_RootBorder, ToggleButton.top-nav-item:pointerover /template/ Border#PART_RootBorder">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item /template/ Border#PART_HoverEffect">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item:pointerover /template/ Border#PART_HoverEffect">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+
+  <Style Selector="Button.top-nav-item:focus-visible /template/ Border#PART_HoverEffect">
+    <Setter Property="Opacity" Value="0" />
+  </Style>
+
+  <Style Selector="ToggleButton.top-nav-item:checked /template/ Border#PART_RootBorder">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
   </Style>
 
   <Style Selector="MenuItem.top-nav-item:pointerover /template/ Border#PART_Presenter">
@@ -183,6 +244,11 @@
   </Style>
 
   <Style Selector="MenuItem.top-nav-item:selected">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="ToggleButton.top-nav-item:checked">
     <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
   </Style>
@@ -206,15 +272,6 @@
 
   <Style Selector="MenuItem.top-nav-item:submenuopen /template/ ContentPresenter#PART_HeaderPresenter">
     <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaAccentBrush}" />
-  </Style>
-
-  <Style Selector="Border.topbar-popup">
-    <Setter Property="MinWidth" Value="280" />
-    <Setter Property="Padding" Value="10" />
-    <Setter Property="Background" Value="{DynamicResource SkuaPageBrush}" />
-    <Setter Property="BorderBrush" Value="{DynamicResource SkuaNavHoverBrush}" />
-    <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="CornerRadius" Value="6" />
   </Style>
 
   <Style Selector="Border.titlebar-app-badge">

@@ -2,13 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Skua.App.Avalonia.Views.CBOLoadoutView">
   <ScrollViewer
-                Margin="8"
+                Margin="4"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
-    <StackPanel Spacing="8">
-      <Border Padding="8"
-              BorderThickness="1"
-              BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+    <StackPanel Spacing="4">
+      <Border Classes="card"
+              Padding="4">
         <ContentControl Content="{Binding ClassSelectViewModel}" />
       </Border>
 
@@ -18,10 +17,9 @@
                      FontWeight="SemiBold"
                      Text="Equipment" />
         </Expander.Header>
-        <Border Margin="0,8,0,0"
-                Padding="8"
-                BorderThickness="1"
-                BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+        <Border Classes="card"
+                Margin="0,4,0,0"
+                Padding="4">
           <ContentControl Content="{Binding ClassEquipmentViewModel}" />
         </Border>
       </Expander>

@@ -26,11 +26,9 @@
 
     <Border Grid.Row="1"
             Margin="0,0,0,8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="list-frame">
       <ListBox ItemsSource="{Binding Items}"
-               BorderThickness="0"
-               Background="Transparent">
+               Classes="embedded">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <Grid ColumnDefinitions="Auto,Auto,*"

@@ -11,4 +11,13 @@
     <Style Selector="Window.skua TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
     </Style>
+
+    <Style Selector="TextBlock.section-title">
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TextBlock.hint">
+        <Setter Property="Foreground" Value="{DynamicResource SkuaMutedTextBrush}" />
+        <Setter Property="Opacity" Value="0.75" />
+    </Style>
 </Styles>

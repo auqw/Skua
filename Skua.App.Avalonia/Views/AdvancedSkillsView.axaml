@@ -8,14 +8,12 @@
                 Spacing="10">
       <Expander IsExpanded="{Binding EditExpanded}">
         <Expander.Header>
-          <TextBlock
-                     FontWeight="SemiBold"
+          <TextBlock Classes="section-title"
                      Text="Create/Edit Skill" />
         </Expander.Header>
         <Border Margin="0,8,0,0"
                 Padding="8"
-                BorderThickness="1"
-                BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+                Classes="section-panel">
           <Grid DataContext="{Binding EditViewModel}"
                 RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto"
                 ColumnDefinitions="*,Auto">
@@ -80,7 +78,7 @@
                         Margin="0,0,0,8">
                 <TextBlock
                            VerticalAlignment="Center"
-                           Opacity="0.8"
+                           Classes="hint"
                            Text="Quick add:" />
                 <Button Classes="skua-button"
                         Content="0"
@@ -118,8 +116,7 @@
                     Grid.ColumnSpan="2"
                     Margin="0,0,0,8"
                     Padding="8"
-                    BorderThickness="1"
-                    BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+                    Classes="section-panel">
               <StackPanel DataContext="{Binding UseRules}"
                           Spacing="8">
                 <StackPanel Orientation="Horizontal"
@@ -269,8 +266,7 @@
                   <Border Grid.Row="3"
                           Grid.Column="0"
                           Grid.ColumnSpan="3"
-                          BorderThickness="1"
-                          BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+                          Classes="section-panel">
                     <ItemsControl ItemsSource="{Binding MultiAuraChecks}">
                       <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -309,13 +305,11 @@
 
             <Border Grid.Row="5"
                     Grid.ColumnSpan="2"
-                    BorderThickness="1"
-                    BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+                    Classes="list-frame">
               <ListBox ItemsSource="{Binding CurrentSkillsList}"
                        SelectedItem="{Binding SelectedSkill}"
                        SelectedIndex="{Binding SelectedSkillIndex}"
-                       BorderThickness="0"
-                       Background="Transparent">
+                       Classes="embedded">
                 <ListBox.ItemTemplate>
                   <DataTemplate>
                     <TextBlock Margin="8,6"
@@ -352,14 +346,12 @@
 
       <Expander IsExpanded="True">
         <Expander.Header>
-          <TextBlock
-                     FontWeight="SemiBold"
+          <TextBlock Classes="section-title"
                      Text="Saved Skills" />
         </Expander.Header>
         <Border Margin="0,8,0,0"
                 Padding="8"
-                BorderThickness="1"
-                BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+                Classes="section-panel">
           <Grid DataContext="{Binding SavedViewModel}"
                 RowDefinitions="Auto,*,Auto"
                 ColumnDefinitions="*,Auto">
@@ -388,12 +380,10 @@
 
             <Border Grid.Row="1"
                     Grid.ColumnSpan="2"
-                    BorderThickness="1"
-                    BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+                    Classes="list-frame">
               <ListBox ItemsSource="{Binding LoadedSkills}"
                        SelectedItem="{Binding SelectedSkill}"
-                       BorderThickness="0"
-                       Background="Transparent">
+                       Classes="embedded">
                 <ListBox.ItemTemplate>
                   <DataTemplate>
                     <TextBlock Margin="8,6"

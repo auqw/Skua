@@ -22,13 +22,11 @@
 
     <Border Grid.Row="2"
             Margin="0,8,0,0"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="list-frame">
       <ListBox x:Name="GrabbedItemsList"
                ItemsSource="{Binding GrabbedItems}"
                SelectionMode="Multiple"
-               BorderThickness="0"
-               Background="Transparent" />
+               Classes="embedded" />
     </Border>
 
     <ItemsControl Grid.Row="3"

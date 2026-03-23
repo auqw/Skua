@@ -7,10 +7,8 @@
                 VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="8"
                 Spacing="10">
-      <Border Padding="8"
-              BorderBrush="{DynamicResource SkuaNavHoverBrush}"
-              BorderThickness="1"
-              Background="{DynamicResource SkuaPageBrush}">
+      <Border Classes="card card-flat"
+              Padding="8">
         <Grid ColumnDefinitions="*,Auto">
           <TextBox Grid.Column="0"
                    Margin="0,0,8,0"
@@ -23,38 +21,29 @@
         </Grid>
       </Border>
 
-      <Border Padding="8"
-              BorderBrush="{DynamicResource SkuaNavHoverBrush}"
-              BorderThickness="1"
-              Background="{DynamicResource SkuaPageBrush}">
+      <Border Classes="card card-flat"
+              Padding="8">
         <sharedTheming:AccentEditorPanel SeparatorBrush="{DynamicResource SkuaNavHoverBrush}" />
       </Border>
 
-      <Border Padding="8"
-              BorderBrush="{DynamicResource SkuaNavHoverBrush}"
-              BorderThickness="1"
-              Background="{DynamicResource SkuaPageBrush}">
+      <Border Classes="card card-flat"
+              Padding="8">
         <sharedTheming:SchemePreviewCard PreviewBorderBrush="{DynamicResource SkuaNavHoverBrush}" />
       </Border>
 
-      <Border Padding="8"
-              BorderBrush="{DynamicResource SkuaNavHoverBrush}"
-              BorderThickness="1"
-              Background="{DynamicResource SkuaPageBrush}">
+      <Border Classes="card card-flat"
+              Padding="8">
         <sharedTheming:ThemeLibraryPanel />
       </Border>
 
       <Expander IsExpanded="False">
         <Expander.Header>
-          <TextBlock
-                     FontWeight="SemiBold"
+          <TextBlock Classes="section-title"
                      Text="Backgrounds" />
         </Expander.Header>
-        <Border Margin="0,8,0,0"
-                Padding="4"
-                BorderBrush="{DynamicResource SkuaNavHoverBrush}"
-                BorderThickness="1"
-                Background="{DynamicResource SkuaPageBrush}">
+        <Border Classes="card card-flat"
+                Margin="0,8,0,0"
+                Padding="4">
           <Grid DataContext="{Binding BackgroundTheme}"
                 ColumnDefinitions="*,Auto,Auto"
                 RowDefinitions="Auto,Auto">

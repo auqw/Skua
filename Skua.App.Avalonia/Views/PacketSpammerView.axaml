@@ -7,12 +7,10 @@
     <Border Grid.Row="0"
             Grid.Column="0"
             Margin="0,0,8,8"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+            Classes="list-frame">
       <ListBox ItemsSource="{Binding Packets}"
                SelectedIndex="{Binding SelectedIndex}"
-               BorderThickness="0"
-               Background="Transparent" />
+               Classes="embedded" />
     </Border>
 
     <StackPanel Grid.Row="0"

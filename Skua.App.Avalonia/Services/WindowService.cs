@@ -93,6 +93,7 @@ public class WindowService : IWindowService
                     ? new ContentControl { Content = viewModel }
                     : CreateFallbackContent(title))
         };
+        window.Classes.Add("skua");
 
         if (width > 0)
             window.Width = width;

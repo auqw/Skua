@@ -12,8 +12,7 @@
                   Content="Toggle"
                   Command="{Binding ToggleDropsCommand}" />
           <Button Grid.Column="1"
-                  Classes="skua-button"
-                  Margin="8,0,0,0"
+                  Classes="skua-button gap-left-8"
                   Content="Notify"
                   Command="{Binding OpenNotifyDropCommand}" />
         </Grid>
@@ -26,13 +25,11 @@
                    Watermark="Add items separated by |"
                    Text="{Binding AddDropInput}" />
           <Button Grid.Column="1"
-                  Classes="skua-button"
-                  Margin="8,0,0,0"
+                  Classes="skua-button gap-left-8"
                   Content="Add"
                   Command="{Binding AddDropCommand}" />
           <Button Grid.Column="2"
-                  Classes="skua-button"
-                  Margin="8,0,0,0"
+                  Classes="skua-button gap-left-8"
                   Content="Clear"
                   Command="{Binding RemoveAllDropsCommand}" />
         </Grid>
@@ -40,13 +37,11 @@
         <Border Grid.Row="2"
                 DataContext="{Binding ToPickupDropsViewModel}"
                 Margin="0,8,0,0"
-                BorderThickness="1"
-                BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+                Classes="list-frame">
           <ListBox x:Name="DropList"
                    ItemsSource="{Binding ToPickup}"
                    SelectionMode="Multiple"
-                   BorderThickness="0"
-                   Background="Transparent" />
+                   Classes="embedded" />
         </Border>
 
         <Button Grid.Row="3"
@@ -69,25 +64,22 @@
                    Watermark="Quest IDs (| , space)"
                    Text="{Binding AddQuestInput}" />
           <TextBox Grid.Column="1"
-                   Margin="8,0,0,0"
+                   Classes="gap-left-8"
                    Watermark="Reward ID"
                    Text="{Binding RewardIdInput}" />
           <Button Grid.Column="2"
-                  Classes="skua-button"
-                  Margin="8,0,0,0"
+                  Classes="skua-button gap-left-8"
                   Content="Add"
                   Command="{Binding AddQuestCommand}" />
         </Grid>
 
         <Border Grid.Row="1"
                 DataContext="{Binding RegisteredQuestsViewModel}"
-                BorderThickness="1"
-                BorderBrush="{DynamicResource SkuaNavHoverBrush}">
+                Classes="list-frame">
           <ListBox x:Name="QuestRegList"
                    ItemsSource="{Binding CurrentAutoQuests}"
                    SelectionMode="Multiple"
-                   BorderThickness="0"
-                   Background="Transparent" />
+                   Classes="embedded" />
         </Border>
 
         <Grid Grid.Row="2"
@@ -99,8 +91,7 @@
                   Content="Remove Selected"
                   Click="RemoveSelectedQuests_Click" />
           <Button Grid.Column="1"
-                  Classes="skua-button"
-                  Margin="8,0,0,0"
+                  Classes="skua-button gap-left-8"
                   Content="Clear All"
                   Command="{Binding RemoveAllQuestsCommand}" />
         </Grid>

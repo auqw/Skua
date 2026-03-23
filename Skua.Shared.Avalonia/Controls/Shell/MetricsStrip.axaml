@@ -5,7 +5,9 @@
     <Border Background="{DynamicResource SkuaPageBrush}"
             BorderBrush="{DynamicResource SkuaNavHoverBrush}"
             BorderThickness="0,1,0,0"
-            Padding="10,4">
+            Padding="10,4"
+            ToolTip.Tip="Click to collapse performance strip (F7 toggles)"
+            PointerPressed="RootBorder_PointerPressed">
         <StackPanel Orientation="Horizontal" Spacing="16">
             <TextBlock Text="{Binding FpsText, ElementName=Root}" />
             <TextBlock Text="{Binding WorkingSetText, ElementName=Root}" />
@@ -14,3 +16,4 @@
         </StackPanel>
     </Border>
 </UserControl>
+
