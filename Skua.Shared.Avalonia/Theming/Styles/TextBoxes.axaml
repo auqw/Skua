@@ -1,5 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Styles.Resources>
+    </Styles.Resources>
     <Design.PreviewWith>
         <Border Padding="20">
             <!-- Add Controls for Previewer Here -->
@@ -35,4 +37,5 @@
     <Style Selector="Window.skua TextBox:empty /template/ TextBlock">
         <Setter Property="Margin" Value="6,0,0,0" />
     </Style>
+
 </Styles>

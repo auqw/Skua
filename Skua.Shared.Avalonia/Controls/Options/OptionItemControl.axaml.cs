@@ -1,8 +1,10 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using System;
 using System.Linq;
 using Skua.Shared.Avalonia.ViewModels.Options;
@@ -11,6 +13,9 @@ namespace Skua.Shared.Avalonia.Controls.Options;
 
 public partial class OptionItemControl : UserControl
 {
+    private const double CompactOptionHeight = 22;
+    private const double CompactOptionFontSize = 11;
+
     public OptionItemControl()
     {
         InitializeComponent();
@@ -40,19 +45,20 @@ public partial class OptionItemControl : UserControl
         };
     }
 
-    public static CheckBox CreateBoundCheckBox(DisplayOptionItemViewModelBase vm, object? content = null)
+    public static ToggleButton CreateBoundToggleButton(DisplayOptionItemViewModelBase vm, object? content = null)
     {
-        CheckBox checkBox = new()
+        ToggleButton toggleButton = new()
         {
-            Content = content ?? vm.Content,
-            IsThreeState = false
+            Content = content ?? vm.Content
         };
-        BindValue(checkBox, vm);
+        BindValue(toggleButton, vm);
 
         if (vm is CommandOptionItemViewModel commandVm)
-            checkBox.IsCheckedChanged += (_, _) => commandVm.Command.Execute(checkBox.IsChecked == true);
+        {
+            toggleButton.IsCheckedChanged += (_, _) => commandVm.Command.Execute(toggleButton.IsChecked == true);
+        }
 
-        return checkBox;
+        return toggleButton;
     }
 
     public static TextBox CreateBoundTextBox(DisplayOptionItemViewModelBase vm, bool numericOnly = false)
@@ -88,6 +94,7 @@ public partial class OptionItemControl : UserControl
         {
             Content = content ?? vm.Content
         };
+        ToolTip.SetTip(button, vm.Content);
         button.Classes.Add("skua-button");
 
         if (vm is CommandOptionItemViewModel commandVm)
@@ -107,63 +114,92 @@ public partial class OptionItemControl : UserControl
 
     private static Control BuildBooleanItem(DisplayOptionItemViewModelBase vm)
     {
-        CheckBox checkBox = CreateBoundCheckBox(vm);
-        checkBox.Margin = new Thickness(6, 4);
-        return checkBox;
+        ToggleButton toggleButton = CreateBoundToggleButton(vm);
+        toggleButton.Classes.Add("option-chip");
+        ToolTip.SetTip(toggleButton, vm.Content);
+        toggleButton.Margin = new Thickness(6, 1);
+        return toggleButton;
     }
 
     private static Control BuildTextItem(DisplayOptionItemViewModelBase vm)
     {
         TextBox textBox = CreateBoundTextBox(vm);
         textBox.Watermark = vm.Content;
-        textBox.MinWidth = 220;
+        textBox.Classes.Add("option-pill-input");
+        textBox.Theme = null;
+        textBox.Height = CompactOptionHeight;
+        textBox.MinHeight = CompactOptionHeight;
+        textBox.MaxHeight = CompactOptionHeight;
+        textBox.FontSize = CompactOptionFontSize;
+        textBox.Padding = new Thickness(10, 0, 0, 0);
 
         Button button = CreateBoundButton(vm, "Set", () => textBox.Text ?? string.Empty);
+        button.Classes.Add("option-pill-action");
+        button.Classes.Add("option-pill-action-auto");
+        button.Classes.Remove("skua-button");
+        button.Theme = null;
+        button.Height = CompactOptionHeight;
+        button.MinHeight = CompactOptionHeight;
+        button.MaxHeight = CompactOptionHeight;
+        button.FontSize = CompactOptionFontSize;
+        button.FontWeight = FontWeight.Normal;
+        button.Padding = new Thickness(6, 0);
+        button.VerticalContentAlignment = VerticalAlignment.Center;
+        button.HorizontalContentAlignment = HorizontalAlignment.Center;
+        TextBlock.SetLineHeight(button, CompactOptionHeight);
         button.MinWidth = 64;
-        button.Margin = new Thickness(8, 0, 0, 0);
 
-        Grid grid = new()
-        {
-            ColumnDefinitions = new ColumnDefinitions("*,Auto"),
-            Margin = new Thickness(6, 4)
-        };
-        grid.Children.Add(textBox);
-        grid.Children.Add(button);
-        Grid.SetColumn(button, 1);
-        return grid;
+        return BuildOptionPill(textBox, button, middle: null, fillAction: false);
     }
 
     private static Control BuildNumberItem(DisplayOptionItemViewModelBase vm)
     {
         TextBox textBox = CreateBoundTextBox(vm, numericOnly: true);
-        textBox.Width = 90;
+        textBox.Classes.Add("option-pill-input");
+        textBox.Theme = null;
+        textBox.Height = CompactOptionHeight;
+        textBox.MinHeight = CompactOptionHeight;
+        textBox.MaxHeight = CompactOptionHeight;
+        textBox.FontSize = CompactOptionFontSize;
+        textBox.Padding = new Thickness(10, 0, 0, 0);
+        textBox.Width = 70;
         textBox.HorizontalAlignment = HorizontalAlignment.Left;
 
-        TextBlock suffix = new()
-        {
-            Text = vm.SuffixText ?? string.Empty,
-            VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(8, 0, 0, 0),
-            IsVisible = !string.IsNullOrWhiteSpace(vm.SuffixText)
-        };
-
         Button button = CreateBoundButton(vm, vm.Content, () => textBox.Text ?? string.Empty);
-        button.MinWidth = 96;
+        button.Classes.Add("option-pill-action");
+        button.Classes.Remove("skua-button");
+        button.Theme = null;
+        button.Height = CompactOptionHeight;
+        button.MinHeight = CompactOptionHeight;
+        button.MaxHeight = CompactOptionHeight;
+        button.FontSize = CompactOptionFontSize;
+        button.FontWeight = FontWeight.Normal;
+        button.Padding = new Thickness(6, 0);
+        button.VerticalContentAlignment = VerticalAlignment.Center;
+        button.HorizontalContentAlignment = HorizontalAlignment.Center;
+        TextBlock.SetLineHeight(button, CompactOptionHeight);
+        button.MinWidth = 90;
 
-        StackPanel row = new()
+        if (!string.IsNullOrWhiteSpace(vm.SuffixText))
         {
-            Orientation = Orientation.Horizontal,
-            Spacing = 8,
-            Margin = new Thickness(6, 4),
-            Children = { textBox, suffix, button }
-        };
-        return row;
+            TextBlock suffix = new()
+            {
+                Text = vm.SuffixText,
+                Classes = { "option-pill-suffix" }
+            };
+            return BuildOptionPill(textBox, button, suffix, fillAction: true);
+        }
+
+        return BuildOptionPill(textBox, button, middle: null, fillAction: true);
     }
 
     private static Control BuildActionItem(DisplayOptionItemViewModelBase vm)
     {
         Button button = CreateBoundButton(vm);
-        button.Margin = new Thickness(6, 4);
+        button.Classes.Remove("skua-button");
+        button.Classes.Add("option-action-button");
+        button.Theme = null;
+        button.Margin = new Thickness(6, 2);
         button.HorizontalAlignment = HorizontalAlignment.Stretch;
         return button;
     }
@@ -189,11 +225,12 @@ public partial class OptionItemControl : UserControl
             Source = vm,
             Mode = BindingMode.TwoWay
         };
+        textBox.GotFocus += (_, _) => textBox.SelectAll();
     }
 
-    private static void BindValue(CheckBox checkBox, DisplayOptionItemViewModelBase vm)
+    private static void BindValue(ToggleButton toggleButton, DisplayOptionItemViewModelBase vm)
     {
-        checkBox[!CheckBox.IsCheckedProperty] = new Binding(nameof(DisplayOptionItemViewModelBase.Value))
+        toggleButton[!ToggleButton.IsCheckedProperty] = new Binding(nameof(DisplayOptionItemViewModelBase.Value))
         {
             Source = vm,
             Mode = BindingMode.TwoWay
@@ -218,5 +255,43 @@ public partial class OptionItemControl : UserControl
             return string.Empty;
 
         return new string(value.Where(char.IsDigit).ToArray());
+    }
+
+    private static Control BuildOptionPill(Control input, Button action, Control? middle = null, bool fillAction = false)
+    {
+        Border border = new()
+        {
+            Classes = { "option-pill-container" },
+            Margin = new Thickness(6, 1)
+        };
+
+        string columns;
+        if (middle is null)
+            columns = fillAction ? "Auto,*" : "*,Auto";
+        else
+            columns = fillAction ? "Auto,Auto,*" : "*,Auto,Auto";
+        Grid grid = new()
+        {
+            ColumnDefinitions = new ColumnDefinitions(columns)
+        };
+
+        grid.Children.Add(input);
+        Grid.SetColumn(input, 0);
+
+        if (middle is not null)
+        {
+            grid.Children.Add(middle);
+            Grid.SetColumn(middle, 1);
+            grid.Children.Add(action);
+            Grid.SetColumn(action, 2);
+        }
+        else
+        {
+            grid.Children.Add(action);
+            Grid.SetColumn(action, 1);
+        }
+
+        border.Child = grid;
+        return border;
     }
 }

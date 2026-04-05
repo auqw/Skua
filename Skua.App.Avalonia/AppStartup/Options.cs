@@ -37,8 +37,7 @@ internal class Options
                 options.Add(CreateOptionItem<string>(s, pi.Name, "2", new RelayCommand<string>(value => pi.SetValue(scriptOpt, value))));
             else if (pi.PropertyType == typeof(int))
             {
-                // Special handling for SetFPS to add "FPS" suffix
-                string? suffixText = pi.Name == nameof(IScriptOption.SetFPS) ? "FPS" : null;
+                string? suffixText = null;
                 options.Add(CreateOptionItemWithSuffix<int>(s, pi.Name, "3", suffixText, new RelayCommand<string>(value =>
                 {
                     if (!int.TryParse(value, out int result))
