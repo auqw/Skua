@@ -9,7 +9,6 @@
               RowSpacing="8">
             <TextBox Grid.Row="0"
                      Height="22"
-                     Padding="6,0"
                      VerticalContentAlignment="Center"
                      Watermark="Search"
                      Text="{Binding SearchText, Mode=TwoWay}" />
@@ -130,3 +129,4 @@
         </Grid>
     </Border>
 </UserControl>
+

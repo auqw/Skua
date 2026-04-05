@@ -156,6 +156,48 @@
     <Setter Property="VerticalAlignment" Value="Center" />
   </Style>
 
+  <!-- Topbar dropdown items (Options/Helpers/etc submenu entries) -->
+  <Style Selector="Menu.top-toolbar MenuItem">
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <Style Selector="Menu.top-toolbar MenuItem /template/ ContentPresenter#PART_HeaderPresenter">
+    <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Menu.top-toolbar MenuItem:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="Menu.top-toolbar MenuItem:selected, Menu.top-toolbar MenuItem:submenuopen">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <!-- Popup/opened menus (submenu + context menus) -->
+  <Style Selector="MenuFlyoutPresenter, ContextMenu">
+    <Setter Property="Background" Value="{DynamicResource SkuaSurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+
+  <Style Selector="MenuFlyoutPresenter MenuItem, ContextMenu MenuItem">
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <Style Selector="MenuFlyoutPresenter MenuItem:pointerover, ContextMenu MenuItem:pointerover">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
+  <Style Selector="MenuFlyoutPresenter MenuItem:selected, ContextMenu MenuItem:selected">
+    <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+  </Style>
+
   <Style Selector="MenuItem.top-nav-item">
     <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
     <Setter Property="Padding" Value="12,0" />

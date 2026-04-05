@@ -2,24 +2,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Skua.App.Avalonia.Views.PacketLoggerView">
   <Grid Margin="8"
-        ColumnDefinitions="*,220"
-        RowDefinitions="*,Auto">
-    <Border Grid.Row="0"
+        ColumnDefinitions="2*,*"
+        RowDefinitions="Auto,*,Auto,Auto">
+    <TextBox Grid.Row="0"
+             Grid.Column="0"
+             Margin="0,0,8,8"
+             Watermark="Search packets"
+             Text="{Binding PacketSearchText}" />
+    <TextBox Grid.Row="0"
+             Grid.Column="1"
+             Margin="0,0,0,8"
+             Watermark="Search filters"
+             Text="{Binding FilterSearchText}" />
+
+    <Border Grid.Row="1"
             Grid.Column="0"
             Margin="0,0,8,8"
             Classes="list-frame">
-      <ListBox ItemsSource="{Binding PacketLogs}"
+      <ListBox x:Name="PacketsListBox"
+               ItemsSource="{Binding FilteredPacketLogs}"
                SelectionMode="Multiple"
                Classes="embedded" />
     </Border>
 
-    <Border Grid.Row="0"
+    <Border Grid.Row="1"
             Grid.Column="1"
             Margin="0,0,0,8"
             Classes="section-panel">
-      <ScrollViewer
-                    VerticalScrollBarVisibility="Auto">
-        <ItemsControl ItemsSource="{Binding PacketFilters}">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ItemsControl ItemsSource="{Binding VisiblePacketFilters}">
           <ItemsControl.ItemTemplate>
             <DataTemplate>
               <CheckBox Margin="8,4"
@@ -31,9 +42,25 @@
       </ScrollViewer>
     </Border>
 
-    <Grid Grid.Row="1"
+    <Grid Grid.Row="2"
+          Grid.Column="0"
+          ColumnDefinitions="*,*"
+          Margin="0,0,8,8">
+      <Button Grid.Column="0"
+              Classes="skua-button"
+              Margin="0,0,4,0"
+              Content="Unselect All Logs"
+              Click="UnselectAllLogs_Click" />
+      <Button Grid.Column="1"
+              Classes="skua-button"
+              Margin="4,0,0,0"
+              Content="Clear Filters"
+              Command="{Binding ClearFiltersCommand}" />
+    </Grid>
+
+    <Grid Grid.Row="3"
           Grid.ColumnSpan="2"
-          ColumnDefinitions="Auto,Auto,Auto,*"
+          ColumnDefinitions="Auto,Auto,*"
           Margin="0,0,0,0">
       <Button Grid.Column="0"
               Classes="skua-button"
@@ -41,16 +68,13 @@
               Command="{Binding ClearPacketLogsCommand}" />
       <Button Grid.Column="1"
               Classes="skua-button gap-left-8"
-              Content="Clear Filters"
-              Command="{Binding ClearFiltersCommand}" />
-      <Button Grid.Column="2"
-              Classes="skua-button gap-left-8"
               Content="Save"
               Command="{Binding SavePacketLogsCommand}" />
-      <CheckBox Grid.Column="3"
+      <CheckBox Grid.Column="2"
                 HorizontalAlignment="Right"
                 Content="Enabled"
                 IsChecked="{Binding IsReceivingPackets}" />
     </Grid>
   </Grid>
 </UserControl>
+

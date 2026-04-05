@@ -16,17 +16,26 @@ public partial class PacketLoggerViewModel : BotControlViewModelBase
     {
         _flash = flash;
         _fileDialog = fileDialog;
-        _packetFilters = filters.ToList();
+        _allPacketFilters = filters.ToList();
+        _visiblePacketFilters = _allPacketFilters.ToList();
     }
 
     private readonly IFlashUtil _flash;
     private readonly IFileDialogService _fileDialog;
+    private readonly List<string> _allPacketLogs = [];
+    private readonly List<PacketLogFilterViewModel> _allPacketFilters;
 
     [ObservableProperty]
-    private ObservableCollection<string> _packetLogs = new();
+    private ObservableCollection<string> _filteredPacketLogs = new();
 
     [ObservableProperty]
-    private List<PacketLogFilterViewModel> _packetFilters;
+    private List<PacketLogFilterViewModel> _visiblePacketFilters;
+
+    [ObservableProperty]
+    private string _packetSearchText = string.Empty;
+
+    [ObservableProperty]
+    private string _filterSearchText = string.Empty;
 
     private bool _isReceivingPackets;
 
@@ -43,19 +52,20 @@ public partial class PacketLoggerViewModel : BotControlViewModelBase
     [RelayCommand]
     private void SavePacketLogs()
     {
-        _fileDialog.SaveText(_packetLogs);
+        _fileDialog.SaveText(_allPacketLogs);
     }
 
     [RelayCommand]
     private void ClearFilters()
     {
-        _packetFilters.ForEach(f => f.IsChecked = false);
+        _allPacketFilters.ForEach(f => f.IsChecked = false);
     }
 
     [RelayCommand]
     private void ClearPacketLogs()
     {
-        PacketLogs.Clear();
+        _allPacketLogs.Clear();
+        FilteredPacketLogs.Clear();
     }
 
     private void ToggleLogger()
@@ -70,7 +80,7 @@ public partial class PacketLoggerViewModel : BotControlViewModelBase
     {
         get
         {
-            foreach (PacketLogFilterViewModel filter in _packetFilters)
+            foreach (PacketLogFilterViewModel filter in _allPacketFilters)
             {
                 if (!filter.IsChecked)
                     return true;
@@ -84,19 +94,61 @@ public partial class PacketLoggerViewModel : BotControlViewModelBase
         if (function != "packet")
             return;
 
+        string packetText = args[0].ToString()!;
+
         if (!_filterEnabled)
         {
-            PacketLogs.Add(args[0].ToString()!);
+            AddPacket(packetText);
             return;
         }
 
-        string[] packet = args[0].ToString()!.Split(new[] { '%' }, StringSplitOptions.RemoveEmptyEntries);
-        foreach (PacketLogFilterViewModel filterVM in _packetFilters)
+        string[] packet = packetText.Split(new[] { '%' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (PacketLogFilterViewModel filterVM in _allPacketFilters)
         {
             if (!filterVM.IsChecked && filterVM.Filter.Invoke(packet))
                 return;
         }
 
-        PacketLogs.Add(args[0].ToString()!);
+        AddPacket(packetText);
+    }
+
+    partial void OnPacketSearchTextChanged(string value)
+    {
+        ApplyPacketSearch();
+    }
+
+    partial void OnFilterSearchTextChanged(string value)
+    {
+        ApplyFilterSearch();
+    }
+
+    private void AddPacket(string packetText)
+    {
+        _allPacketLogs.Add(packetText);
+        if (MatchesPacketSearch(packetText))
+            FilteredPacketLogs.Add(packetText);
+    }
+
+    private void ApplyPacketSearch()
+    {
+        IEnumerable<string> filtered = _allPacketLogs.Where(MatchesPacketSearch);
+        FilteredPacketLogs = new ObservableCollection<string>(filtered);
+    }
+
+    private void ApplyFilterSearch()
+    {
+        VisiblePacketFilters = _allPacketFilters.Where(MatchesFilterSearch).ToList();
+    }
+
+    private bool MatchesPacketSearch(string packet)
+    {
+        return string.IsNullOrWhiteSpace(PacketSearchText)
+            || packet.Contains(PacketSearchText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool MatchesFilterSearch(PacketLogFilterViewModel filter)
+    {
+        return string.IsNullOrWhiteSpace(FilterSearchText)
+            || filter.Content.Contains(FilterSearchText, StringComparison.OrdinalIgnoreCase);
     }
 }
