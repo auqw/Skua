@@ -20,8 +20,19 @@
               Classes="skua-button"
               Margin="8,0,0,0"
               MinWidth="110"
-              Content="Connect / Disconnect"
-              Command="{Binding ConnectInterceptorCommand}" />
+              Command="{Binding ConnectInterceptorCommand}">
+        <Button.Styles>
+          <Style Selector="Button">
+            <Setter Property="Content" Value="Connect" />
+          </Style>
+          <Style Selector="Button[Tag=true]">
+            <Setter Property="Content" Value="Disconnect" />
+          </Style>
+        </Button.Styles>
+        <Button.Tag>
+          <Binding Path="Running" />
+        </Button.Tag>
+      </Button>
     </Grid>
 
     <Grid Grid.Row="1"

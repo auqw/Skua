@@ -5,7 +5,10 @@ using Skua.Core.Interfaces;
 using Skua.Core.Models.Servers;
 using Skua.Shared.Avalonia.ViewModels;
 using Skua.Shared.Avalonia.ViewModels.Options;
+using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Skua.App.Avalonia.ViewModels.Options;
 
@@ -20,6 +23,7 @@ public class GameOptionsViewModel : BotControlViewModelBase
         _servers = servers;
         _options = options;
         GameOptions = gameOptions;
+        FilteredGameOptions = new ObservableCollection<DisplayOptionItemViewModelBase>(SortOptions(gameOptions));
         ResetOptionsCommand = new RelayCommand(_options.Reset);
         ResetDefaultOptionsCommand = new RelayCommand(_options.ResetToDefault);
         SaveOptionsCommand = new RelayCommand(_options.Save);
@@ -32,6 +36,18 @@ public class GameOptionsViewModel : BotControlViewModelBase
     }
 
     public List<DisplayOptionItemViewModelBase> GameOptions { get; }
+    public ObservableCollection<DisplayOptionItemViewModelBase> FilteredGameOptions { get; }
+    private string _searchText = string.Empty;
+
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            if (SetProperty(ref _searchText, value))
+                ApplySearch();
+        }
+    }
     public List<string> ServersList
     {
         get
@@ -58,7 +74,12 @@ public class GameOptionsViewModel : BotControlViewModelBase
 
     public int Columns
     {
-        get => _columns; set => SetProperty(ref _columns, value);
+        get => _columns;
+        set
+        {
+            int clamped = Math.Max(1, value);
+            SetProperty(ref _columns, clamped);
+        }
     }
 
     public IRelayCommand ResetOptionsCommand { get; }
@@ -75,5 +96,29 @@ public class GameOptionsViewModel : BotControlViewModelBase
     {
         if (message.PropertyName == nameof(IScriptOption.ReloginServer) && message.NewValue != recipient.SelectedServer)
             recipient.SelectedServer = message.NewValue;
+    }
+
+    private void ApplySearch()
+    {
+        IEnumerable<DisplayOptionItemViewModelBase> filtered = GameOptions.Where(MatchesSearch);
+        List<DisplayOptionItemViewModelBase> sorted = SortOptions(filtered).ToList();
+        FilteredGameOptions.Clear();
+        foreach (DisplayOptionItemViewModelBase option in sorted)
+            FilteredGameOptions.Add(option);
+    }
+
+    private bool MatchesSearch(DisplayOptionItemViewModelBase option)
+    {
+        if (string.IsNullOrWhiteSpace(SearchText))
+            return true;
+
+        return option.Content?.Contains(SearchText) == true;
+    }
+
+    private static IEnumerable<DisplayOptionItemViewModelBase> SortOptions(IEnumerable<DisplayOptionItemViewModelBase> options)
+    {
+        return options
+            .OrderBy(o => o.Tag)
+            .ThenBy(o => o.Content, StringComparer.OrdinalIgnoreCase);
     }
 }

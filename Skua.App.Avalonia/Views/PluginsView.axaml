@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Skua.App.Avalonia.Views.PluginsView">
   <Grid Margin="8"
-        RowDefinitions="Auto,*">
+        RowDefinitions="Auto,Auto,*">
     <StackPanel Grid.Row="0"
                 Orientation="Horizontal"
                 Spacing="8"
@@ -15,7 +15,12 @@
               Command="{Binding UnloadAllPluginsCommand}" />
     </StackPanel>
 
-    <Border Grid.Row="1"
+    <TextBox Grid.Row="1"
+             Margin="0,0,0,8"
+             Watermark="Search plugins"
+             Text="{Binding SearchText}" />
+
+    <Border Grid.Row="2"
             Classes="list-frame">
       <ListBox ItemsSource="{Binding Plugins}"
                Classes="embedded">
@@ -23,13 +28,18 @@
           <DataTemplate>
             <Grid Margin="8,6"
                   ColumnDefinitions="*,Auto,Auto">
-              <TextBlock Grid.Column="0"
-                         VerticalAlignment="Center"
-                         Text="{Binding Container.Plugin.Name}" />
+              <StackPanel Grid.Column="0"
+                          Spacing="2"
+                          ToolTip.Tip="{Binding Description}">
+                <TextBlock VerticalAlignment="Center"
+                           Text="{Binding Container.Plugin.Name}" />
+                <TextBlock Classes="hint"
+                           Text="{Binding Author, StringFormat='by {0}'}" />
+              </StackPanel>
               <Button Grid.Column="1"
                       Classes="skua-button gap-left-8"
                       Content="Options"
-                      IsVisible="{Binding HasOptions}"
+                      IsEnabled="{Binding HasOptions}"
                       Command="{Binding EditPluginOptionsCommand}" />
               <Button Grid.Column="2"
                       Classes="skua-button gap-left-8"
@@ -42,3 +52,4 @@
     </Border>
   </Grid>
 </UserControl>
+

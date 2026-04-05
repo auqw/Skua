@@ -62,7 +62,7 @@ public partial class ScriptLoaderViewModel : BotControlViewModelBase
     private string _scriptStatus = "[No Script Loaded]";
 
     [ObservableProperty]
-    private string _loadedScript = string.Empty;
+    private string _loadedScript = "No script loaded";
 
     [RelayCommand]
     private void OpenBrowserForm()

@@ -15,6 +15,8 @@ public partial class PluginItemViewModel : ObservableObject
 
     public IPluginContainer Container { get; }
     public bool HasOptions { get; }
+    public string Author => Container.Plugin.Author;
+    public string Description => Container.Plugin.Description;
 
     [RelayCommand]
     private void EditPluginOptions()
