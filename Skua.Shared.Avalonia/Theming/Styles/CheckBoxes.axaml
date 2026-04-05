@@ -6,7 +6,7 @@
         </Border>
     </Design.PreviewWith>
 
-    <Style Selector="Window.skua CheckBox">
+    <Style Selector="CheckBox">
         <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
     </Style>
 </Styles>

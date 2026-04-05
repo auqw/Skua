@@ -6,7 +6,7 @@
         </Border>
     </Design.PreviewWith>
 
-    <Style Selector="Window.skua ScrollViewer">
+    <Style Selector="ScrollViewer">
         <Setter Property="Background" Value="Transparent" />
     </Style>
 </Styles>

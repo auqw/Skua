@@ -6,19 +6,19 @@
         </Border>
     </Design.PreviewWith>
 
-    <Style Selector="Window.skua ListBox">
+    <Style Selector="ListBox">
         <Setter Property="Background" Value="{DynamicResource SkuaSurfaceBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="6" />
     </Style>
     
-    <Style Selector="Window.skua ListBoxItem">
+    <Style Selector="ListBoxItem">
         <Setter Property="Padding" Value="4,3" />
         <Setter Property="CornerRadius" Value="4" />
     </Style>
 
-    <Style Selector="Window.skua ListBoxItem:selected">
+    <Style Selector="ListBoxItem:selected">
         <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
     </Style>
     

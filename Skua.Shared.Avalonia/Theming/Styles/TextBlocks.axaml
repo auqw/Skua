@@ -8,11 +8,11 @@
     
     <!-- Default text foreground for shell content. Controls that intentionally render
          accent/scheme text should set Foreground explicitly where used. -->
-    <Style Selector="Window.skua TextBlock">
+    <Style Selector="TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
     </Style>
     
-    <Style Selector="Window.skua TextBlock.option-pill-suffix">
+    <Style Selector="TextBlock.option-pill-suffix">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="8,0,2,0" />
         <Setter Property="Foreground" Value="{DynamicResource SkuaMutedTextBrush}" />

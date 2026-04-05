@@ -169,7 +169,7 @@
         <Setter Property="Foreground" Value="{DynamicResource SkuaDangerForegroundBrush}" />
     </Style>
     
-    <Style Selector="Window.skua Button.option-pill-action">
+    <Style Selector="Button.option-pill-action">
         <Setter Property="Theme" Value="{x:Null}" />
         <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
         <Setter Property="BorderThickness" Value="0" />
@@ -180,33 +180,33 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
-    <Style Selector="Window.skua Button.option-pill-action /template/ Border#PART_RootBorder">
+    <Style Selector="Button.option-pill-action /template/ Border#PART_RootBorder">
         <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="0,16,16,0" />
     </Style>
 
-    <Style Selector="Window.skua Button.option-pill-action /template/ ContentPresenter">
+    <Style Selector="Button.option-pill-action /template/ ContentPresenter">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaTextBrush}" />
         <Setter Property="TextElement.FontWeight" Value="Normal" />
     </Style>
 
-    <Style Selector="Window.skua Button.option-pill-action-auto">
+    <Style Selector="Button.option-pill-action-auto">
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="MinWidth" Value="64" />
     </Style>
 
-    <Style Selector="Window.skua Button.option-pill-action:pointerover /template/ Border#PART_RootBorder">
+    <Style Selector="Button.option-pill-action:pointerover /template/ Border#PART_RootBorder">
         <Setter Property="Background" Value="{DynamicResource SkuaHoverBrush}" />
     </Style>
 
-    <Style Selector="Window.skua Button.option-pill-action:pressed /template/ Border#PART_RootBorder">
+    <Style Selector="Button.option-pill-action:pressed /template/ Border#PART_RootBorder">
         <Setter Property="Background" Value="{DynamicResource SkuaHoverPressedBrush}" />
     </Style>
 
-    <Style Selector="Window.skua Button.option-action-button">
+    <Style Selector="Button.option-action-button">
         <Setter Property="Theme" Value="{x:Null}" />
         <Setter Property="Height" Value="22" />
         <Setter Property="MinHeight" Value="22" />
@@ -223,11 +223,11 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
-    <Style Selector="Window.skua Button.option-action-button:pointerover">
+    <Style Selector="Button.option-action-button:pointerover">
         <Setter Property="Background" Value="{DynamicResource SkuaHoverBrush}" />
     </Style>
 
-    <Style Selector="Window.skua Button.option-action-button:pressed">
+    <Style Selector="Button.option-action-button:pressed">
         <Setter Property="Background" Value="{DynamicResource SkuaHoverPressedBrush}" />
     </Style>
 </Styles>
