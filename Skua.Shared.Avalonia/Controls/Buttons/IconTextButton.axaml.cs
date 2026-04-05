@@ -1,11 +1,18 @@
+using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Material.Icons;
 
 namespace Skua.Shared.Avalonia.Controls.Buttons;
 
-public class IconTextButton : Button
+public partial class IconTextButton : UserControl
 {
+    public static readonly StyledProperty<ICommand?> CommandProperty =
+        AvaloniaProperty.Register<IconTextButton, ICommand?>(nameof(Command));
+
+    public static readonly StyledProperty<object?> CommandParameterProperty =
+        AvaloniaProperty.Register<IconTextButton, object?>(nameof(CommandParameter));
+
     public static readonly StyledProperty<string?> TextProperty =
         AvaloniaProperty.Register<IconTextButton, string?>(nameof(Text));
 
@@ -20,6 +27,23 @@ public class IconTextButton : Button
 
     public static readonly StyledProperty<Thickness> ButtonPaddingProperty =
         AvaloniaProperty.Register<IconTextButton, Thickness>(nameof(ButtonPadding), new Thickness(7, 2));
+
+    public IconTextButton()
+    {
+        InitializeComponent();
+    }
+
+    public ICommand? Command
+    {
+        get => GetValue(CommandProperty);
+        set => SetValue(CommandProperty, value);
+    }
+
+    public object? CommandParameter
+    {
+        get => GetValue(CommandParameterProperty);
+        set => SetValue(CommandParameterProperty, value);
+    }
 
     public string? Text
     {
