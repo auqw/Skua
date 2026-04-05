@@ -6,6 +6,11 @@
         </Border>
     </Design.PreviewWith>
     
+    <Style Selector="Border.shell">
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    
     <Style Selector="Border.gap-bottom-8">
         <Setter Property="Margin" Value="0,0,0,8" />
     </Style>

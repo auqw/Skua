@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Avalonia.Layout;
+using Avalonia.Markup.Xaml.Converters;
+using Avalonia.Media;
 using Skua.Core.Interfaces;
 using Skua.Shared.Avalonia.Controls.Shell;
 using System;
@@ -107,11 +109,9 @@ public class WindowService : IWindowService
     {
         Border contentHost = new()
         {
-            Margin = new Thickness(4, 2, 4, 4),
-            Padding = new Thickness(3),
             Child = content
         };
-        contentHost.Classes.Add("card");
+        contentHost.Classes.Add("shell");
 
         Grid root = new();
         root.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
