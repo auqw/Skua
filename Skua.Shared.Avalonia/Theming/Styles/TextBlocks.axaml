@@ -11,6 +11,13 @@
     <Style Selector="Window.skua TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
     </Style>
+    
+    <Style Selector="Window.skua TextBlock.option-pill-suffix">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="8,0,2,0" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaMutedTextBrush}" />
+        <Setter Property="FontSize" Value="11" />
+    </Style>
 
     <Style Selector="TextBlock.section-title">
         <Setter Property="FontWeight" Value="SemiBold" />
@@ -19,5 +26,9 @@
     <Style Selector="TextBlock.hint">
         <Setter Property="Foreground" Value="{DynamicResource SkuaMutedTextBrush}" />
         <Setter Property="Opacity" Value="0.75" />
+    </Style>
+    
+    <Style Selector="TextBlock.titlebar-title">
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
     </Style>
 </Styles>
