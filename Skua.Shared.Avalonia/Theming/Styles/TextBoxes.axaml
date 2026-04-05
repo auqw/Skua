@@ -8,6 +8,14 @@
             <!-- Add Controls for Previewer Here -->
         </Border>
     </Design.PreviewWith>
+    
+    <Style Selector="TextBox.gap-left-8, NumericUpDown.gap-left-8">
+        <Setter Property="Margin" Value="8,0,0,0" />
+    </Style>
+
+    <Style Selector="TextBox.gap-right-8, NumericUpDown.gap-right-8">
+        <Setter Property="Margin" Value="0,0,8,0" />
+    </Style>
 
     <Style Selector="Window.skua TextBox">
         <Setter Property="Height" Value="24" />

@@ -21,4 +21,71 @@
     <Style Selector="Window.skua ListBoxItem:selected">
         <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
     </Style>
+    
+    <Style Selector="ListBox.embedded">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+    
+    <Style Selector="ListBox.gap-bottom-8">
+        <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+    
+    <!-- Manager shell top navigation (MainWindow ListBox tabs). -->
+    <Style Selector="ListBox.top-tabs">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="ListBox.top-tabs ListBoxItem">
+        <Setter Property="Background" Value="{DynamicResource SkuaNavChipBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1,1,1,2" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0,0,3,0" />
+        <Setter Property="CornerRadius" Value="5" />
+    </Style>
+
+    <Style Selector="ListBox.top-tabs ListBoxItem:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ListBox.top-tabs ListBoxItem:selected">
+        <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="BorderThickness" Value="1,1,1,2" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
+    </Style>
+
+    <Style Selector="ListBox.top-tabs ListBoxItem:selected /template/ Border">
+        <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ListBox.top-tabs ListBoxItem:pointerover /template/ Border">
+        <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ListBox.top-tabs ListBoxItem:selected /template/ ContentPresenter">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
+    </Style>
+
+    <Style Selector="ListBox.top-tabs ListBoxItem:selected TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    
+    <!-- Keep selected top-tabs visually stable while hovered. -->
+    <Style Selector="ListBox.top-tabs ListBoxItem:selected:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ListBox.top-tabs ListBoxItem:selected:pointerover /template/ Border">
+        <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
 </Styles>

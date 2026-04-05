@@ -31,4 +31,15 @@
     <Style Selector="TextBlock.titlebar-title">
         <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
     </Style>
+    
+    <Style Selector="TextBlock.tag-chip-text">
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
+    </Style>
+    
+    <Style Selector="TextBlock.top-tabs-label">
+        <Setter Property="Margin" Value="7,0" />
+        <Setter Property="Padding" Value="3,1" />
+    </Style>
 </Styles>

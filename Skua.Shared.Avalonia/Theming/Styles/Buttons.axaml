@@ -5,6 +5,60 @@
             <!-- Add Controls for Previewer Here -->
         </Border>
     </Design.PreviewWith>
+    
+    <Style Selector="Button.header-gap">
+        <Setter Property="Margin" Value="0,0,4,0" />
+    </Style>
+    
+    <Style Selector="Button.gap-left-8">
+        <Setter Property="Margin" Value="8,0,0,0" />
+    </Style>
+
+    <Style Selector="Button.gap-right-8">
+        <Setter Property="Margin" Value="0,0,8,0" />
+    </Style>
+    
+    <Style Selector="Button.danger-icon, Button.icon">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="Button.icon-28">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+    </Style>
+
+    <Style Selector="Button.icon-muted">
+        <Setter Property="Opacity" Value="0.65" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaMutedTextBrush}" />
+    </Style>
+
+    <Style Selector="Button.danger-icon TextBlock, Button.icon TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="Button.danger-icon /template/ Border, Button.icon /template/ Border">
+        <Setter Property="CornerRadius" Value="12" />
+    </Style>
+
+    <Style Selector="Button.danger-icon:pointerover, Button.icon:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SkuaHoverBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="Button.danger-icon:pressed, Button.icon:pressed">
+        <Setter Property="Background" Value="{DynamicResource SkuaHoverPressedBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentPressedBrush}" />
+    </Style>
 
     <Style Selector="Button.skua-button">
         <Setter Property="Height" Value="24" />
@@ -31,6 +85,22 @@
 
     <Style Selector="Button.skua-button:disabled">
         <Setter Property="Opacity" Value="0.65" />
+    </Style>
+    
+    <Style Selector="Button.topbar-action">
+        <Setter Property="Height" Value="25" />
+        <Setter Property="MinWidth" Value="34" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.topbar-action:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
     </Style>
     
     <Style Selector="Button.top-nav-item">
