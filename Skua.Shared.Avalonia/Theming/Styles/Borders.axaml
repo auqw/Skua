@@ -86,7 +86,7 @@
         <Setter Property="Background" Value="{DynamicResource SkuaAccentBrush}" />
     </Style>
     
-    <Style Selector="Window.skua Border.option-pill-container">
+    <!--<Style Selector="Border.option-pill-container">
         <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -95,5 +95,5 @@
         <Setter Property="MinHeight" Value="22" />
         <Setter Property="MaxHeight" Value="22" />
         <Setter Property="ClipToBounds" Value="True" />
-    </Style>
+    </Style>-->
 </Styles>
