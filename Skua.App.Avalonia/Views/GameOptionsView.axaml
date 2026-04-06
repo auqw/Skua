@@ -1,71 +1,61 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:sharedOptions="clr-namespace:Skua.Shared.Avalonia.Controls.Options;assembly=Skua.Shared.Avalonia"
-             x:Class="Skua.App.Avalonia.Views.GameOptionsView">
-  <Grid RowDefinitions="Auto,*,Auto,Auto"
-        Margin="8">
-    <DockPanel Grid.Row="0">
-      <TextBox x:Name="ColumnsBox"
-               Width="70"
-               Margin="3,6,6,6"
-               DockPanel.Dock="Right"
-               Text="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-               Watermark="Columns" />
-      <TextBox x:Name="SearchBox"
-               Margin="6,6,3,6"
-               Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-               Watermark="Search" />
-    </DockPanel>
+             x:Class="Skua.App.Avalonia.Views.GameOptionsView"
+             mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="450">
+  
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
+        <DockPanel Grid.Row="0">
+            <TextBox x:Name="ColumnsBox"
+                     Width="70"
+                     Margin="3,6,6,3"
+                     DockPanel.Dock="Right"
+                     Text="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Watermark="Columns" />
+            <TextBox x:Name="SearchBox"
+                     Margin="6,6,3,3"
+                     Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Watermark="Search" />
+        </DockPanel>
 
-    <ScrollViewer Grid.Row="1"
-                  HorizontalScrollBarVisibility="Disabled"
-                  VerticalScrollBarVisibility="Auto">
-      <ItemsControl ItemsSource="{Binding FilteredGameOptions}"
-                    VerticalAlignment="Top">
-        <ItemsControl.Styles>
-          <Style Selector="ContentPresenter">
-            <Setter Property="VerticalAlignment" Value="Top" />
-          </Style>
-        </ItemsControl.Styles>
-        <ItemsControl.ItemsPanel>
-          <ItemsPanelTemplate>
-            <UniformGrid Columns="{Binding Columns}"
-                         VerticalAlignment="Top" />
-          </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <sharedOptions:OptionItemControl VerticalAlignment="Top" />
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
-    </ScrollViewer>
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            
+            <ItemsControl ItemsSource="{Binding FilteredGameOptions}" VerticalAlignment="Top">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding Columns}"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <sharedOptions:OptionItemControl />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
 
-    <ComboBox Grid.Row="2"
-              Margin="6,3,3,3"
-              ItemsSource="{Binding ServersList}"
-              SelectedItem="{Binding SelectedServer}" />
+        <ComboBox Grid.Row="2"
+                  Margin="3,3,3,3"
+                  ItemsSource="{Binding ServersList}"
+                  SelectedItem="{Binding SelectedServer}" />
 
-    <Grid Grid.Row="3"
-          ColumnDefinitions="*,Auto"
-          Margin="0,0,0,0">
-      <DockPanel Grid.Column="0"
-                 Margin="6,3,3,6">
-        <Button Classes="skua-button"
-                Content="Default"
-                Command="{Binding ResetDefaultOptionsCommand}"
-                ToolTip.Tip="Reset to the application default values."
-                DockPanel.Dock="Right" />
-        <Button Classes="skua-button gap-right-8"
-                Content="Reset"
-                Command="{Binding ResetOptionsCommand}"
-                ToolTip.Tip="Resets to the user saved default values. If no user defaults are found, resets to the application default." />
-      </DockPanel>
-      <Button Grid.Column="1"
-              Classes="skua-button"
-              Margin="3,3,6,6"
-              Content="Save"
-              Command="{Binding SaveOptionsCommand}" />
+        <Grid Grid.Row="3" ColumnDefinitions="*, *, *" Margin="4">
+            <Button Grid.Column="0" Classes="skua-button gap-right-8"
+                    Content="Default"
+                    Command="{Binding ResetDefaultOptionsCommand}"
+                    ToolTip.Tip="Reset to the application default values."
+                    />
+            <Button Grid.Column="1" Classes="skua-button gap-right-8"
+                    Content="Reset"
+                    Command="{Binding ResetOptionsCommand}"
+                    ToolTip.Tip="Resets to the user saved default values. If no user defaults are found, resets to the application default." />
+            <Button Grid.Column="2" Classes="skua-button"
+                    Content="Save"
+                    Command="{Binding SaveOptionsCommand}" />
+        </Grid>
     </Grid>
-  </Grid>
 </UserControl>
