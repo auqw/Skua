@@ -25,7 +25,7 @@
         </Grid>
 
         <Grid Grid.Row="1" Margin="0,8,0,0">
-            
+            <!--TODO: Wire this up-->
             <TextBox Watermark="Search" />
             
         </Grid>

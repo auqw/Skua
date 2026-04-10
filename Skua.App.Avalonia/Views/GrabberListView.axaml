@@ -26,6 +26,7 @@
 
         <StackPanel Grid.Row="2" Margin="0,8,0,8" Orientation="Horizontal">
             
+            <!--TODO: Wire this up-->
             <Button Classes="skua-button" Content="Unselect All" />
             
             <ItemsControl ItemsSource="{Binding GrabberCommands}">

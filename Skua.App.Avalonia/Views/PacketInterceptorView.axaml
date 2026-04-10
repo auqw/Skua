@@ -39,6 +39,7 @@
             </Button>
         </Grid>
         
+        <!--TODO: Wire this up-->
         <TextBox Grid.Row="1" Watermark="Search packets" Margin="0,0,0,8" />
 
         <Grid Grid.Row="2"

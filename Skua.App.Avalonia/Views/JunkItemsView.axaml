@@ -8,6 +8,7 @@
             <CheckBox IsChecked="{Binding SkipSellWarning}" Content="Skip sell warning" />
         </StackPanel>
         
+        <!--TODO: Wire this up-->
         <TextBox Grid.Row="1"
                  Margin="0,8,0,8"
                  Watermark="Search (ID or name)"
