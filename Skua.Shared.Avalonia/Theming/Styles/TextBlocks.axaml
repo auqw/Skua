@@ -14,7 +14,6 @@
     
     <Style Selector="TextBlock.option-pill-suffix">
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="8,0,2,0" />
         <Setter Property="Foreground" Value="{DynamicResource SkuaMutedTextBrush}" />
         <Setter Property="FontSize" Value="11" />
     </Style>
@@ -40,7 +39,8 @@
     </Style>
     
     <Style Selector="TextBlock.top-tabs-label">
-        <Setter Property="Margin" Value="7,0" />
-        <Setter Property="Padding" Value="3,1" />
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="16,0" />
     </Style>
 </Styles>
