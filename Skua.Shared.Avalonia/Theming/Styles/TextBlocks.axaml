@@ -21,6 +21,7 @@
 
     <Style Selector="TextBlock.section-title">
         <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="16" />
     </Style>
 
     <Style Selector="TextBlock.hint">
