@@ -2,69 +2,76 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:models="clr-namespace:Skua.Core.Models.Servers;assembly=Skua.Core.Models"
              x:Class="Skua.App.Avalonia.Views.PacketInterceptorView">
-  <Grid Margin="8"
-        RowDefinitions="Auto,Auto,Auto,*">
-    <Grid Grid.Row="0"
-          ColumnDefinitions="*,Auto"
-          Margin="0,0,0,8">
-      <ComboBox Grid.Column="0"
-                ItemsSource="{Binding ServerList}"
-                SelectedItem="{Binding SelectedServer}">
-        <ComboBox.ItemTemplate>
-          <DataTemplate DataType="models:Server">
-            <TextBlock Text="{Binding Name}" />
-          </DataTemplate>
-        </ComboBox.ItemTemplate>
-      </ComboBox>
-      <Button Grid.Column="1"
-              Classes="skua-button"
-              Margin="8,0,0,0"
-              MinWidth="110"
-              Command="{Binding ConnectInterceptorCommand}">
-        <Button.Styles>
-          <Style Selector="Button">
-            <Setter Property="Content" Value="Connect" />
-          </Style>
-          <Style Selector="Button[Tag=true]">
-            <Setter Property="Content" Value="Disconnect" />
-          </Style>
-        </Button.Styles>
-        <Button.Tag>
-          <Binding Path="Running" />
-        </Button.Tag>
-      </Button>
+  
+    <Grid Margin="8" RowDefinitions="Auto,Auto,Auto,*">
+      
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+            <ComboBox Grid.Column="0"
+                      Height="32"
+                      ItemsSource="{Binding ServerList}"
+                      SelectedItem="{Binding SelectedServer}">
+                
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="models:Server">
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            
+            <Button Grid.Column="1"
+                    Classes="skua-button"
+                    Margin="8,0,0,0"
+                    MinWidth="110"
+                    Command="{Binding ConnectInterceptorCommand}">
+                
+                <Button.Styles>
+                    <Style Selector="Button">
+                      <Setter Property="Content" Value="Connect" />
+                    </Style>
+                    <Style Selector="Button[Tag=true]">
+                      <Setter Property="Content" Value="Disconnect" />
+                    </Style>
+                </Button.Styles>
+                
+                <Button.Tag>
+                    <Binding Path="Running" />
+                </Button.Tag>
+            </Button>
+        </Grid>
+        
+        <TextBox Grid.Row="1" Watermark="Search packets" Margin="0,0,0,8" />
+
+        <Grid Grid.Row="2"
+              ColumnDefinitions="Auto, *, Auto"
+              Margin="0,0,0,8">
+            <CheckBox Grid.Column="0"
+                      Content="Log Packets"
+                      IsChecked="{Binding IsLogging}" />
+            
+            <TextBlock Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Classes="hint"
+                       Text="Outbound = yellow, inbound = blue, blocked = red" />
+            
+            <Button Grid.Column="2"
+                    Classes="skua-button"
+                    Margin="8,0,0,0"
+                    Content="Clear"
+                    Command="{Binding ClearPacketsCommand}" />
+        </Grid>
+
+        <Border Grid.Row="3" Classes="list-frame">
+            <ListBox ItemsSource="{Binding Packets}"
+                     SelectionMode="Multiple"
+                     Classes="embedded">
+              
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Margin="6,4" Text="{Binding Packet}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
     </Grid>
-
-    <Grid Grid.Row="1"
-          ColumnDefinitions="Auto,Auto,*"
-          Margin="0,0,0,8">
-      <CheckBox Grid.Column="0"
-                Content="Log Packets"
-                IsChecked="{Binding IsLogging}" />
-      <Button Grid.Column="1"
-              Classes="skua-button"
-              Margin="8,0,0,0"
-              Content="Clear"
-              Command="{Binding ClearPacketsCommand}" />
-    </Grid>
-
-    <TextBlock Grid.Row="2"
-               Margin="0,0,0,8"
-               Classes="hint"
-               Text="Outbound = yellow, inbound = blue, blocked = red" />
-
-    <Border Grid.Row="3"
-            Classes="list-frame">
-        <ListBox ItemsSource="{Binding Packets}"
-               SelectionMode="Multiple"
-               Classes="embedded">
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <TextBlock Margin="6,4"
-                       Text="{Binding Packet}" />
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-    </Border>
-  </Grid>
 </UserControl>
