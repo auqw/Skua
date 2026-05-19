@@ -7,11 +7,8 @@
         
         <Grid Row="0" ColumnDefinitions="*, Auto, Auto, Auto" ColumnSpacing="8">
             <TextBox Grid.Column="0"
-                     Watermark="Search"
-                     Background="Transparent"
-                     CornerRadius="0"
-                     BorderThickness="0,0,0,2"
-                     BorderBrush="{DynamicResource SkuaSurfaceBrush}"/>
+                     Classes="bottom-line"
+                     Watermark="Search" />
     
             <Button Grid.Column="1"
                     Classes="skua-button"
@@ -25,7 +22,9 @@
             <Grid Column="3" ColumnDefinitions="*, *">
                 <CheckBox Grid.Column="0" />
         
-                <TextBox Grid.Column="1" Watermark="Private number"
+                <TextBox Grid.Column="1"
+                         Classes="bottom-line"
+                         Watermark="Private number"
                          MinWidth="100"/>
             </Grid>
         </Grid>
@@ -90,41 +89,29 @@
                        Classes="section-title"/>
             
             <TextBox Grid.Row="1"
+                     Classes="bottom-line"
                      Margin="8,0"
                      Watermark="Description"
-                     Text="{Binding Editor.Travel.DescriptionName}"
-                     Background="Transparent"
-                     CornerRadius="0"
-                     BorderThickness="0,0,0,2"
-                     BorderBrush="{DynamicResource SkuaSurfaceBrush}" />
+                     Text="{Binding Editor.Travel.DescriptionName}" />
             
             <TextBox Grid.Row="2"
+                     Classes="bottom-line"
                      Margin="8,0"
                      Watermark="Map"
-                     Text="{Binding Editor.Travel.MapName}" 
-                     Background="Transparent"
-                     CornerRadius="0"
-                     BorderThickness="0,0,0,2"
-                     BorderBrush="{DynamicResource SkuaSurfaceBrush}" />
+                     Text="{Binding Editor.Travel.MapName}" />
             
             <Grid Row="3" ColumnDefinitions="*, *" ColumnSpacing="8" RowSpacing="8">
                 <TextBox Grid.Column="0"
+                         Classes="bottom-line"
                          Margin="8,0,0,0"
                          Watermark="Cell"
-                         Text="{Binding Editor.Travel.Cell}" 
-                         Background="Transparent"
-                         CornerRadius="0"
-                         BorderThickness="0,0,0,2"
-                         BorderBrush="{DynamicResource SkuaSurfaceBrush}" />
+                         Text="{Binding Editor.Travel.Cell}" />
         
                 <TextBox Grid.Column="1"
+                         Classes="bottom-line"
                          Margin="0,0,8,0"
                          Watermark="Pad"
-                         Text="{Binding Editor.Travel.Pad}"
-                         Background="Transparent"
-                         CornerRadius="0"
-                         BorderThickness="0,0,0,2"
-                         BorderBrush="{DynamicResource SkuaSurfaceBrush}" />
+                         Text="{Binding Editor.Travel.Pad}" />
             </Grid>
             
             <Button Grid.Row="4"
