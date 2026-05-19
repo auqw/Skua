@@ -1,0 +1,83 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+    
+    <Style Selector="NumericUpDown.bottom-line">
+        <Setter Property="Height" Value="34" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0,0,0,2" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaSurfaceBrush}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="VerticalContentAlignment" Value="Bottom" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        ClipToBounds="False"> <!-- Ensure border doesn't clip content -->
+                    <Panel>
+                        <!-- Integrated Label (Watermark) -->
+                        <TextBlock Text="{TemplateBinding Tag}"
+                                   FontSize="10"
+                                   Foreground="{DynamicResource SkuaMutedTextBrush}"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="0,0,0,0"
+                                   IsHitTestVisible="False" />
+                        
+                        <ButtonSpinner Name="PART_Spinner"
+                                       Background="Transparent"
+                                       BorderThickness="0"
+                                       BorderBrush="Transparent"
+                                       Padding="0"
+                                       HorizontalContentAlignment="Stretch"
+                                       VerticalContentAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       AllowSpin="{TemplateBinding AllowSpin}"
+                                       ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
+                                       DataValidationErrors.Errors="{TemplateBinding (DataValidationErrors.Errors)}">
+                            <TextBox Name="PART_TextBox"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Padding="0"
+                                     Margin="0"
+                                     MinHeight="0"
+                                     ClipToBounds="False"
+                                     VerticalAlignment="Stretch"
+                                     VerticalContentAlignment="Bottom"
+                                     Foreground="{TemplateBinding Foreground}"
+                                     AcceptsReturn="False"
+                                     TextWrapping="NoWrap"
+                                     IsReadOnly="{TemplateBinding IsReadOnly}"
+                                     Watermark="{TemplateBinding Watermark}"/>
+                        </ButtonSpinner>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- Target internal TextPresenter to remove global offsets and ensure bottom alignment -->
+    <Style Selector="NumericUpDown.bottom-line /template/ TextBox">
+        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Foreground}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource SkuaSelectionBrush}" />
+        <Setter Property="ContextFlyout" Value="{x:Null}" />
+        <Style Selector="^ /template/ TextPresenter#PART_TextPresenter">
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
+    </Style>
+    
+</Styles>
