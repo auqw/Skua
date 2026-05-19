@@ -19,6 +19,7 @@
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Grids.axaml" />
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ListBoxes.axaml"/>
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Menus.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/NumericUpDown.axaml"/>
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ScrollViewers.axaml"/>
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/StackPanels.axaml" />
     <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/TabControls.axaml" />
