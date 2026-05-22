@@ -98,6 +98,7 @@
                 x:Name="ScriptsDataGrid"
                 AutoGenerateColumns="False"
                 EnableRowVirtualization="True"
+                VirtualizingPanel.ScrollUnit="Pixel"
                 HorizontalScrollBarVisibility="Disabled"
                 IsEnabled="{Binding ElementName=ScriptsDataGrid, Path=HasItems}"
                 IsReadOnly="True"

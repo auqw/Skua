@@ -9,17 +9,29 @@ namespace Skua.Core.ViewModels;
 
 public sealed partial class MainViewModel : ObservableObject
 {
-    [ObservableProperty]
-    private string _title = "Skua";
+    private readonly ISettingsService _settingsService = Ioc.Default.GetRequiredService<ISettingsService>();
+    private readonly IScriptPlayer _player = Ioc.Default.GetRequiredService<IScriptPlayer>();
+    private readonly IDispatcherService _dispatcherService = Ioc.Default.GetRequiredService<IDispatcherService>();
+    private readonly System.Timers.Timer _titleUpdateTimer = new(1000);
+    private string _lastUsername = string.Empty;
+
+    [ObservableProperty] private string _title = "Skua";
 
     public MainViewModel()
     {
-        _title = $"Skua - {Ioc.Default.GetRequiredService<ISettingsService>().Get("ApplicationVersion", "0.0.0.0")}";
+        UpdateTitle();
+        _titleUpdateTimer.Elapsed += (_, _) =>
+        {
+            if (_lastUsername == _player.Username) return;
+            _lastUsername = _player.Username;
+            _dispatcherService.Invoke(UpdateTitle);
+        };
+        _titleUpdateTimer.Start();
     }
 
+    public void UpdateTitle() =>
+        Title = $"Skua - {_settingsService.Get("ApplicationVersion", "0.0.0.0")}" + (!string.IsNullOrWhiteSpace(_player.Username) ? $" : {_player.Username}" : "");
+            
     [RelayCommand]
-    private void ShowMainWindow()
-    {
-        StrongReferenceMessenger.Default.Send<ShowMainWindowMessage>();
-    }
+    private void ShowMainWindow() => StrongReferenceMessenger.Default.Send<ShowMainWindowMessage>();
 }
