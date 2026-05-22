@@ -55,6 +55,10 @@
 
 **Full Changelog**: https://github.com/auqw/Skua/compare/1.4.2.0...1.4.3.0
 
+## What's Changed
+* fix enum options by @ArrowDev123 in https://github.com/auqw/Skua/pull/36
+* Give access to missing packets by @robmart in https://github.com/auqw/Skua/pull/37
+
 ---
 
 # Skua 1.4.2.0
