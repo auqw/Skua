@@ -1,19 +1,34 @@
-using Skua.Core.ViewModels;
+﻿using Skua.Core.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading.Tasks;
+using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Skua.WPF.Views;
 
-/// <summary>
-/// Interaction logic for ScriptRepoView.xaml
-/// </summary>
 public partial class ScriptRepoView : UserControl
 {
-    private ICollectionView? _collectionView;
+    private ScriptRepoViewModel? _vm;
+    private ICollectionView? _view;
+
+    private IList<ScriptInfoViewModel>? _items;
+
+    // =========================
+    // ZERO-ALLOCATION INDEX
+    // token -> scripts
+    // =========================
+    private readonly Dictionary<string, List<ScriptInfoViewModel>> _index = new(StringComparer.OrdinalIgnoreCase);
+
+    // active result cache (fast lookup, no allocations per filter)
+    private HashSet<ScriptInfoViewModel>? _activeSet;
+
+    private CancellationTokenSource? _searchCts;
 
     public ScriptRepoView()
     {
@@ -21,121 +36,222 @@ public partial class ScriptRepoView : UserControl
         DataContextChanged += OnDataContextChanged;
     }
 
+    // =========================================================
+    // INIT
+    // =========================================================
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (e.NewValue is ScriptRepoViewModel vm)
-        {
-            _collectionView = CollectionViewSource.GetDefaultView(vm.Scripts);
-        }
-    }
-
-    private bool Search(object obj)
-    {
-        bool flag = false;
-        string searchScript = SearchBox.Text.ToLower();
-        if (string.IsNullOrWhiteSpace(searchScript))
-            return true;
-
-        ScriptInfoViewModel? script = (ScriptInfoViewModel)obj;
-        if (script is null)
-            return false;
-
-        string scriptName = script.Info.Name.ToLower();
-        if (KMPSearch(scriptName, searchScript))
-            flag = true;
-
-        foreach (string tag in script.InfoTags)
-        {
-            if (KMPSearch(tag, searchScript))
-            {
-                flag = true;
-                break;
-            }
-        }
-
-        return flag;
-    }
-
-    private async void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (_collectionView is null)
+        if (e.NewValue is not ScriptRepoViewModel vm)
             return;
 
-        await Task.Run(async () =>
-        {
-            await Dispatcher.BeginInvoke(new Action(() =>
-            {
-                _collectionView.Filter = Search;
-                _collectionView.Refresh();
-            }));
-        });
+        _vm = vm;
+
+        // IMPORTANT: bind once, let WPF own updates
+        if (ScriptsDataGrid.ItemsSource != vm.Scripts)
+            ScriptsDataGrid.ItemsSource = vm.Scripts;
+
+        _items = vm.Scripts;
+
+        // IMPORTANT: single shared view instance
+        _view = CollectionViewSource.GetDefaultView(vm.Scripts);
+
+        // reset filter every time view is recreated
+        _view.Filter = null;
     }
 
-    private bool KMPSearch(string text, string pattern)
+    // =========================================================
+    // BUILD INVERTED INDEX (ONE TIME)
+    // =========================================================
+    private void BuildIndex(IList<ScriptInfoViewModel> scripts)
     {
-        int n = text.Length;
-        int m = pattern.Length;
-        int[] lps = new int[m];
-        int j = 0; // index for pattern[]
+        _index.Clear();
 
-        // Preprocess the pattern (calculate lps[] array)
-        ComputeLPSArray(pattern, m, lps);
-
-        int i = 0;  // index for text[]
-        while (i < n)
+        for (int i = 0; i < scripts.Count; i++)
         {
-            if (pattern[j] == text[i])
+            ScriptInfoViewModel item = scripts[i];
+
+            AddToIndex(item.Info?.Name, item);
+            AddToIndex(item.Info?.Description, item);
+            AddToIndex(item.ScriptPath, item);
+
+            if (item.InfoTags == null)
+                continue;
+
+            for (int j = 0; j < item.InfoTags.Count; j++)
+                AddToIndex(item.InfoTags[j], item);
+        }
+    }
+
+    private void AddToIndex(string? text, ScriptInfoViewModel item)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return;
+
+        ReadOnlySpan<char> span = text.AsSpan();
+
+        int start = 0;
+
+        for (int i = 0; i <= span.Length; i++)
+        {
+            if (i != span.Length &&
+                span[i] != ' ' && span[i] != '_' && span[i] != '-' &&
+                span[i] != '.' && span[i] != '/' && span[i] != '\\')
+                continue;
+
+            if (i > start)
             {
-                j++;
-                i++;
+                string token = span.Slice(start, i - start).ToString();
+
+                if (!_index.TryGetValue(token, out var list))
+                {
+                    list = new List<ScriptInfoViewModel>(4);
+                    _index[token] = list;
+                }
+
+                list.Add(item);
             }
 
-            if (j == m)
-                return true;
+            start = i + 1;
+        }
+    }
 
-            // mismatch after j matches
-            else if (i < n && pattern[j] != text[i])
+    // =========================================================
+    // SEARCH ENTRY (INSTANT, NO TASK.RUN)
+    // =========================================================
+    private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (_view is null || _items is null)
+            return;
+
+        _searchCts?.Cancel();
+        _searchCts = new CancellationTokenSource();
+        CancellationToken token = _searchCts.Token;
+
+        string query = SearchBox.Text ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            _activeSet = null;
+
+            _view.Filter = null;
+            _view.Refresh();
+            return;
+        }
+
+        ApplySearch(query, token);
+    }
+
+    // =========================================================
+    // SEARCH ENGINE (INDEX POWERED)
+    // =========================================================
+    private void ApplySearch(string query, CancellationToken token)
+    {
+        if (_view is null || _items is null)
+            return;
+
+        string[] tokens = query.Split(
+            new[] { ' ', '_', '-', '.', '/', '\\' },
+            StringSplitOptions.RemoveEmptyEntries);
+
+        if (tokens.Length == 0)
+        {
+            _activeSet = null;
+            _view.Filter = null;
+            _view.Refresh();
+            return;
+        }
+
+        HashSet<ScriptInfoViewModel>? result = null;
+
+        for (int i = 0; i < tokens.Length; i++)
+        {
+            if (token.IsCancellationRequested)
+                return;
+
+            string t = tokens[i];
+
+            if (_index.TryGetValue(t, out var list))
             {
-                // Do not match lps[0..lps[j-1]] characters,
-                // they will match anyway
-                if (j != 0)
-                    j = lps[j - 1];
+                if (result is null)
+                {
+                    result = new HashSet<ScriptInfoViewModel>(list);
+                }
                 else
-                    i++;
+                {
+                    result.IntersectWith(list);
+                }
+            }
+            else
+            {
+                // 🔥 fallback: partial scan instead of failing everything
+                result ??= new HashSet<ScriptInfoViewModel>();
+
+                for (int j = 0; j < _items.Count; j++)
+                {
+                    var item = _items[j];
+
+                    if (ItemContains(item, t))
+                        result.Add(item);
+                }
             }
         }
+
+        _activeSet = result ?? new HashSet<ScriptInfoViewModel>(_items);
+
+        _view.Filter = FilterPredicate;
+        _view.Refresh();
+    }
+
+    private static bool ItemContains(ScriptInfoViewModel item, string token)
+    {
+        if (item.Info?.Name?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+            return true;
+
+        if (item.Info?.Description?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+            return true;
+
+        if (item.ScriptPath?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+            return true;
+
+        if (item.InfoTags == null)
+            return false;
+
+        for (int i = 0; i < item.InfoTags.Count; i++)
+        {
+            if (item.InfoTags[i]?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        }
+
         return false;
     }
 
-    private void ComputeLPSArray(string pattern, int m, int[] lps)
+    private bool FilterPredicate(object item)
     {
-        int len = 0;
-        int i = 1;
-        lps[0] = 0; // lps[0] is always 0
+        if (_activeSet is null)
+            return true;
 
-        // the loop calculates lps[i] for i = 1 to m-1
-        while (i < m)
-        {
-            if (pattern[i] == pattern[len])
-            {
-                len++;
-                lps[i] = len;
-                i++;
-            }
-            else // (pat[i] != pat[len])
-            {
-                if (len != 0)
-                {
-                    len = lps[len - 1];
+        return item is ScriptInfoViewModel s && _activeSet.Contains(s);
+    }
 
-                    // Also, note that we do not increment i here
-                }
-                else  // if (len == 0)
-                {
-                    lps[i] = 0;
-                    i++;
-                }
-            }
-        }
+    // =========================================================
+    // RIGHT CLICK FIX
+    // =========================================================
+    private void ScriptsDataGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.OriginalSource is not DependencyObject dep)
+            return;
+
+        DependencyObject? current = dep;
+
+        while (current != null && current is not DataGridRow)
+            current = VisualTreeHelper.GetParent(current);
+
+        if (current is not DataGridRow row)
+            return;
+
+        if (!row.IsSelected)
+            row.IsSelected = true;
+
+        e.Handled = false;
     }
 }
