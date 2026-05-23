@@ -222,6 +222,50 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         }
     }
 
+    [RelayCommand]
+    private void MoveSelectedUp()
+    {
+        List<AccountItemViewModel> selectedAccounts = Accounts
+            .Where(account => account.UseCheck)
+            .ToList();
+
+        if (selectedAccounts.Count != 1)
+            return;
+
+        AccountItemViewModel selectedAccount = selectedAccounts[0];
+        int index = Accounts.IndexOf(selectedAccount);
+
+        if (index <= 0)
+            return;
+
+        Accounts.Move(index, index - 1);
+
+        _SaveAccounts();
+        ApplyTagFilter();
+    }
+
+    [RelayCommand]
+    private void MoveSelectedDown()
+    {
+        List<AccountItemViewModel> selectedAccounts = Accounts
+            .Where(account => account.UseCheck)
+            .ToList();
+
+        if (selectedAccounts.Count != 1)
+            return;
+
+        AccountItemViewModel selectedAccount = selectedAccounts[0];
+        int index = Accounts.IndexOf(selectedAccount);
+
+        if (index < 0 || index >= Accounts.Count - 1)
+            return;
+
+        Accounts.Move(index, index + 1);
+
+        _SaveAccounts();
+        ApplyTagFilter();
+    }
+
     private void _RemoveAccount(AccountItemViewModel account)
     {
         if (account.UseCheck)
