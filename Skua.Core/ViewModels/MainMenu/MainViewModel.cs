@@ -22,16 +22,24 @@ public sealed partial class MainViewModel : ObservableObject
         UpdateTitle();
         _titleUpdateTimer.Elapsed += (_, _) =>
         {
-            if (_lastUsername == _player.Username) return;
-            _lastUsername = _player.Username;
+            string username = _player.Username;
+
+            if (_lastUsername == username)
+                return;
+
             _dispatcherService.Invoke(UpdateTitle);
         };
         _titleUpdateTimer.Start();
     }
 
-    public void UpdateTitle() =>
-        Title = $"Skua - {_settingsService.Get("ApplicationVersion", "0.0.0.0")}" + (!string.IsNullOrWhiteSpace(_player.Username) ? $" : {_player.Username}" : "");
-            
+    public void UpdateTitle()
+    {
+        string username = _player.Username;
+        _lastUsername = username;
+
+        Title = $"Skua - {_settingsService.Get("ApplicationVersion", "0.0.0.0")}" + (!string.IsNullOrWhiteSpace(username)? $" : {username}": "");
+    }
+
     [RelayCommand]
     private void ShowMainWindow() => StrongReferenceMessenger.Default.Send<ShowMainWindowMessage>();
 }
