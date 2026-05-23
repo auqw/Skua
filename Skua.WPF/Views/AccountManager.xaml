@@ -218,6 +218,31 @@
                         </Button>
 
                         <Button
+                            Grid.Column="2"
+                            Height="28"
+                            Padding="6,4"
+                            Margin="0,0,12,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Command="{Binding DeselectAllCommand}"
+                            ToolTip="Unselect Selected">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedAccountQuant, Converter={StaticResource IntToBooleanConverter}}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="SelectOff" Width="12" Height="12" VerticalAlignment="Center" />
+                                <TextBlock Text="Unselect Selected" FontSize="11" Margin="4,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button
                             x:Name="ShowAddAccountButton"
                             Grid.Column="3"
                             Height="32"
