@@ -16,9 +16,12 @@ public sealed partial class MainViewModel : ObservableObject
     private string _lastUsername = string.Empty;
 
     [ObservableProperty] private string _title = "Skua";
+    [ObservableProperty] private bool _showUsernameInTitle;
 
     public MainViewModel()
     {
+        ShowUsernameInTitle = _settingsService.Get("ShowUsernameInTitle", false);
+
         UpdateTitle();
         _titleUpdateTimer.Elapsed += (_, _) =>
         {
@@ -32,12 +35,23 @@ public sealed partial class MainViewModel : ObservableObject
         _titleUpdateTimer.Start();
     }
 
+    partial void OnShowUsernameInTitleChanged(bool value)
+    {
+        _settingsService.Set("ShowUsernameInTitle", value);
+        UpdateTitle();
+    }
+
     public void UpdateTitle()
     {
         string username = _player.Username;
         _lastUsername = username;
 
-        Title = $"Skua - {_settingsService.Get("ApplicationVersion", "0.0.0.0")}" + (!string.IsNullOrWhiteSpace(username)? $" : {username}": "");
+        string title = $"Skua - {_settingsService.Get("ApplicationVersion", "0.0.0.0")}";
+
+        if (ShowUsernameInTitle && !string.IsNullOrWhiteSpace(username))
+            title += $" : {username}";
+
+        Title = title;
     }
 
     [RelayCommand]
