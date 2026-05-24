@@ -28,9 +28,9 @@
             DoubleClickCommand="{Binding ShowMainWindowCommand}"
             IconSource="SkuaIcon.ico"
             MenuActivation="RightClick"
-            ToolTipText="Skua"
+            ToolTipText="{Binding Title}"
             Visibility="Visible">
-        <tb:TaskbarIcon.ContextMenu>
+            <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Click="MenuItem_Click" Header="Toggle Bot" />
                     <MenuItem Click="Exit_Click" Header="Exit" />

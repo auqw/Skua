@@ -212,6 +212,9 @@ public class ClientSettings
     [JsonPropertyName("AutoUpdateJunkItems")]
     public bool AutoUpdateJunkItems { get; set; } = true;
 
+    [JsonPropertyName("ShowUsernameInTitle")]
+    public bool ShowUsernameInTitle { get; set; } = false;
+
     [JsonPropertyName("IgnoreGHAuth")]
     public bool IgnoreGHAuth { get; set; } = false;
 
