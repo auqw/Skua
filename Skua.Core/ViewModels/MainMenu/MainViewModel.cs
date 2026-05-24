@@ -32,13 +32,26 @@ public sealed partial class MainViewModel : ObservableObject
 
             _dispatcherService.Invoke(UpdateTitle);
         };
-        _titleUpdateTimer.Start();
+
+        if (ShowUsernameInTitle)
+            _titleUpdateTimer.Start();
     }
 
     partial void OnShowUsernameInTitleChanged(bool value)
     {
         _settingsService.Set("ShowUsernameInTitle", value);
-        UpdateTitle();
+
+        if (value)
+        {
+            UpdateTitle();
+            _titleUpdateTimer.Start();
+        }
+        else
+        {
+            _titleUpdateTimer.Stop();
+            _lastUsername = string.Empty;
+            UpdateTitle();
+        }
     }
 
     public void UpdateTitle()
