@@ -1,13 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vmas="clr-namespace:Skua.App.Avalonia.ViewModels.AdvancedSkills"
-             xmlns:conv="clr-namespace:Skua.App.Avalonia.Converters"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="Skua.App.Avalonia.Views.AdvancedSkillsView" >
-    
-    <UserControl.Resources>
-        <conv:InvertBooleanConverter x:Key="InvertBooleanConverter" />
-    </UserControl.Resources>
     
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
 
@@ -145,7 +140,7 @@
                                           VerticalAlignment="Center"
                                           VerticalContentAlignment="Center"
                                           Content="Use if available"
-                                          IsChecked="{Binding UseWaitModeBool, Converter={StaticResource InvertBooleanConverter}}" />
+                                          IsChecked="{Binding !UseWaitModeBool}" />
                             </Grid>
                         </Border>
                     </Grid>
@@ -261,7 +256,7 @@
                                             Command="{Binding AddAuraCheckCommand}" Margin="4,0,0,0"/>
                                 </Grid>
 
-                                <Grid Grid.Row="5" ColumnDefinitions="Auto,*,*,Auto" Margin="6" IsVisible="{Binding UseRules.MultiAuraBool, Converter={StaticResource InvertBooleanConverter}}">
+                                <Grid Grid.Row="5" ColumnDefinitions="Auto,*,*,Auto" Margin="6" IsVisible="{Binding !UseRules.MultiAuraBool}">
 
                                     <CheckBox Grid.Column="0"
                                               Classes="compare"
