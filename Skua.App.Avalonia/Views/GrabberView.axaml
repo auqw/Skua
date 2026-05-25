@@ -1,35 +1,36 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:views="clr-namespace:Skua.App.Avalonia.Views"
-             xmlns:vms="clr-namespace:Skua.App.Avalonia.ViewModels;assembly=Skua.Core"
              xmlns:grabber="clr-namespace:Skua.App.Avalonia.ViewModels.Grabber"
              x:Class="Skua.App.Avalonia.Views.GrabberView">
-  <UserControl.DataTemplates>
-    <DataTemplate DataType="grabber:GrabberListViewModel">
-      <views:GrabberListView />
-    </DataTemplate>
-  </UserControl.DataTemplates>
-
-  <DockPanel Margin="8">
-    <ListBox DockPanel.Dock="Top"
-             Classes="top-tabs gap-bottom-8"
-             ItemsSource="{Binding GrabberTabs}"
-             SelectedItem="{Binding SelectedTab}"
-             ScrollViewer.HorizontalScrollBarVisibility="Auto"
-             ScrollViewer.VerticalScrollBarVisibility="Disabled">
-      <ListBox.ItemsPanel>
-        <ItemsPanelTemplate>
-          <StackPanel Orientation="Horizontal" Spacing="2" />
-        </ItemsPanelTemplate>
-      </ListBox.ItemsPanel>
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <TextBlock Text="{Binding Title}"
-                     Classes="top-tabs-label" />
+    
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="grabber:GrabberListViewModel">
+            <views:GrabberListView/>
         </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
+    </UserControl.DataTemplates>
 
-    <ContentControl Content="{Binding SelectedTab}" />
-  </DockPanel>
+    <Grid RowDefinitions="Auto, *" Margin="8">
+        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Visible" Margin="0, 0, 0, 8">
+            <ListBox 
+                Classes="top-tabs-client gap-bottom-8"
+                ItemsSource="{Binding GrabberTabs}"
+                SelectedItem="{Binding SelectedTab}">
+            
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="2" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Title}" Classes="top-tabs-label" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+        
+        <ContentControl Grid.Row="1" Content="{Binding SelectedTab}" />
+    </Grid>
 </UserControl>

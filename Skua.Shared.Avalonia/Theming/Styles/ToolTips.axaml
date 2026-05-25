@@ -1,0 +1,17 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="ToolTip">
+        <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="8,5" />
+        <Setter Property="CornerRadius" Value="4" />
+    </Style>
+</Styles>

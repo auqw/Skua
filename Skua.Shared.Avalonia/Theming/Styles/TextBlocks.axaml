@@ -8,16 +8,39 @@
     
     <!-- Default text foreground for shell content. Controls that intentionally render
          accent/scheme text should set Foreground explicitly where used. -->
-    <Style Selector="Window.skua TextBlock">
+    <Style Selector="TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+    </Style>
+    
+    <Style Selector="TextBlock.option-pill-suffix">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaMutedTextBrush}" />
+        <Setter Property="FontSize" Value="11" />
     </Style>
 
     <Style Selector="TextBlock.section-title">
         <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="16" />
     </Style>
 
     <Style Selector="TextBlock.hint">
         <Setter Property="Foreground" Value="{DynamicResource SkuaMutedTextBrush}" />
         <Setter Property="Opacity" Value="0.75" />
+    </Style>
+    
+    <Style Selector="TextBlock.titlebar-title">
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+    
+    <Style Selector="TextBlock.tag-chip-text">
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentForegroundBrush}" />
+    </Style>
+    
+    <Style Selector="TextBlock.top-tabs-label">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="16,0" />
     </Style>
 </Styles>

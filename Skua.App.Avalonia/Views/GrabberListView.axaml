@@ -1,47 +1,53 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Skua.App.Avalonia.Views.GrabberListView">
-  <Grid RowDefinitions="Auto,Auto,*,Auto"
-        Margin="8">
-    <Grid Grid.Row="0"
-          ColumnDefinitions="Auto,*">
-      <Button Grid.Column="0"
-              Classes="skua-button"
-              Content="Grab"
-              Command="{Binding GrabCommand}" />
-      <TextBlock Grid.Column="1"
-                 Margin="8,0,0,0"
-                 VerticalAlignment="Center"
-                 Text="{Binding ProgressReportMessage}" />
+    <Grid RowDefinitions="Auto, *, Auto, Auto" >
+        
+        <TextBox Grid.Row="0"
+                 Watermark="Search"
+                 Text="{Binding SearchText}" />
+
+        <Grid Row="1" ColumnDefinitions="*, 5, *" Margin="0,8,0,0">
+            <Border Grid.Column="0" Classes="list-frame">
+                <ListBox x:Name="GrabbedItemsList"
+                         ItemsSource="{Binding GrabbedItems}"
+                         SelectionMode="Multiple"
+                         Classes="embedded" />
+            </Border>
+            
+            <GridSplitter Grid.Column="1"/>
+            
+            <Border Grid.Column="2" Classes="list-frame">
+                <!--TODO: Put the PropertyGrid UserControl here from Skua.WPF/PropertyGrid-->
+                <TextBlock Text="Placeholder for PropertyGrid UserControl..."/>
+            </Border>
+        </Grid>
+        
+
+        <StackPanel Grid.Row="2" Margin="0,8,0,8" Orientation="Horizontal">
+            
+            <!--TODO: Wire this up-->
+            <Button Classes="skua-button" Content="Unselect All" />
+            
+            <ItemsControl ItemsSource="{Binding GrabberCommands}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Classes="skua-button gap-left-8" Content="{Binding Content}"
+                                Click="GrabberTaskButton_Click" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </StackPanel>
+        
+        
+        <Button Grid.Row="3" Classes="skua-button" Content="Grab" Command="{Binding GrabCommand}" />
     </Grid>
-
-    <TextBox Grid.Row="1"
-             Margin="0,8,0,0"
-             Watermark="Filter"
-             Text="{Binding SearchText}" />
-
-    <Border Grid.Row="2"
-            Margin="0,8,0,0"
-            Classes="list-frame">
-      <ListBox x:Name="GrabbedItemsList"
-               ItemsSource="{Binding GrabbedItems}"
-               SelectionMode="Multiple"
-               Classes="embedded" />
-    </Border>
-
-    <ItemsControl Grid.Row="3"
-                  Margin="0,8,0,0"
-                  ItemsSource="{Binding GrabberCommands}">
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <Button Classes="skua-button"
-                  Margin="0,0,0,6"
-                  Content="{Binding Content}"
-                  Click="GrabberTaskButton_Click" />
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
-  </Grid>
 </UserControl>
 
 

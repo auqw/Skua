@@ -1,0 +1,191 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+    
+    <Style Selector="ToggleButton.header-gap">
+        <Setter Property="Margin" Value="0,0,4,0" />
+    </Style>
+    
+    <Style Selector="ToggleButton.gap-left-8">
+        <Setter Property="Margin" Value="8,0,0,0" />
+    </Style>
+
+    <Style Selector="ToggleButton.gap-right-8">
+        <Setter Property="Margin" Value="0,0,8,0" />
+    </Style>
+
+    <Style Selector="ToggleButton.app-toggle">
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Padding" Value="6,1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Background" Value="{DynamicResource SkuaSurfaceAltBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.app-toggle:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SkuaHoverBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.app-toggle:pressed">
+        <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.app-toggle:checked">
+        <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.app-toggle:checked:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.app-toggle:checked:pressed">
+        <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+    
+    <Style Selector="ToggleButton.app-toggle-compact">
+        <Setter Property="Height" Value="24" />
+        <Setter Property="MinWidth" Value="52" />
+    </Style>
+
+    <Style Selector="ToggleButton.app-toggle-filter">
+        <Setter Property="MinWidth" Value="56" />
+    </Style>
+    
+    <Style Selector="ToggleButton.topbar-action">
+        <Setter Property="Height" Value="25" />
+        <Setter Property="MinWidth" Value="50" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="ToggleButton.topbar-action:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.topbar-action:checked">
+        <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+    
+    <Style Selector="ToggleButton.top-nav-item">
+        <Setter Property="Theme" Value="{StaticResource MaterialFlatToggleButton}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="MinHeight" Value="25" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="MaxHeight" Value="25" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="FontSize" Value="15" />
+    </Style>
+    
+    <Style Selector="ToggleButton.top-nav-item:checked /template/ Border#PART_RootBorder">
+        <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+    </Style>
+    
+    <Style Selector="ToggleButton.top-nav-item:checked">
+        <Setter Property="Background" Value="{DynamicResource SkuaNavHoverBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+    
+    <!-- Option booleans use a filter-chip look (WPF parity): button-like unchecked/checked states. -->
+    <Style Selector="ToggleButton.option-chip">
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip /template/ Border#PART_RootBorder">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="16" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip /template/ ContentPresenter">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip /template/ Border#PART_HoverEffect">
+        <Setter Property="Opacity" Value="0" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SkuaHoverBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip:pressed">
+        <Setter Property="Background" Value="{DynamicResource SkuaHoverPressedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentPressedBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip:checked">
+        <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip:pointerover /template/ Border#PART_RootBorder">
+        <Setter Property="Background" Value="{DynamicResource SkuaHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip:pressed /template/ Border#PART_RootBorder">
+        <Setter Property="Background" Value="{DynamicResource SkuaHoverPressedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentPressedBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip:checked /template/ Border#PART_RootBorder">
+        <Setter Property="Background" Value="{DynamicResource SkuaSelectionBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip:checked /template/ ContentPresenter">
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip:checked:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SkuaHoverPressedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip:checked:pressed">
+        <Setter Property="Background" Value="{DynamicResource SkuaHoverPressedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SkuaAccentPressedBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaAccentBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.option-chip:disabled">
+        <Setter Property="Opacity" Value="0.6" />
+    </Style>
+</Styles>

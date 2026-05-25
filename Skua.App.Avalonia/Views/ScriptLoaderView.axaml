@@ -1,47 +1,47 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Skua.App.Avalonia.Views.ScriptLoaderView">
-  <Grid RowDefinitions="Auto,Auto,*,Auto"
-        Margin="8">
-    <StackPanel Grid.Row="0"
-                Spacing="3"
-                HorizontalAlignment="Center">
-      <TextBlock HorizontalAlignment="Center"
-                 Classes="section-title"
-                 ToolTip.Tip="{Binding ScriptErrorToolTip}"
-                 Text="{Binding ScriptStatus, StringFormat='Status: {0}', TargetNullValue='Status: '}" />
-      <TextBlock HorizontalAlignment="Center"
-                 Text="{Binding LoadedScript, TargetNullValue='No script loaded'}" />
-    </StackPanel>
-    <Grid Grid.Row="1"
-          Margin="0,8,0,8"
-          RowDefinitions="Auto,Auto,Auto,Auto"
-          ColumnDefinitions="*,*">
-      <Button Grid.Row="0" Grid.Column="0" Classes="skua-button" Margin="0,0,4,4" Content="Load Script" Command="{Binding LoadScriptCommand}" />
-      <Button Grid.Row="0" Grid.Column="1" Classes="skua-button" Margin="4,0,0,4" Content="Open VSCode" Command="{Binding OpenVSCodeCommand}" />
-      <Button Grid.Row="1" Grid.Column="0" Classes="skua-button" Margin="0,4,4,4" Content="Edit Script" Command="{Binding EditScriptCommand}" />
-      <Button Grid.Row="1" Grid.Column="1" Classes="skua-button" Margin="4,4,0,4" Content="Search Scripts" Command="{Binding OpenScriptRepoCommand}" />
-      <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Classes="skua-button" Margin="0,4,0,4" Content="Edit Script Options" Command="{Binding EditScriptConfigCommand}" IsEnabled="{Binding ToggleScriptEnabled}" />
-      <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Classes="skua-button" Margin="0,4,0,0" Command="{Binding ToggleScriptCommand}" IsEnabled="{Binding ToggleScriptEnabled}">
-        <Button.Styles>
-          <Style Selector="Button">
-            <Setter Property="Content" Value="Start Script" />
-          </Style>
-          <Style Selector="Button[Tag=true]">
-            <Setter Property="Content" Value="Stop Script" />
-          </Style>
-        </Button.Styles>
-        <Button.Tag>
-          <Binding Path="ScriptManager.ScriptRunning" />
-        </Button.Tag>
-      </Button>
+  
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="8">
+        
+        <StackPanel Grid.Row="0" Spacing="3" HorizontalAlignment="Center" Margin="6">
+            <TextBlock HorizontalAlignment="Center"
+                       Classes="section-title"
+                       ToolTip.Tip="{Binding ScriptErrorToolTip}"
+                       Text="{Binding ScriptStatus, StringFormat='Status: {0}', TargetNullValue='Status: '}" />
+        </StackPanel>
+        
+        <Grid Grid.Row="1"
+              Margin="0,8,0,8"
+              RowDefinitions="Auto,Auto,Auto,Auto"
+              ColumnDefinitions="*,*">
+            
+            <Button Grid.Row="0" Grid.Column="0" Classes="skua-button" Margin="0,0,4,4" Content="Load Script" Command="{Binding LoadScriptCommand}" />
+            <Button Grid.Row="0" Grid.Column="1" Classes="skua-button" Margin="4,0,0,4" Content="Open VSCode" Command="{Binding OpenVSCodeCommand}" />
+            <Button Grid.Row="1" Grid.Column="0" Classes="skua-button" Margin="0,4,4,4" Content="Edit Script" Command="{Binding EditScriptCommand}" />
+            <Button Grid.Row="1" Grid.Column="1" Classes="skua-button" Margin="4,4,0,4" Content="Search Scripts" Command="{Binding OpenScriptRepoCommand}" />
+            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Classes="skua-button" Margin="0,4,0,4" Content="Edit Script Options" Command="{Binding EditScriptConfigCommand}" IsEnabled="{Binding ToggleScriptEnabled}" />
+            <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Classes="skua-button" Margin="0,4,0,0" Command="{Binding ToggleScriptCommand}" IsEnabled="{Binding ToggleScriptEnabled}">
+                <Button.Styles>
+                    <Style Selector="Button">
+                        <Setter Property="Content" Value="Start Script" />
+                    </Style>
+                    <Style Selector="Button[Tag=true]">
+                        <Setter Property="Content" Value="Stop Script" />
+                    </Style>
+                </Button.Styles>
+                <Button.Tag>
+                    <Binding Path="ScriptManager.ScriptRunning" />
+                </Button.Tag>
+            </Button>
+        </Grid>
+        
+        <ContentControl Grid.Row="2" Content="{Binding ScriptLogs}" />
+        
+        <Button Grid.Row="3"
+                Classes="skua-button"
+                Margin="0,8,0,0"
+                Content="Report Issues to @Tato2/@bogalj"
+                Command="{Binding OpenBrowserFormCommand}" />
     </Grid>
-    <ContentControl Grid.Row="2"
-                    Content="{Binding ScriptLogs}" />
-    <Button Grid.Row="3"
-            Classes="skua-button"
-            Margin="0,8,0,0"
-            Content="Report Issues to @Tato2/@bogalj"
-            Command="{Binding OpenBrowserFormCommand}" />
-  </Grid>
 </UserControl>

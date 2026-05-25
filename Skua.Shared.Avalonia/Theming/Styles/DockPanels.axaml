@@ -6,7 +6,7 @@
         </Border>
     </Design.PreviewWith>
 
-    <Style Selector="ScrollViewer">
-        <Setter Property="Background" Value="Transparent" />
+    <Style Selector="DockPanel.header-row">
+        <Setter Property="Margin" Value="0,0,0,3" />
     </Style>
 </Styles>

@@ -1,119 +1,150 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Skua.App.Avalonia.Views.RuntimeHelpersView">
-  <TabControl Margin="8">
-    <TabItem Header="Drops">
-      <Grid RowDefinitions="Auto,Auto,*,Auto">
-        <Grid Grid.Row="0"
-              DataContext="{Binding ToPickupDropsViewModel}"
-              ColumnDefinitions="Auto,Auto,*">
-          <Button Grid.Column="0"
-                  Classes="skua-button"
-                  Content="Toggle"
-                  Command="{Binding ToggleDropsCommand}" />
-          <Button Grid.Column="1"
-                  Classes="skua-button gap-left-8"
-                  Content="Notify"
-                  Command="{Binding OpenNotifyDropCommand}" />
+    
+    <Grid Margin="8" ColumnDefinitions="*,*" ColumnSpacing="8">
+        
+        <!--Left side-->
+        <Grid Grid.Column="0" RowDefinitions="*, Auto, Auto, Auto" RowSpacing="8"
+              DataContext="{Binding ToPickupDropsViewModel}">
+            
+            <Border Grid.Row="0" Classes="list-frame">
+                    
+                <ListBox x:Name="DropList"
+                         ItemsSource="{Binding ToPickup}"
+                         SelectionMode="Multiple"
+                         Classes="embedded" />
+            </Border>
+
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    
+                <TextBox Grid.Column="0"
+                         Watermark="Drop Name"
+                         Text="{Binding AddDropInput}" />
+                    
+                <Button Grid.Column="1"
+                        Classes="skua-button"
+                        Content="Add"
+                        Command="{Binding AddDropCommand}" />
+                    
+            </Grid>
+            
+            <Grid Grid.Row="2" ColumnDefinitions="*, Auto, Auto" ColumnSpacing="8">
+                
+                <TextBox Grid.Column="0"
+                         Watermark="Interval"
+                         Text="{Binding Drops.Interval, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                <CheckBox Grid.Column="1"
+                          Content="Reject Else"
+                          IsChecked="{Binding Drops.RejectElse}" />
+                
+                <CheckBox Grid.Column="2"
+                          Content="Accept AC Drops"
+                          IsChecked="{Binding Options.AcceptACDrops}" />
+                
+            </Grid>
+            
+            <Grid Grid.Row="3" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    
+                <ToggleButton Grid.Column="0"
+                              Margin="0"
+                              Classes="option-chip"
+                              Content="Pick Drops"
+                              Command="{Binding ToggleDropsCommand}" />
+                
+                <Button Grid.Column="1"
+                        Classes="skua-button"
+                        Content="Notify"
+                        Command="{Binding OpenNotifyDropCommand}" />
+            </Grid>
         </Grid>
+        
+        <!--Right side-->
+        <Grid Grid.Column="1" RowDefinitions="*, Auto" RowSpacing="8">
+            
+            <Grid Grid.Row="0" RowDefinitions="*,Auto" RowSpacing="8" DataContext="{Binding RegisteredQuestsViewModel}">
+                
+                <Border Grid.Row="0" Classes="list-frame">
+                    
+                    <ListBox x:Name="QuestRegList"
+                             ItemsSource="{Binding CurrentAutoQuests}"
+                             SelectionMode="Multiple"
+                             Classes="embedded" />
+                </Border>
+                
+                <Grid Grid.Row="1" ColumnDefinitions="*,120,Auto" ColumnSpacing="8">
+                        
+                    <TextBox Grid.Column="0"
+                             Watermark="Quest ID"
+                             Text="{Binding AddQuestInput}" />
+                    
+                    <TextBox Grid.Column="1"
+                             Watermark="Reward ID (optional)"
+                             Text="{Binding RewardIdInput}" />
+                    
+                    <Button Grid.Column="2"
+                            Classes="skua-button"
+                            Content="Add"
+                            Command="{Binding AddQuestCommand}" />
+                </Grid>
+            </Grid>
 
-        <Grid Grid.Row="1"
-              DataContext="{Binding ToPickupDropsViewModel}"
-              ColumnDefinitions="*,Auto,Auto"
-              Margin="0,8,0,0">
-          <TextBox Grid.Column="0"
-                   Watermark="Add items separated by |"
-                   Text="{Binding AddDropInput}" />
-          <Button Grid.Column="1"
-                  Classes="skua-button gap-left-8"
-                  Content="Add"
-                  Command="{Binding AddDropCommand}" />
-          <Button Grid.Column="2"
-                  Classes="skua-button gap-left-8"
-                  Content="Clear"
-                  Command="{Binding RemoveAllDropsCommand}" />
-        </Grid>
-
-        <Border Grid.Row="2"
-                DataContext="{Binding ToPickupDropsViewModel}"
-                Margin="0,8,0,0"
-                Classes="list-frame">
-          <ListBox x:Name="DropList"
-                   ItemsSource="{Binding ToPickup}"
-                   SelectionMode="Multiple"
-                   Classes="embedded" />
-        </Border>
-
-        <Button Grid.Row="3"
-                Classes="skua-button"
-                DataContext="{Binding ToPickupDropsViewModel}"
-                Margin="0,8,0,0"
-                HorizontalAlignment="Right"
-                Content="Remove Selected"
-                Click="RemoveSelectedDrops_Click" />
-      </Grid>
-    </TabItem>
-
-    <TabItem Header="Quests">
-      <Grid RowDefinitions="Auto,*,Auto">
-        <Grid Grid.Row="0"
-              DataContext="{Binding RegisteredQuestsViewModel}"
-              ColumnDefinitions="*,120,Auto"
-              Margin="0,0,0,8">
-          <TextBox Grid.Column="0"
-                   Watermark="Quest IDs (| , space)"
-                   Text="{Binding AddQuestInput}" />
-          <TextBox Grid.Column="1"
-                   Classes="gap-left-8"
-                   Watermark="Reward ID"
-                   Text="{Binding RewardIdInput}" />
-          <Button Grid.Column="2"
-                  Classes="skua-button gap-left-8"
-                  Content="Add"
-                  Command="{Binding AddQuestCommand}" />
-        </Grid>
-
-        <Border Grid.Row="1"
-                DataContext="{Binding RegisteredQuestsViewModel}"
-                Classes="list-frame">
-          <ListBox x:Name="QuestRegList"
-                   ItemsSource="{Binding CurrentAutoQuests}"
-                   SelectionMode="Multiple"
-                   Classes="embedded" />
-        </Border>
-
-        <Grid Grid.Row="2"
-              DataContext="{Binding RegisteredQuestsViewModel}"
-              ColumnDefinitions="Auto,Auto,*"
-              Margin="0,8,0,0">
-          <Button Grid.Column="0"
-                  Classes="skua-button"
-                  Content="Remove Selected"
-                  Click="RemoveSelectedQuests_Click" />
-          <Button Grid.Column="1"
-                  Classes="skua-button gap-left-8"
-                  Content="Clear All"
-                  Command="{Binding RemoveAllQuestsCommand}" />
-        </Grid>
-      </Grid>
-    </TabItem>
-
-    <TabItem Header="Boosts">
-      <StackPanel Margin="8"
-                  Spacing="8"
+            <Grid Grid.Row="1" RowDefinitions="Auto, Auto, Auto" RowSpacing="8"
                   DataContext="{Binding BoostsViewModel}">
-        <Button Classes="skua-button"
-                Content="Toggle Boosts"
-                Command="{Binding ToggleBoostsCommand}" />
-        <Button Classes="skua-button"
-                Content="Find Boost IDs (Inventory)"
-                Click="BoostIdsInventory_Click" />
-        <Button Classes="skua-button"
-                Content="Find Boost IDs (Include Bank)"
-                Click="BoostIdsBank_Click" />
-      </StackPanel>
-    </TabItem>
-  </TabControl>
+                
+                <Grid Grid.Row="0" ColumnDefinitions="*,*" ColumnSpacing="8">
+                    
+                    <Button Grid.Column="0"
+                            Classes="skua-button" Content="Search Boosts in Inventory"
+                            Command="{Binding SetBoostIDsCommand}"
+                            CommandParameter="{StaticResource FalseValue}"
+                            Click="BoostIdsInventory_Click" />
+                        
+                    <Button Grid.Column="1"
+                            Classes="skua-button" Content="Bank"
+                            Command="{Binding SetBoostIDsCommand}"
+                            CommandParameter="{StaticResource TrueValue}"
+                            Click="BoostIdsBank_Click" />
+                </Grid>
+                
+                <Grid Grid.Row="1" RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, *">
+                    
+                    <!--Class boost pair-->
+                    <CheckBox Grid.Row="0" Grid.Column="0" Content="Class Boost"
+                              IsChecked="{Binding Boosts.UseClassBoost}" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center"
+                               Text="{Binding Boosts.ClassBoostID}" />
+
+                    
+                    <!--Gold boost pair-->
+                    <CheckBox Grid.Row="1" Grid.Column="0" Content="Gold Boost"
+                              IsChecked="{Binding Boosts.UseGoldBoost}" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"
+                               Text="{Binding Boosts.GoldBoostID}" />
+
+                    
+                    <!--Exp boost pair-->
+                    <CheckBox Grid.Row="2" Grid.Column="0" Content="Experience Boost"
+                              IsChecked="{Binding Boosts.UseExperienceBoost}" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"
+                               Text="{Binding Boosts.ExperienceBoostID}" />
+
+                    
+                    <!--Rep boost pair-->
+                    <CheckBox Grid.Row="3" Grid.Column="0" Content="Reputation Boost"
+                              IsChecked="{Binding Boosts.UseReputationBoost}" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center"
+                               Text="{Binding Boosts.ReputationBoostID}" />
+                </Grid>
+                
+                <ToggleButton Grid.Row="2" 
+                              Margin="0"
+                              Classes="option-chip" Content="Use Boosts"
+                              Command="{Binding ToggleBoostsCommand}" />
+            </Grid>
+        </Grid>
+    </Grid>
 </UserControl>
 
 

@@ -13,8 +13,8 @@ namespace Skua.Shared.Avalonia.Controls.Options;
 
 public partial class OptionItemControl : UserControl
 {
-    private const double CompactOptionHeight = 22;
-    private const double CompactOptionFontSize = 11;
+    private const double CompactOptionHeight = 32;
+    private const double CompactOptionFontSize = 13;
 
     public OptionItemControl()
     {
@@ -117,7 +117,7 @@ public partial class OptionItemControl : UserControl
         ToggleButton toggleButton = CreateBoundToggleButton(vm);
         toggleButton.Classes.Add("option-chip");
         ToolTip.SetTip(toggleButton, vm.Content);
-        toggleButton.Margin = new Thickness(6, 1);
+        toggleButton.Margin = new Thickness(4);
         return toggleButton;
     }
 
@@ -199,7 +199,7 @@ public partial class OptionItemControl : UserControl
         button.Classes.Remove("skua-button");
         button.Classes.Add("option-action-button");
         button.Theme = null;
-        button.Margin = new Thickness(6, 2);
+        button.Margin = new Thickness(4);
         button.HorizontalAlignment = HorizontalAlignment.Stretch;
         return button;
     }
@@ -262,7 +262,7 @@ public partial class OptionItemControl : UserControl
         Border border = new()
         {
             Classes = { "option-pill-container" },
-            Margin = new Thickness(6, 1)
+            Margin = new Thickness(4)
         };
 
         string columns;

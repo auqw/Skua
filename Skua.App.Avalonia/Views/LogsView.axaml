@@ -1,25 +1,28 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Skua.App.Avalonia.Views.LogsView">
-  <DockPanel Margin="8">
-    <ListBox DockPanel.Dock="Top"
-             Classes="top-tabs gap-bottom-8"
-             ItemsSource="{Binding LogTabs}"
-             SelectedItem="{Binding SelectedTab}"
-             ScrollViewer.HorizontalScrollBarVisibility="Auto"
-             ScrollViewer.VerticalScrollBarVisibility="Disabled">
-      <ListBox.ItemsPanel>
-        <ItemsPanelTemplate>
-          <StackPanel Orientation="Horizontal" Spacing="2" />
-        </ItemsPanelTemplate>
-      </ListBox.ItemsPanel>
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <TextBlock Text="{Binding Title}"
-                     Classes="top-tabs-label" />
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
-    <ContentControl Content="{Binding SelectedTab}" />
-  </DockPanel>
+  
+    <DockPanel Margin="8">
+        <ListBox DockPanel.Dock="Top"
+                 Classes="top-tabs-client gap-bottom-8"
+                 ItemsSource="{Binding LogTabs}"
+                 SelectedItem="{Binding SelectedTab}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Title}" Classes="top-tabs-label" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+        <ContentControl Content="{Binding SelectedTab}" />
+    </DockPanel>
 </UserControl>

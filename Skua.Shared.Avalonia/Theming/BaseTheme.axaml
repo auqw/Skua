@@ -1,0 +1,38 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  
+    <Styles.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Skua.Shared.Avalonia/Theming/Colors.axaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+
+    <!-- This is the shared theme root. Token resources live above, and focused control
+        rules are split into includes below so style behavior is easier to audit by file. -->
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Borders.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Buttons.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/CheckBoxes.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ComboBoxes.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/DockPanels.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Grids.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ListBoxes.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/Menus.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/NumericUpDown.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ScrollViewers.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/StackPanels.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/TabControls.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/TextBlocks.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/TextBoxes.axaml" />
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ToggleButtons.axaml"/>
+    <StyleInclude Source="avares://Skua.Shared.Avalonia/Theming/Styles/ToolTips.axaml"/>
+
+    <!-- Root shell scope. Windows opt into shared theming with Classes="skua", then
+        descendants inherit these defaults and scoped control rules. -->
+    <Style Selector="Window.skua">
+        <Setter Property="Background" Value="{DynamicResource SkuaPageBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SkuaTextBrush}" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+</Styles>

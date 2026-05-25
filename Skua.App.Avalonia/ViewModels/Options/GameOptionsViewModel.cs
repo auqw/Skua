@@ -109,10 +109,12 @@ public class GameOptionsViewModel : BotControlViewModelBase
 
     private bool MatchesSearch(DisplayOptionItemViewModelBase option)
     {
-        if (string.IsNullOrWhiteSpace(SearchText))
+        string trimmedSearch = SearchText.Trim();
+
+        if (string.IsNullOrEmpty(trimmedSearch))
             return true;
 
-        return option.Content?.Contains(SearchText) == true;
+        return option.Content?.Contains(trimmedSearch, StringComparison.OrdinalIgnoreCase) == true;
     }
 
     private static IEnumerable<DisplayOptionItemViewModelBase> SortOptions(IEnumerable<DisplayOptionItemViewModelBase> options)

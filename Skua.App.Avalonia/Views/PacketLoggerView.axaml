@@ -1,80 +1,76 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Skua.App.Avalonia.Views.PacketLoggerView">
-  <Grid Margin="8"
-        ColumnDefinitions="2*,*"
-        RowDefinitions="Auto,*,Auto,Auto">
-    <TextBox Grid.Row="0"
-             Grid.Column="0"
-             Margin="0,0,8,8"
-             Watermark="Search packets"
-             Text="{Binding PacketSearchText}" />
-    <TextBox Grid.Row="0"
-             Grid.Column="1"
-             Margin="0,0,0,8"
-             Watermark="Search filters"
-             Text="{Binding FilterSearchText}" />
+    
+    <Grid Margin="8" ColumnDefinitions="2*,*" ColumnSpacing="8">
+        
+        <!--Left side-->
+        <Grid Grid.Column="0" RowDefinitions="Auto,*,Auto" RowSpacing="8">
+            <TextBox Grid.Row="0"
+                     Watermark="Search packets"
+                     Text="{Binding PacketSearchText}" />
 
-    <Border Grid.Row="1"
-            Grid.Column="0"
-            Margin="0,0,8,8"
-            Classes="list-frame">
-      <ListBox x:Name="PacketsListBox"
-               ItemsSource="{Binding FilteredPacketLogs}"
-               SelectionMode="Multiple"
-               Classes="embedded" />
-    </Border>
-
-    <Border Grid.Row="1"
-            Grid.Column="1"
-            Margin="0,0,0,8"
-            Classes="section-panel">
-      <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <ItemsControl ItemsSource="{Binding VisiblePacketFilters}">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <CheckBox Margin="8,4"
-                        Content="{Binding Content}"
-                        IsChecked="{Binding IsChecked}" />
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-      </ScrollViewer>
-    </Border>
-
-    <Grid Grid.Row="2"
-          Grid.Column="0"
-          ColumnDefinitions="*,*"
-          Margin="0,0,8,8">
-      <Button Grid.Column="0"
-              Classes="skua-button"
-              Margin="0,0,4,0"
-              Content="Unselect All Logs"
-              Click="UnselectAllLogs_Click" />
-      <Button Grid.Column="1"
-              Classes="skua-button"
-              Margin="4,0,0,0"
-              Content="Clear Filters"
-              Command="{Binding ClearFiltersCommand}" />
+            <Border Grid.Row="1" Classes="list-frame">
+                <ListBox x:Name="PacketsListBox"
+                         ItemsSource="{Binding FilteredPacketLogs}"
+                         SelectionMode="Multiple"
+                         Classes="embedded" />
+            </Border>
+        
+            <Grid Grid.Row="2" 
+                  RowDefinitions="*,*" RowSpacing="8" 
+                  ColumnDefinitions="*,*" ColumnSpacing="8">
+                
+                <Button Grid.Row="0" Grid.Column="0"
+                        Classes="skua-button"
+                        Content="Unselect All Logs"
+                        Click="UnselectAllLogs_Click" />
+        
+                <Button Grid.Row="0" Grid.Column="1"
+                        Classes="skua-button"
+                        Content="Clear Filters"
+                        Command="{Binding ClearFiltersCommand}" />
+            
+                <!--Lower row-->
+                <Button Grid.Row="1" Grid.Column="0"
+                        Classes="skua-button"
+                        Content="Clear Logs"
+                        Command="{Binding ClearPacketLogsCommand}" />
+                
+                <Button Grid.Row="1" Grid.Column="1"
+                        Classes="skua-button"
+                        Content="Save"
+                        Command="{Binding SavePacketLogsCommand}" />
+            </Grid>
+        </Grid>
+        
+        <!--Right side-->
+        <Grid Grid.Column="1" RowDefinitions="Auto,*,Auto" RowSpacing="8">
+            <TextBox Grid.Row="0"
+                     Watermark="Search filters"
+                     Text="{Binding FilterSearchText}" />
+        
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            
+                <ItemsControl ItemsSource="{Binding VisiblePacketFilters}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ToggleButton Content="{Binding Content}" IsChecked="{Binding IsChecked}"
+                                          Classes="option-chip"
+                                          Margin="0,0,10,8" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        
+            <ToggleButton Grid.Row="2"
+                          Classes="option-chip"
+                          Margin="0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Bottom"
+                          Content="Enabled"
+                          IsChecked="{Binding IsReceivingPackets}"  />
+        </Grid>
     </Grid>
-
-    <Grid Grid.Row="3"
-          Grid.ColumnSpan="2"
-          ColumnDefinitions="Auto,Auto,*"
-          Margin="0,0,0,0">
-      <Button Grid.Column="0"
-              Classes="skua-button"
-              Content="Clear Logs"
-              Command="{Binding ClearPacketLogsCommand}" />
-      <Button Grid.Column="1"
-              Classes="skua-button gap-left-8"
-              Content="Save"
-              Command="{Binding SavePacketLogsCommand}" />
-      <CheckBox Grid.Column="2"
-                HorizontalAlignment="Right"
-                Content="Enabled"
-                IsChecked="{Binding IsReceivingPackets}" />
-    </Grid>
-  </Grid>
 </UserControl>
 

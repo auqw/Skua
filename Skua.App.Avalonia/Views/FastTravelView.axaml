@@ -1,85 +1,133 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="Skua.App.Avalonia.Views.FastTravelView">
-  <Grid Margin="8"
-        RowDefinitions="Auto,Auto,*,Auto"
-        ColumnDefinitions="*,*,Auto">
-    <TextBox Grid.Row="0"
-             Grid.Column="0"
-             Margin="0,0,8,8"
-             Watermark="Description"
-             Text="{Binding Editor.Travel.DescriptionName}" />
-    <TextBox Grid.Row="0"
-             Grid.Column="1"
-             Margin="0,0,8,8"
-             Watermark="Map"
-             Text="{Binding Editor.Travel.MapName}" />
-    <Button Grid.Row="0"
-            Grid.Column="2"
-            Classes="skua-button"
-            Margin="0,0,0,8"
-            Content="Add"
-            Command="{Binding AddFastTravelCommand}" />
-
-    <TextBox Grid.Row="1"
-             Grid.Column="0"
-             Margin="0,0,8,8"
-             Watermark="Cell"
-             Text="{Binding Editor.Travel.Cell}" />
-    <TextBox Grid.Row="1"
-             Grid.Column="1"
-             Margin="0,0,8,8"
-             Watermark="Pad"
-             Text="{Binding Editor.Travel.Pad}" />
-    <Button Grid.Row="1"
-            Grid.Column="2"
-            Classes="skua-button"
-            Margin="0,0,0,8"
-            Content="Save"
-            Command="{Binding SaveFastTravelsCommand}" />
-
-    <Border Grid.Row="2"
-            Grid.ColumnSpan="3"
-            Margin="0,0,0,8"
-            Classes="list-frame">
-      <ListBox ItemsSource="{Binding FastTravelItems}"
-               SelectedIndex="{Binding SelectedIndex}"
-               Classes="embedded">
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <Grid Margin="8,6"
-                  ColumnDefinitions="*,Auto,Auto,Auto">
-              <TextBlock Grid.Column="0"
-                         VerticalAlignment="Center"
-                         Text="{Binding DescriptionName}" />
-              <Button Grid.Column="1"
-                      Classes="skua-button gap-left-8"
-                      Content="Go"
-                      Command="{Binding TravelCommand}"
-                      CommandParameter="{Binding}" />
-              <Button Grid.Column="2"
-                      Classes="skua-button gap-left-8"
-                      Content="Edit"
-                      Command="{Binding EditCommand}" />
-              <Button Grid.Column="3"
-                      Classes="skua-button gap-left-8"
-                      Content="Remove"
-                      Command="{Binding RemoveCommand}" />
+    
+    <Grid Margin="8" RowDefinitions="Auto, *, Auto" RowSpacing="8">
+        
+        <Grid Row="0" ColumnDefinitions="*, Auto, Auto, Auto" ColumnSpacing="8">
+            <TextBox Grid.Column="0"
+                     Classes="bottom-line"
+                     Watermark="Search" />
+    
+            <Button Grid.Column="1"
+                    Classes="skua-button"
+                    Content="Save"
+                    Command="{Binding SaveFastTravelsCommand}" />
+        
+            <Button Grid.Column="2" Classes="skua-button"
+                    Content="Clear"
+                    Command="{Binding ClearFastTravelsCommand}" />
+        
+            <Grid Column="3" ColumnDefinitions="*, *">
+                <CheckBox Grid.Column="0" />
+        
+                <TextBox Grid.Column="1"
+                         Classes="bottom-line"
+                         Watermark="Private number"
+                         MinWidth="100"/>
             </Grid>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-    </Border>
+        </Grid>
+    
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                
+            <ListBox ItemsSource="{Binding FastTravelItems}"
+                     SelectedItems="{Binding SelectedIndex}"
+                     Classes="embedded">
+    
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+    
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,0,0,0" ColumnDefinitions="*,Auto,Auto">
 
-    <StackPanel Grid.Row="3"
-                Grid.ColumnSpan="3"
-                Orientation="Horizontal"
-                Spacing="8">
-      <Button Classes="skua-button"
-              Content="Clear"
-              Command="{Binding ClearFastTravelsCommand}" />
-    </StackPanel>
-  </Grid>
+                            <Button Grid.Column="0"
+                                    Classes="skua-button"
+                                    MinWidth="184"
+                                    CornerRadius="4,0,0,4"
+                                    Content="{Binding DescriptionName}"
+                                    Command="{Binding TravelCommand}"
+                                    CommandParameter="{Binding}" />
+
+                            <Button Grid.Column="1"
+                                    
+                                    Content="{materialIcons:MaterialIconExt Kind=Pencil, IconSize=12}"
+                                    Command="{Binding EditCommand}"
+                                    Height="32"
+                                    Padding="10,2"
+                                    CornerRadius="0"
+                                    Background="Transparent"
+                                    BorderBrush="{DynamicResource SkuaAccentBrush}"
+                                    BorderThickness="1"
+                                    Foreground="{DynamicResource SkuaAccentBrush}" />
+
+                            <Button Grid.Column="2"
+                                    Content="{materialIcons:MaterialIconExt Kind=WindowClose, IconSize=12}"
+                                    Command="{Binding RemoveCommand}" 
+                                    Height="32"
+                                    Padding="10,2"
+                                    CornerRadius="0,4,4,0"
+                                    Background="Transparent"
+                                    BorderBrush="{DynamicResource SkuaAccentBrush}"
+                                    BorderThickness="1"
+                                    Foreground="{DynamicResource SkuaAccentBrush}" />
+                        
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+
+        <Grid Row="2" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto" Background="{DynamicResource SkuaSurfaceAltBrush}" ColumnSpacing="8" RowSpacing="8">
+            <TextBlock Grid.Row="0"
+                       Margin="8,8,0,0"
+                       Text="Add Fast Travel" 
+                       Classes="section-title"/>
+            
+            <TextBox Grid.Row="1"
+                     Classes="bottom-line"
+                     Margin="8,0"
+                     Watermark="Description"
+                     Text="{Binding Editor.Travel.DescriptionName}" />
+            
+            <TextBox Grid.Row="2"
+                     Classes="bottom-line"
+                     Margin="8,0"
+                     Watermark="Map"
+                     Text="{Binding Editor.Travel.MapName}" />
+            
+            <Grid Row="3" ColumnDefinitions="*, *" ColumnSpacing="8" RowSpacing="8">
+                <TextBox Grid.Column="0"
+                         Classes="bottom-line"
+                         Margin="8,0,0,0"
+                         Watermark="Cell"
+                         Text="{Binding Editor.Travel.Cell}" />
+        
+                <TextBox Grid.Column="1"
+                         Classes="bottom-line"
+                         Margin="0,0,8,0"
+                         Watermark="Pad"
+                         Text="{Binding Editor.Travel.Pad}" />
+            </Grid>
+            
+            <Button Grid.Row="4"
+                    Margin="8,0"
+                    Classes="skua-button"
+                    Content="Current"
+                    Command="{Binding GetCurrentCommand}" />
+            
+            <Button Grid.Row="5"
+                    Margin="8,0, 8, 8"
+                    Classes="skua-button"
+                    Content="Add"
+                    Command="{Binding AddFastTravelCommand}" />
+            
+        </Grid>
+    </Grid>
 </UserControl>
 
 
