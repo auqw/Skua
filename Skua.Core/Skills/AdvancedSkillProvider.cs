@@ -1,4 +1,5 @@
 using Skua.Core.Interfaces;
+using Skua.Core.Models.Monsters;
 
 namespace Skua.Core.Skills;
 
@@ -343,7 +344,9 @@ public class AdvancedSkillProvider : ISkillProvider
         if (!ResetOnTarget)
             return;
 
-        if (!_player.HasTarget)
+        string? currentTargetKey = _player.HasTarget ? GetCurrentTargetKey() : null;
+
+        if (currentTargetKey == null)
         {
             if (_lastTargetKey != null)
             {
@@ -353,8 +356,6 @@ public class AdvancedSkillProvider : ISkillProvider
 
             return;
         }
-
-        string currentTargetKey = GetCurrentTargetKey();
 
         if (_lastTargetKey == null)
         {
@@ -369,12 +370,14 @@ public class AdvancedSkillProvider : ISkillProvider
         }
     }
 
-    private string GetCurrentTargetKey() //temporary, will replace when i can find a better way to do this
+    private string? GetCurrentTargetKey()
     {
-        string targetName = _player.Target?.Name ?? string.Empty;
-        int targetHp = _player.Target?.HP ?? -1;
+        Monster? target = _player.Target;
 
-        return $"{targetName}:{targetHp}";
+        if (target == null)
+            return null;
+
+        return $"{target.MapID}:{target.ID}:{target.Cell}:{target.Name}";
     }
 
     public bool? ShouldUseSkill(int skillIndex, bool canUse)

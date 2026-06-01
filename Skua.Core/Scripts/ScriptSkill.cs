@@ -260,15 +260,15 @@ public partial class ScriptSkill : IScriptSkill
                 _provider?.OnPlayerDeath();
             }
 
+            // target reset if player has no target
+            _provider?.OnTargetReset();
+
             // if the player has target or bot attack without target option is on
             // then activate the skills
             if ((Options.AttackWithoutTarget && Player is { Loaded: true, Playing: true }) || Player is { HasTarget: true, Loaded: true, Playing: true })
             {
                 _Poll(token);
             }
-
-            // target reset if player has no target
-            _provider?.OnTargetReset();
 
             // wait for skill interval
             if (!token.IsCancellationRequested)
