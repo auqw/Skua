@@ -24,6 +24,7 @@ public class AdvancedSkillProvider : ISkillProvider
     private readonly UseRule[] _none = new[] { new UseRule(SkillRule.None) };
 
     public bool ResetOnTarget { get; set; } = false;
+    private string? _lastTargetKey;
     public int SkillCount => _currentCommand.SkillCount;
 
     public (int, int) GetNextSkill()
@@ -339,8 +340,41 @@ public class AdvancedSkillProvider : ISkillProvider
 
     public void OnTargetReset()
     {
-        if (ResetOnTarget && !_player.HasTarget)
+        if (!ResetOnTarget)
+            return;
+
+        if (!_player.HasTarget)
+        {
+            if (_lastTargetKey != null)
+            {
+                _lastTargetKey = null;
+                _currentCommand.Reset();
+            }
+
+            return;
+        }
+
+        string currentTargetKey = GetCurrentTargetKey();
+
+        if (_lastTargetKey == null)
+        {
+            _lastTargetKey = currentTargetKey;
+            return;
+        }
+
+        if (!string.Equals(_lastTargetKey, currentTargetKey, StringComparison.Ordinal))
+        {
+            _lastTargetKey = currentTargetKey;
             _currentCommand.Reset();
+        }
+    }
+
+    private string GetCurrentTargetKey() //temporary, will replace when i can find a better way to do this
+    {
+        string targetName = _player.Target?.Name ?? string.Empty;
+        int targetHp = _player.Target?.HP ?? -1;
+
+        return $"{targetName}:{targetHp}";
     }
 
     public bool? ShouldUseSkill(int skillIndex, bool canUse)
@@ -352,11 +386,13 @@ public class AdvancedSkillProvider : ISkillProvider
     {
         _combat.CancelAutoAttack();
         _combat.CancelTarget();
+        _lastTargetKey = null;
         _currentCommand.Reset();
     }
 
     public void OnPlayerDeath()
     {
+        _lastTargetKey = null;
         _currentCommand.Reset();
     }
 }

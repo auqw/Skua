@@ -72,17 +72,20 @@ public partial class ScriptSkill : IScriptSkill
     public bool TimerRunning { get; private set; } = false;
     public bool IsPaused { get; private set; } = false;
     public int SkillInterval { get; set; } = 100;
-
+    
     public int SkillTimeout { get; set; } = -1;
+
+    public bool ResetComboOnTargetChange { get; set; } = false;
 
     public SkillUseMode SkillUseMode { get; set; } = SkillUseMode.UseIfAvailable;
     private ManualResetEvent _pauseEvent = new(true);
+
 
     public void Start()
     {
         if (BaseProvider is null)
         {
-            BaseProvider = new AdvancedSkillProvider(Player, Self, Target, Combat, Flash);
+            BaseProvider = CreateAdvancedSkillProvider();
             BaseProvider.Load(genericSkills);
             _provider = BaseProvider;
         }
@@ -150,10 +153,10 @@ public partial class ScriptSkill : IScriptSkill
 
     public void LoadAdvanced(string className, bool autoEquip, ClassUseMode useMode = ClassUseMode.Base)
     {
-        OverrideProvider = new AdvancedSkillProvider(Player, Self, Target, Combat, Flash);
-
         if (className == "generic")
         {
+            ResetComboOnTargetChange = false;
+            OverrideProvider = CreateAdvancedSkillProvider();
             OverrideProvider.Load(genericSkills);
             SkillUseMode = SkillUseMode.UseIfAvailable;
             return;
@@ -171,13 +174,21 @@ public partial class ScriptSkill : IScriptSkill
             if (string.Equals(s.ClassName, className, StringComparison.CurrentCultureIgnoreCase))
                 skills.Add(s);
         }
+
         if (skills.Count == 0)
         {
+            ResetComboOnTargetChange = false;
+            OverrideProvider = CreateAdvancedSkillProvider();
             OverrideProvider.Load(genericSkills);
             SkillUseMode = SkillUseMode.UseIfAvailable;
             return;
         }
+
         AdvancedSkill skill = skills.Find(s => s.ClassUseMode == useMode) ?? skills.FirstOrDefault()!;
+
+        ResetComboOnTargetChange = skill.ResetComboOnTargetChange;
+
+        OverrideProvider = CreateAdvancedSkillProvider();
         OverrideProvider.Load(skill.Skills);
         SkillTimeout = skill.SkillTimeout;
         SkillUseMode = skill.SkillUseMode;
@@ -185,7 +196,8 @@ public partial class ScriptSkill : IScriptSkill
 
     public void LoadAdvanced(string skills, int skillTimeout = -1, SkillUseMode skillMode = SkillUseMode.UseIfAvailable)
     {
-        OverrideProvider = new AdvancedSkillProvider(Player, Self, Target, Combat, Flash);
+        ResetComboOnTargetChange = false;
+        OverrideProvider = CreateAdvancedSkillProvider();
         SkillTimeout = skillTimeout;
         SkillUseMode = skillMode;
         OverrideProvider.Load(skills);
@@ -207,14 +219,18 @@ public partial class ScriptSkill : IScriptSkill
                     Inventory.EquipItem(className);
                     Wait.ForItemEquip(className);
                 }
-                OverrideProvider = new AdvancedSkillProvider(Player, Self, Target, Combat, Flash);
+
+                ResetComboOnTargetChange = skill.ResetComboOnTargetChange;
+
+                OverrideProvider = CreateAdvancedSkillProvider();
                 OverrideProvider.Load(skill.Skills);
                 SkillTimeout = skill.SkillTimeout;
                 SkillUseMode = skill.SkillUseMode;
             }
             else
             {
-                OverrideProvider = new AdvancedSkillProvider(Player, Self, Target, Combat, Flash);
+                ResetComboOnTargetChange = false;
+                OverrideProvider = CreateAdvancedSkillProvider();
                 OverrideProvider.Load(genericSkills);
                 SkillUseMode = SkillUseMode.UseIfAvailable;
             }
@@ -350,4 +366,14 @@ public partial class ScriptSkill : IScriptSkill
         if (message.Faded)
             recipient._counterAttack.Set();
     }
+    private AdvancedSkillProvider CreateAdvancedSkillProvider()
+    {
+        return new AdvancedSkillProvider(Player, Self, Target, Combat, Flash)
+        {
+            ResetOnTarget = ResetComboOnTargetChange
+        };
+    }
+
 }
+
+

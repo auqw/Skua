@@ -60,6 +60,10 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
                 <CheckBox
                     Grid.Column="0"
                     Margin="3"
@@ -81,6 +85,20 @@
                     Content="Use if Available"
                     IsChecked="{Binding UseWaitModeBool, Converter={StaticResource InvertBooleanConverter}}"
                     ToolTip="Whenever a skill is available it will be used, if it is not then it will be skipped" />
+                <CheckBox
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="3"
+                    HorizontalAlignment="Stretch"
+                    materialDesign:CheckBoxAssist.CheckBoxSize="25"
+                    Content="Reset on Target Change"
+                    IsChecked="{Binding ResetComboOnTargetChange}">
+                    <CheckBox.ToolTip>
+                        <TextBlock>
+                Restarts the advanced skill combo from the beginning when the current target dies, disappears, or changes.<LineBreak />
+                Useful for classes whose combo depends on autoattack timing.</TextBlock>
+                    </CheckBox.ToolTip>
+                </CheckBox>
             </Grid>
         </GroupBox>
         <!--#endregion-->
