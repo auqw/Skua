@@ -263,7 +263,8 @@ public partial class ScriptSkill : IScriptSkill
             }
 
             // target reset if player has no target
-            _provider?.OnTargetReset();
+            if (_provider?.OnTargetReset() == true)
+                continue;
 
             // if the player has target or bot attack without target option is on
             // then activate the skills
@@ -359,7 +360,9 @@ public partial class ScriptSkill : IScriptSkill
                 case SkillUseMode.WaitForCooldown:
                     if (Options.AttackWithoutTarget)
                     {
-                        Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Using skill {skill} because AttackWithoutTarget is enabled.");
+                        if (ResetComboOnTargetChange)
+                            Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Using skill {skill} because AttackWithoutTarget is enabled.");
+
                         this.UseSkill(skill);
                         break;
                     }
@@ -370,7 +373,26 @@ public partial class ScriptSkill : IScriptSkill
                     if (ResetComboOnTargetChange)
                         Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Waiting for skill {skill}. Timeout: {SkillTimeout}, Interval: {SkillInterval}, hasTarget: {Player.HasTarget}");
 
-                    bool canUseAfterWait = Wait.ForTrue(() => CanUseSkill(skill), null, SkillTimeout, SkillInterval);
+                    bool targetReset = false;
+
+                    bool canUseAfterWait = Wait.ForTrue(() =>
+                    {
+                        if (_provider?.OnTargetReset() == true)
+                        {
+                            targetReset = true;
+                            return true;
+                        }
+
+                        return CanUseSkill(skill);
+                    }, null, SkillTimeout, SkillInterval);
+
+                    if (targetReset)
+                    {
+                        if (ResetComboOnTargetChange)
+                            Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Aborted wait for skill {skill} because target reset.");
+
+                        return;
+                    }
 
                     if (ResetComboOnTargetChange)
                         Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Finished waiting for skill {skill}. CanUse: {canUseAfterWait}, stopAttacking: {Combat.StopAttacking}, hasTarget: {Player.HasTarget}");

@@ -36,7 +36,7 @@ public interface ISkillProvider
     /// <summary>
     /// This method is called when the target is reset/changed.
     /// </summary>
-    void OnTargetReset();
+    bool OnTargetReset();
 
     /// <summary>
     /// This method is called when the player dies.

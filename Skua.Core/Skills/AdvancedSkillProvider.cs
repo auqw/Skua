@@ -341,10 +341,10 @@ public class AdvancedSkillProvider : ISkillProvider
     {
     }
 
-    public void OnTargetReset()
+    public bool OnTargetReset()
     {
         if (!ResetOnTarget)
-            return;
+            return false;
 
         string? currentTargetKey = _player.HasTarget ? GetCurrentTargetKey() : null;
 
@@ -355,16 +355,17 @@ public class AdvancedSkillProvider : ISkillProvider
                 Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [AdvSkillProvider] Target lost. Last target was [{_lastTargetKey}]. Resetting combo.");
                 _lastTargetKey = null;
                 _currentCommand.Reset();
+                return true;
             }
 
-            return;
+            return false;
         }
 
         if (_lastTargetKey == null)
         {
             _lastTargetKey = currentTargetKey;
             Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [AdvSkillProvider] Initial target set to [{currentTargetKey}].");
-            return;
+            return false;
         }
 
         if (!string.Equals(_lastTargetKey, currentTargetKey, StringComparison.Ordinal))
@@ -372,7 +373,10 @@ public class AdvancedSkillProvider : ISkillProvider
             Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [AdvSkillProvider] Target changed from [{_lastTargetKey}] to [{currentTargetKey}]. Resetting combo.");
             _lastTargetKey = currentTargetKey;
             _currentCommand.Reset();
+            return true;
         }
+
+        return false;
     }
 
     private string? GetCurrentTargetKey()
