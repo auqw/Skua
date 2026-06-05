@@ -1,8 +1,6 @@
 using Skua.Core.Interfaces;
 using Skua.Core.Models.Monsters;
 
-using System.Diagnostics;
-
 namespace Skua.Core.Skills;
 
 public class AdvancedSkillProvider : ISkillProvider
@@ -352,7 +350,6 @@ public class AdvancedSkillProvider : ISkillProvider
         {
             if (_lastTargetKey != null)
             {
-                Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [AdvSkillProvider] Target lost. Last target was [{_lastTargetKey}]. Resetting combo.");
                 _lastTargetKey = null;
                 _currentCommand.Reset();
                 return true;
@@ -364,13 +361,11 @@ public class AdvancedSkillProvider : ISkillProvider
         if (_lastTargetKey == null)
         {
             _lastTargetKey = currentTargetKey;
-            Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [AdvSkillProvider] Initial target set to [{currentTargetKey}].");
             return false;
         }
 
         if (!string.Equals(_lastTargetKey, currentTargetKey, StringComparison.Ordinal))
         {
-            Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [AdvSkillProvider] Target changed from [{_lastTargetKey}] to [{currentTargetKey}]. Resetting combo.");
             _lastTargetKey = currentTargetKey;
             _currentCommand.Reset();
             return true;

@@ -4,8 +4,6 @@ using Skua.Core.Messaging;
 using Skua.Core.Models.Skills;
 using Skua.Core.Skills;
 
-using System.Diagnostics;
-
 namespace Skua.Core.Scripts;
 
 public partial class ScriptSkill : IScriptSkill
@@ -315,9 +313,6 @@ public partial class ScriptSkill : IScriptSkill
         if (index == -1 || skillS == -1)
             return;
 
-        if (ResetComboOnTargetChange)
-            Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Next combo index: {index}, skill: {skillS}, mode: {SkillUseMode}, hasTarget: {Player.HasTarget}");
-
         switch (_provider?.ShouldUseSkill(index, CanUseSkill(skillS)))
         {
             case true:
@@ -360,18 +355,12 @@ public partial class ScriptSkill : IScriptSkill
                 case SkillUseMode.WaitForCooldown:
                     if (Options.AttackWithoutTarget)
                     {
-                        if (ResetComboOnTargetChange)
-                            Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Using skill {skill} because AttackWithoutTarget is enabled.");
-
                         this.UseSkill(skill);
                         break;
                     }
 
                     if (skill == -1)
                         break;
-
-                    if (ResetComboOnTargetChange)
-                        Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Waiting for skill {skill}. Timeout: {SkillTimeout}, Interval: {SkillInterval}, hasTarget: {Player.HasTarget}");
 
                     bool targetReset = false;
 
@@ -387,27 +376,10 @@ public partial class ScriptSkill : IScriptSkill
                     }, null, SkillTimeout, SkillInterval);
 
                     if (targetReset)
-                    {
-                        if (ResetComboOnTargetChange)
-                            Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Aborted wait for skill {skill} because target reset.");
-
                         return;
-                    }
-
-                    if (ResetComboOnTargetChange)
-                        Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Finished waiting for skill {skill}. CanUse: {canUseAfterWait}, stopAttacking: {Combat.StopAttacking}, hasTarget: {Player.HasTarget}");
 
                     if (canUseAfterWait && !Combat.StopAttacking)
-                    {
-                        if (ResetComboOnTargetChange)
-                            Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Using skill {skill}.");
-
                         this.UseSkill(skill);
-                    }
-                    else if (ResetComboOnTargetChange)
-                    {
-                        Trace.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] [ScriptSkill] Did not use skill {skill}. CanUse: {canUseAfterWait}, stopAttacking: {Combat.StopAttacking}, hasTarget: {Player.HasTarget}");
-                    }
 
                     break;
             }
