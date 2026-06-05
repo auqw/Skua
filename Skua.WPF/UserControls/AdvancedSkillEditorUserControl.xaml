@@ -30,22 +30,22 @@
             Grid.Column="0"
             Margin="6,6,3,3"
             Header="Set SkillTimeout">
-            <TextBox
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Margin="3"
-                materialDesign:HintAssist.Hint="SkillTimeout"
-                Text="{Binding CurrentSkillTimeout, UpdateSourceTrigger=PropertyChanged}">
-                <TextBox.ToolTip>
-                    <TextBlock>
-                        The maximum time it will wait for a skill in multiples of the SkillTimer (default 100ms). Default SkillTimeout is 100 (10000 ms).<LineBreak />
-                        Note that the skill timeout is only used when Wait for Cooldown is enable.</TextBlock>
-                </TextBox.ToolTip>
-                <b:Interaction.Behaviors>
-                    <wpf:TextBoxOnlyNumbersBehavior />
-                </b:Interaction.Behaviors>
-            </TextBox>
+            <Grid VerticalAlignment="Center">
+                <TextBox
+                    Margin="3"
+                    materialDesign:HintAssist.Hint="SkillTimeout"
+                    Text="{Binding CurrentSkillTimeout, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.ToolTip>
+                        <TextBlock>
+                            The maximum time it will wait for a skill in multiples of the SkillTimer (default 100ms). Default SkillTimeout is 100 (10000 ms).<LineBreak />
+                            Note that the skill timeout is only used when Wait for Cooldown is enable.
+                        </TextBlock>
+                    </TextBox.ToolTip>
+                    <b:Interaction.Behaviors>
+                        <wpf:TextBoxOnlyNumbersBehavior />
+                    </b:Interaction.Behaviors>
+                </TextBox>
+            </Grid>
         </GroupBox>
         <!--#endregion-->
 
@@ -95,8 +95,8 @@
                     IsChecked="{Binding ResetComboOnTargetChange}">
                     <CheckBox.ToolTip>
                         <TextBlock>
-                Restarts the advanced skill combo from the beginning when the current target dies, disappears, or changes.<LineBreak />
-                Useful for classes whose combo depends on autoattack timing.</TextBlock>
+                            Restarts the advanced skill combo from the beginning when the current target dies, disappears, or changes.<LineBreak />
+                            Useful for classes whose combo depends on autoattack timing.</TextBlock>
                     </CheckBox.ToolTip>
                 </CheckBox>
             </Grid>
