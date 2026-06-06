@@ -55,7 +55,7 @@ public class AdvancedSkill
 
     public override string ToString()
     {
-        return $"{ClassUseMode} : {ClassName} = {Skills} [{(SkillUseMode == SkillUseMode.UseIfAvailable ? "Use if Available" : "Wait for Cooldown")}]";
+        return $"{ClassUseMode} : {ClassName} = {Skills} [{(SkillUseMode == SkillUseMode.UseIfAvailable ? "Use if Available" : "Wait for Cooldown")}]{(ResetComboOnTargetChange ? " [Reset on Target Change]" : string.Empty)}";
     }
 
     public override bool Equals(object? obj)
