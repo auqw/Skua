@@ -34,9 +34,13 @@ public interface ISkillProvider
     (int, int) GetNextSkill();
 
     /// <summary>
-    /// This method is called when the target is reset/changed.
+    /// Checks whether the current target has been lost or changed and resets provider state if needed.
     /// </summary>
-    void OnTargetReset();
+    /// <returns>
+    /// <see langword="true"/> if the provider reset its skill state and the current skill attempt should be aborted;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    bool OnTargetReset();
 
     /// <summary>
     /// This method is called when the player dies.

@@ -63,6 +63,10 @@ public class SkillModeJson
     [JsonPropertyName("skillTimeout")]
     public int SkillTimeout { get; set; } = 100;
 
+    [JsonPropertyName("resetComboOnTargetChange")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public bool ResetComboOnTargetChange { get; set; } = false;
+
     [JsonPropertyName("skills")]
     public List<AdvancedSkillJson> Skills { get; set; } = new();
 }
