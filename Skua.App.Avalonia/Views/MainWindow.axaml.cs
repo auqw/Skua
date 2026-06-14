@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
+using Skua.App.Avalonia.Flash;
 using Skua.App.Avalonia.Services;
 using Skua.App.Avalonia.ViewModels;
 using Skua.App.Avalonia.ViewModels.MainMenu;
@@ -32,10 +33,12 @@ public partial class MainWindow : Window
     private MenuItem? _pluginsMenuItem;
     private readonly DispatcherTimer _metricsTimer;
     private bool _isFlashLoaded;
+    private bool _isFlashInitialized;
     private bool _isMetricsCollapsed;
 
     public MainWindow()
     {
+        LinuxFlashTrace.Event("main-window", "ctor-begin");
         InitializeComponent();
         _mainViewModel = Ioc.Default.GetRequiredService<MainViewModel>();
         _mainMenuVm = Ioc.Default.GetRequiredService<MainMenuViewModel>();
@@ -55,6 +58,9 @@ public partial class MainWindow : Window
         #if IS_WINDOWS
         RegisterMessages();
         #endif
+
+        InitializeFlashHostOnce();
+        LinuxFlashTrace.Event("main-window", "ctor-end");
     }
 
     private void ConfigureMainMenu()
@@ -79,15 +85,37 @@ public partial class MainWindow : Window
 
     private void MainWindow_Opened(object? sender, EventArgs e)
     {
-        _startup.Execute();
-        _flash.FlashCall += OnFlashCall;
-        
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) _flash.InitializeFlash();
+        InitializeFlashHostOnce();
         
         if (!_isMetricsCollapsed)
         {
             UpdateMetrics();
             _metricsTimer.Start();
+        }
+    }
+
+    private void InitializeFlashHostOnce()
+    {
+        if (_isFlashInitialized)
+            return;
+
+        _isFlashInitialized = true;
+        LinuxFlashTrace.Event("main-window", "flash-host-init-begin");
+        Console.Error.WriteLine("Skua initializing flash host.");
+        _startup.Execute();
+        _flash.FlashCall += OnFlashCall;
+
+        try
+        {
+            _flash.InitializeFlash();
+            LinuxFlashTrace.Event("main-window", "flash-host-init-done");
+            Console.Error.WriteLine("Skua flash host initialized.");
+        }
+        catch (Exception ex)
+        {
+            LinuxFlashTrace.Event("main-window", "flash-host-init-error", ("type", ex.GetType().Name), ("message", ex.Message), ("exception", ex));
+            Console.Error.WriteLine($"Skua flash host initialization failed: {ex.GetType().Name}: {ex.Message}");
+            throw;
         }
     }
 

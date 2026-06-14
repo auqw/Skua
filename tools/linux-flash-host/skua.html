@@ -1,0 +1,280 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Skua AQW Flash Host</title>
+  <style>
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+    #status { position: absolute; left: 8px; top: 8px; z-index: 1; color: #d3c6aa; font: 12px sans-serif; }
+    #flash-container, #skua { width: 100%; height: 100%; display: block; }
+  </style>
+</head>
+<body>
+  <div id="status">Connecting Skua bridge…</div>
+  <div id="flash-container"></div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const wsUrl = params.get('ws');
+    const swfPath = params.get('swf');
+    const statusEl = document.getElementById('status');
+    const flashContainer = document.getElementById('flash-container');
+    const payloadLogging = params.get('payloads') === '1';
+    let swfEl = null;
+    let socket = null;
+    let swfLoaded = false;
+    let traceSeq = 0;
+    let processingSwfCall = false;
+    const pendingFlashCalls = [];
+    const pendingSwfCalls = [];
+
+    function preview(value, max = 180) {
+      if (value === null || value === undefined) return '<null>';
+      let text;
+      try { text = typeof value === 'string' ? value : JSON.stringify(value); }
+      catch (_) { text = String(value); }
+      text = String(text).replace(/\r/g, '\\r').replace(/\n/g, '\\n');
+      const limit = payloadLogging ? 4096 : max;
+      return text.length > limit ? `${text.slice(0, limit)}...(+${text.length - limit})` : text;
+    }
+
+    function trace(event, details = {}) {
+      const fields = Object.entries(details)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => `${key}=${JSON.stringify(String(value))}`)
+        .join(' ');
+      console.log(`[bridge] seq=${++traceSeq} event=${event}${fields ? ' ' + fields : ''}`);
+    }
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+      trace('status', { text });
+    }
+
+    function normalizeArgs(args) {
+      if (args.length === 1 && Array.isArray(args[0])) return args[0];
+      return Array.from(args);
+    }
+
+    function sendFlashCall(functionName, args) {
+      const normalized = normalizeArgs(args);
+      const payload = { type: 'flashCall', function: functionName, args: normalized };
+      trace('flashcall-queued', { fn: functionName, argc: normalized.length, arg0: preview(normalized[0]) });
+      setTimeout(() => sendFlashCallPayload(payload), 0);
+      return null;
+    }
+
+    function sendFlashCallPayload(payload) {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        const json = JSON.stringify(payload);
+        socket.send(json);
+        trace('flashcall-sent', { fn: payload.function, bytes: json.length });
+      } else {
+        pendingFlashCalls.push(payload);
+        trace('flashcall-pending', { fn: payload.function, queued: pendingFlashCalls.length, socket: socket && socket.readyState });
+      }
+    }
+
+    function flushPendingFlashCalls() {
+      if (!socket || socket.readyState !== WebSocket.OPEN) return;
+      while (pendingFlashCalls.length > 0) {
+        sendFlashCallPayload(pendingFlashCalls.shift());
+      }
+    }
+
+    function loadSwf() {
+      if (swfLoaded) return;
+      swfLoaded = true;
+      swfEl = document.createElement('object');
+      swfEl.id = 'skua';
+      swfEl.name = 'skua';
+      swfEl.type = 'application/x-shockwave-flash';
+      swfEl.data = swfPath;
+      swfEl.width = '100%';
+      swfEl.height = '100%';
+      swfEl.setAttribute('allowScriptAccess', 'always');
+      swfEl.setAttribute('allowNetworking', 'all');
+      swfEl.appendChild(param('movie', swfPath));
+      swfEl.appendChild(param('allowScriptAccess', 'always'));
+      swfEl.appendChild(param('allowNetworking', 'all'));
+      swfEl.appendChild(param('wmode', 'direct'));
+      swfEl.appendChild(param('swliveconnect', 'true'));
+      flashContainer.appendChild(swfEl);
+      trace('swf-created', { swf: swfPath });
+      setStatus('SWF loaded. Waiting for AQW…');
+    }
+
+    function param(name, value) {
+      const element = document.createElement('param');
+      element.setAttribute('name', name);
+      element.setAttribute('value', value);
+      return element;
+    }
+
+    function requestLoadGame() { return sendFlashCall('requestLoadGame', arguments); }
+    function loaded() { return sendFlashCall('loaded', arguments); }
+    function openWebsite() { return sendFlashCall('openWebsite', arguments); }
+    function debug() { return sendFlashCall('debug', arguments); }
+    function pext() { return sendFlashCall('pext', arguments); }
+    function packet() { return sendFlashCall('packet', arguments); }
+    function packetFromServer() { return sendFlashCall('packetFromServer', arguments); }
+
+    function installExternalCallbacks() {
+      window.requestLoadGame = requestLoadGame;
+      window.loaded = loaded;
+      window.openWebsite = openWebsite;
+      window.debug = debug;
+      window.pext = pext;
+      window.packet = packet;
+      window.packetFromServer = packetFromServer;
+      window['pre-load'] = function() { return sendFlashCall('pre-load', arguments); };
+      trace('external-callbacks-installed');
+    }
+
+    function enqueueSwfCall(msg) {
+      pendingSwfCalls.push(msg);
+      trace('call-queued', { id: msg.id, fn: msg.function, queued: pendingSwfCalls.length, xmlLen: msg.xml && msg.xml.length });
+      setTimeout(processSwfCallQueue, 0);
+    }
+
+    function processSwfCallQueue() {
+      if (processingSwfCall || pendingSwfCalls.length === 0) return;
+      processingSwfCall = true;
+      const msg = pendingSwfCalls.shift();
+      setTimeout(() => {
+        const started = performance.now();
+        try {
+          trace('call-start', { id: msg.id, fn: msg.function });
+          const xml = callSwf(msg.function, msg.xml);
+          sendCallResponse({ id: msg.id, ok: true, xml: xml || '<null />' });
+          trace('call-end', { id: msg.id, fn: msg.function, ok: true, durMs: Math.round(performance.now() - started), xml: preview(xml) });
+        } catch (error) {
+          const message = String(error && (error.stack || error.message) || error);
+          sendCallResponse({ id: msg.id, ok: false, error: message });
+          trace('call-error', { id: msg.id, fn: msg.function, durMs: Math.round(performance.now() - started), error: preview(message, 600) });
+        } finally {
+          processingSwfCall = false;
+          if (pendingSwfCalls.length > 0) setTimeout(processSwfCallQueue, 0);
+        }
+      }, 0);
+    }
+
+    function sendCallResponse(payload) {
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        trace('response-drop-socket-closed', { id: payload.id, ok: payload.ok, socket: socket && socket.readyState });
+        return;
+      }
+      const json = JSON.stringify(payload);
+      socket.send(json);
+      trace('response-sent', { id: payload.id, ok: payload.ok, bytes: json.length });
+    }
+
+    function callSwf(functionName, xml) {
+      if (!swfEl) throw new Error('SWF element missing');
+
+      if (typeof swfEl.CallFunction === 'function') {
+        trace('call-branch', { fn: functionName, branch: 'CallFunction' });
+        return swfEl.CallFunction(xml);
+      }
+
+      if (typeof swfEl[functionName] === 'function') {
+        const args = decodeInvokeArgs(xml);
+        trace('call-branch', { fn: functionName, branch: 'direct', argc: args.length });
+        const value = swfEl[functionName].apply(swfEl, args);
+        return encodeReturn(value);
+      }
+
+      throw new Error(`SWF callback not available: ${functionName}`);
+    }
+
+    function decodeInvokeArgs(xml) {
+      const doc = new DOMParser().parseFromString(xml, 'text/xml');
+      const parseError = doc.querySelector('parsererror');
+      if (parseError) throw new Error(`Invalid invoke XML: ${parseError.textContent}`);
+      const argsEl = doc.querySelector('arguments');
+      if (!argsEl) return [];
+      return Array.from(argsEl.children).map(decodeValue);
+    }
+
+    function decodeValue(el) {
+      switch (el.tagName) {
+        case 'string': return el.textContent || '';
+        case 'number': return Number(el.textContent || '0');
+        case 'true': return true;
+        case 'false': return false;
+        case 'null':
+        case 'undefined': return null;
+        case 'array':
+          return Array.from(el.children)
+            .sort((a, b) => Number(a.getAttribute('id') || '0') - Number(b.getAttribute('id') || '0'))
+            .map(p => decodeValue(p.firstElementChild));
+        case 'object': {
+          const obj = {};
+          for (const p of Array.from(el.children)) {
+            obj[p.getAttribute('id') || ''] = decodeValue(p.firstElementChild);
+          }
+          return obj;
+        }
+        case 'property': return decodeValue(el.firstElementChild);
+        default: return el.textContent || '';
+      }
+    }
+
+    function encodeReturn(value) {
+      if (value === null || value === undefined) return '<null />';
+      if (value === true) return '<true />';
+      if (value === false) return '<false />';
+      if (typeof value === 'number') return `<number>${value}</number>`;
+      if (Array.isArray(value)) {
+        return `<array>${value.map((item, index) => `<property id="${index}">${encodeReturn(item)}</property>`).join('')}</array>`;
+      }
+      if (typeof value === 'object') {
+        return `<object>${Object.keys(value).map(key => `<property id="${escapeXml(key)}">${encodeReturn(value[key])}</property>`).join('')}</object>`;
+      }
+      return `<string>${escapeXml(String(value))}</string>`;
+    }
+
+    function escapeXml(text) {
+      return text.replace(/[<>&"']/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' }[c]));
+    }
+
+    function connectBridge() {
+      trace('ws-connect', { ws: wsUrl, swf: swfPath });
+      socket = new WebSocket(wsUrl);
+      socket.addEventListener('open', () => {
+        trace('ws-open');
+        setStatus('Bridge connected. Loading SWF…');
+        flushPendingFlashCalls();
+        loadSwf();
+      });
+      socket.addEventListener('close', event => {
+        trace('ws-close', { code: event.code, reason: event.reason, wasClean: event.wasClean });
+        setStatus('Bridge closed.');
+      });
+      socket.addEventListener('error', event => trace('ws-error', { message: event && event.message }));
+      socket.addEventListener('message', event => {
+        let msg;
+        try {
+          msg = JSON.parse(event.data);
+        } catch (error) {
+          trace('message-parse-error', { error: String(error && error.message || error), data: preview(event.data, 600) });
+          return;
+        }
+
+        trace('message-received', { type: msg.type, id: msg.id, fn: msg.function, bytes: event.data.length });
+        if (msg.type === 'call') {
+          enqueueSwfCall(msg);
+        } else {
+          trace('message-ignored', { type: msg.type });
+        }
+      });
+    }
+
+    window.addEventListener('error', event => trace('window-error', { message: event.message, source: event.filename, line: event.lineno }));
+    window.addEventListener('unhandledrejection', event => trace('window-unhandled-rejection', { reason: preview(event.reason) }));
+
+    installExternalCallbacks();
+    connectBridge();
+  </script>
+</body>
+</html>

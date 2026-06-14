@@ -270,40 +270,104 @@ public class FlashUtil : IFlashUtil
 #else
 public class FlashUtil : IFlashUtil
 {
-    public void Dispose()
+    private readonly IFlashHostClient _hostClient;
+    private bool _started;
+
+    public FlashUtil()
+        : this(new ElectronFlashHostClient())
     {
-        throw new NotImplementedException();
+    }
+
+    public FlashUtil(IFlashHostClient hostClient)
+    {
+        _hostClient = hostClient;
+        _hostClient.FlashCalled += HostClient_FlashCalled;
     }
 
     public event FlashCallHandler? FlashCall;
+
     public void InitializeFlash()
     {
-        throw new NotImplementedException();
+        if (_started)
+        {
+            LinuxFlashTrace.Event("flash-util", "initialize-skip");
+            return;
+        }
+
+        LinuxFlashTrace.Event("flash-util", "initialize-begin");
+        _hostClient.Start();
+        LinuxFlashTrace.Event("flash-util", "load-client-begin");
+        _hostClient.Call("loadClient");
+        LinuxFlashTrace.Event("flash-util", "load-client-done");
+        _started = true;
+        LinuxFlashTrace.Event("flash-util", "initialize-done");
     }
 
     public string? Call(string function, params object[] args)
     {
-        throw new NotImplementedException();
+        return Call(function, typeof(string), args)?.ToString();
     }
 
     public T? Call<T>(string function, params object[] args)
     {
-        throw new NotImplementedException();
+        try
+        {
+            object? result = Call(function, typeof(T), args);
+            if (result is T value)
+                return value;
+
+            object? defaultValue = Skua.Core.Utils.DefaultProvider.GetDefault<T>(typeof(T));
+            return defaultValue is T typedDefault ? typedDefault : default;
+        }
+        catch (Exception ex)
+        {
+            LinuxFlashTrace.Event("flash-util", "call-generic-error", ("fn", function), ("returnType", typeof(T).Name), ("type", ex.GetType().Name), ("message", ex.Message));
+            object? defaultValue = Skua.Core.Utils.DefaultProvider.GetDefault<T>(typeof(T));
+            return defaultValue is T typedDefault ? typedDefault : default;
+        }
     }
 
     public object? Call(string function, Type type, params object[] args)
     {
-        throw new NotImplementedException();
+        try
+        {
+            LinuxFlashTrace.Event("flash-util", "call-begin", ("fn", function), ("returnType", type.Name), ("args", LinuxFlashTrace.ArgSummary(args)));
+            string? result = _hostClient.Call(function, args);
+            LinuxFlashTrace.Event("flash-util", "call-result", ("fn", function), ("returnType", type.Name), ("result", LinuxFlashTrace.Preview(result)));
+            if (string.IsNullOrWhiteSpace(result))
+                return type.IsValueType ? Activator.CreateInstance(type) : null;
+
+            if (type == typeof(string))
+                return result;
+
+            return Convert.ChangeType(result, type);
+        }
+        catch (Exception ex)
+        {
+            LinuxFlashTrace.Event("flash-util", "call-error-default", ("fn", function), ("returnType", type.Name), ("type", ex.GetType().Name), ("message", ex.Message));
+            return type.IsValueType ? Activator.CreateInstance(type) : null;
+        }
     }
 
     public object FromFlashXml(XElement el)
     {
-        throw new NotImplementedException();
+        return FlashXmlCodec.FromFlashXml(el)!;
     }
 
     public IFlashObject<T> CreateFlashObject<T>(string path)
     {
-        throw new NotImplementedException();
+        return new Skua.Core.Flash.FlashObject<T>(Call<int>("lnkCreate", path), this);
+    }
+
+    public void Dispose()
+    {
+        _hostClient.FlashCalled -= HostClient_FlashCalled;
+        _hostClient.Dispose();
+    }
+
+    private void HostClient_FlashCalled(object? sender, FlashHostCallEventArgs e)
+    {
+        FlashCall?.Invoke(e.Function, e.Args!);
     }
 }
 #endif

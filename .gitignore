@@ -397,3 +397,9 @@ Skua.App.Avalonia/objalt/
 Skua.App.Avalonia/bin_alt/
 Skua.Avalonia/**/*.bak
 Skua.Avalonia/
+
+# Linux Flash host local runtime assets (not redistributed)
+tools/linux-flash-host/node_modules/
+tools/linux-flash-host/package-lock.json
+tools/linux-flash-host/plugins/
+tools/linux-flash-host/electron8/

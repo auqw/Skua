@@ -95,6 +95,7 @@ public class Externalizer {
 
         // Packets
         this.addCallback("sendClientPacket", Main.sendClientPacket);
+        this.addCallback("sendPacket", Main.sendPacket);
         this.addCallback("catchPackets", Main.catchPackets);
 
         // Utilities
@@ -128,11 +129,23 @@ public class Externalizer {
     }
 
     public function addCallback(name:String, func:Function):void {
-        ExternalInterface.addCallback(name, func);
+        try {
+            if (ExternalInterface.available) {
+                ExternalInterface.addCallback(name, func);
+            }
+        } catch (error:Error) {
+            try { ExternalInterface.call("debug", "[externalizer] addCallback failed " + name + ": " + error.message); } catch (ignored:Error) { }
+        }
     }
 
     public function call(name:String, ...rest):* {
-        return ExternalInterface.call(name, rest);
+        try {
+            if (!ExternalInterface.available) return null;
+            return ExternalInterface.call.apply(null, [name].concat(rest));
+        } catch (error:Error) {
+            try { ExternalInterface.call("debug", "[externalizer] call failed " + name + ": " + error.message); } catch (ignored:Error) { }
+        }
+        return null;
     }
 
     public function debug(message:String):void {

@@ -17,6 +17,12 @@ public class ScriptSend : IScriptSend
 
     public void Packet(string packet, string type = "String")
     {
+        if (string.Equals(type, "String", StringComparison.OrdinalIgnoreCase))
+        {
+            Flash.Call("sendPacket", packet);
+            return;
+        }
+
         Flash.CallGameFunction($"sfc.send{type}", packet);
     }
 

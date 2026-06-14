@@ -64,6 +64,9 @@
         <None Include="..\Skua.AS3\skua\bin\skua.swf" Link="skua.swf" Condition="Exists('..\Skua.AS3\skua\bin\skua.swf')">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Include="..\tools\linux-flash-host\**\*" Link="linux-flash-host\%(RecursiveDir)%(Filename)%(Extension)" Exclude="..\tools\linux-flash-host\node_modules\**\*;..\tools\linux-flash-host\plugins\**\*;..\tools\linux-flash-host\electron8\**\*">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>

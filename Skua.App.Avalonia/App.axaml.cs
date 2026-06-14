@@ -35,6 +35,7 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        LinuxFlashTrace.Event("app", "framework-init-begin");
         RegisterGlobalExceptionHandlers();
 
         ServiceCollection services = new();
@@ -69,8 +70,14 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            LinuxFlashTrace.Event("app", "main-window-create-begin");
             desktop.MainWindow = new Views.MainWindow();
+            LinuxFlashTrace.Event("app", "main-window-create-done");
             desktop.Exit += OnDesktopExit;
+        }
+        else
+        {
+            LinuxFlashTrace.Event("app", "main-window-create-error", ("reason", "No classic desktop lifetime"), ("lifetime", ApplicationLifetime?.GetType().FullName ?? "null"));
         }
 
         TryInitializeStartupServices();

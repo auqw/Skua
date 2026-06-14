@@ -1,0 +1,13 @@
+{
+  "name": "skua-linux-flash-host",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
+  "description": "Minimal Electron 8 PPAPI Flash host for Skua on Linux",
+  "dependencies": {
+    "electron": "8.5.5"
+  },
+  "scripts": {
+    "start": "electron ."
+  }
+}

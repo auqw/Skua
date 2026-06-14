@@ -7,9 +7,14 @@ import flash.display.Stage;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.events.Event;
+import flash.events.ErrorEvent;
+import flash.events.IOErrorEvent;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
+import flash.events.ProgressEvent;
+import flash.events.SecurityErrorEvent;
 import flash.events.TimerEvent;
+import flash.events.UncaughtErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
@@ -32,7 +37,7 @@ public class Main extends MovieClip {
 
     public var game:*;
     public var external:Externalizer;
-    private var sURL:String = 'https://game.aq.com/game/';
+    private var sURL:String = 'http://game.aq.com/game/';
     private var versionUrl:String = (sURL + 'api/data/gameversion');
     private var loginURL:String = (sURL + 'api/login/now');
     private var sFile:String;
@@ -41,6 +46,7 @@ public class Main extends MovieClip {
     private var urlLoader:URLLoader;
     private var vars:Object;
     private var loader:Loader;
+    private var gameLoadRequested:Boolean = false;
     private var sTitle:String = '<font color="#FDAF2D">AURAS!!!</font>';
     private var stg:Stage;
     private var gameDomain:ApplicationDomain;
@@ -62,6 +68,12 @@ public class Main extends MovieClip {
     }
 
     public static function loadGame():void {
+        if (Main.instance.gameLoadRequested) {
+            Main.instance.report('loadGame ignored; already requested');
+            return;
+        }
+        Main.instance.gameLoadRequested = true;
+        Main.instance.report('loadGame called');
         Main.instance.onAddedToStage();
         Main.instance.external.call('pre-load');
     }
@@ -89,61 +101,112 @@ public class Main extends MovieClip {
 
     private function onAddedToStage():void {
         Security.allowDomain('*');
+        this.report('loading version ' + this.versionUrl);
         this.urlLoader = new URLLoader();
         this.urlLoader.addEventListener(Event.COMPLETE, this.onDataComplete);
+        this.urlLoader.addEventListener(IOErrorEvent.IO_ERROR, this.onLoadError);
+        this.urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onLoadError);
         this.urlLoader.load(new URLRequest(this.versionUrl));
     }
 
     private function onDataComplete(event:Event):void {
         this.urlLoader.removeEventListener(Event.COMPLETE, this.onDataComplete);
+        this.report('version loaded ' + event.target.data);
         this.vars = JSON.parse(event.target.data);
-        this.sFile = ((this.vars.sFile + '?ver=') + Math.random());
+        this.sFile = ((this.vars.sFile + '?ver=') + this.vars.sVersion);
+        this.sTitle = this.vars.sTitle;
+        this.sBG = this.vars.sBG;
+        this.isEU = String(this.vars.isEU) == "true";
+        this.report('loading game file ' + this.sURL + 'gamefiles/' + this.sFile);
         this.loadGame()
     }
 
     private function loadGame():void {
         this.loader = new Loader();
+        this.loader.contentLoaderInfo.addEventListener(Event.INIT, this.onLoaderInit);
         this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onComplete);
+        this.loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, this.onLoaderProgress);
+        this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, this.onLoadError);
+        this.loader.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onLoadError);
+        this.loader.contentLoaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, this.onGameUncaught);
         this.loader.load(new URLRequest(this.sURL + 'gamefiles/' + this.sFile));
+    }
+
+    private function onLoaderInit(event:Event):void {
+        this.report('game loader init bytes=' + this.loader.contentLoaderInfo.bytesLoaded + '/' + this.loader.contentLoaderInfo.bytesTotal);
+    }
+
+    private function onLoaderProgress(event:ProgressEvent):void {
+        this.report('game loader progress ' + event.bytesLoaded + '/' + event.bytesTotal);
     }
 
     private function onComplete(event:Event):void {
         this.loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, this.onComplete);
+        this.report('game loader complete bytes=' + this.loader.contentLoaderInfo.bytesLoaded + '/' + this.loader.contentLoaderInfo.bytesTotal);
 
-        this.stg = stage;
-        this.stg.removeChildAt(0);
-        this.game = this.stg.addChild(this.loader.content);
-        this.stg.scaleMode = StageScaleMode.SHOW_ALL;
-        this.stg.align = StageAlign.TOP;
+        try {
+            this.stg = stage;
+            this.report('stage children before remove ' + this.stg.numChildren);
+            this.stg.removeChildAt(0);
+            this.game = this.stg.addChild(this.loader.content);
+            this.report('game content added ' + getQualifiedClassName(this.game));
+            this.stg.scaleMode = StageScaleMode.SHOW_ALL;
+            this.stg.align = StageAlign.TOP;
 
-        for (var param:String in root.loaderInfo.parameters) {
-            this.game.params[param] = root.loaderInfo.parameters[param];
+            this.report('game params present ' + (this.game.params != null));
+            for (var param:String in root.loaderInfo.parameters) {
+                this.game.params[param] = root.loaderInfo.parameters[param];
+            }
+
+            this.game.params.vars = this.vars;
+            this.game.params.sURL = this.sURL;
+            this.game.params.sBG = this.sBG;
+            this.game.params.sTitle = this.sTitle;
+            this.game.params.isEU = this.isEU;
+            this.game.params.loginURL = this.loginURL;
+            this.game.params.isWeb = false;
+            this.game.params.doSignup = false;
+            this.game.params.test = false;
+
+            this.game.addEventListener(MouseEvent.CLICK,this.onGameClick);
+            this.report('game sfc present ' + (this.game.sfc != null));
+            this.game.sfc.addEventListener(SFSEvent.onExtensionResponse, this.onExtensionResponse);
+            this.gameDomain = LoaderInfo(event.target).applicationDomain;
+
+            Modules.init();
+            this.stg.addEventListener(Event.ENTER_FRAME, Modules.handleFrame);
+            this.stg.addEventListener(Event.ENTER_FRAME, this.monitorLoginScreen);
+
+            this.game.stage.addEventListener(KeyboardEvent.KEY_DOWN, this.key_StageGame);
+
+            if (this.customBackgroundURL && this.customBackgroundURL.length > 0) {
+                this.initCustomBackground();
+            }
+
+            Auras.initialize();
+            this.report('game loaded event emitting');
+            this.external.call('loaded');
+        } catch (error:Error) {
+            this.report('onComplete error ' + error.name + ': ' + error.message + '\n' + error.getStackTrace());
+            throw error;
         }
+    }
 
-        this.game.params.vars = this.vars;
-        this.game.params.sURL = this.sURL;
-        this.game.params.sBG = this.sBG;
-        this.game.params.sTitle = this.sTitle;
-        this.game.params.isEU = this.isEU;
-        this.game.params.loginURL = this.loginURL;
+    private function onLoadError(event:ErrorEvent):void {
+        this.report('load error ' + event.type + ': ' + event.text);
+    }
 
-        this.game.addEventListener(MouseEvent.CLICK,this.onGameClick);
-        this.game.sfc.addEventListener(SFSEvent.onExtensionResponse, this.onExtensionResponse);
-        this.gameDomain = LoaderInfo(event.target).applicationDomain;
+    private function onGameUncaught(event:UncaughtErrorEvent):void {
+        this.report('game uncaught ' + event.error);
+    }
 
-        Modules.init();
-        this.stg.addEventListener(Event.ENTER_FRAME, Modules.handleFrame);
-        this.stg.addEventListener(Event.ENTER_FRAME, this.monitorLoginScreen);
-
-        this.game.stage.addEventListener(KeyboardEvent.KEY_DOWN, this.key_StageGame);
-        
-        if (this.customBackgroundURL && this.customBackgroundURL.length > 0) {
-            this.initCustomBackground();
+    private function report(message:String):void {
+        try {
+            if (this.external) {
+                this.external.debug('[skua-main] ' + message);
+            }
+        } catch (error:Error) {
         }
-        
-        Auras.initialize();
-        
-        this.external.call('loaded');
     }
 
     public function onExtensionResponse(packet:*):void {
@@ -319,19 +382,31 @@ public class Main extends MovieClip {
     }
 
     public static function callGameFunction(path:String, ...args):String {
-        var parts:Array = path.split('.');
-        var funcName:String = parts.pop();
-        var obj:* = _getObjectA(instance.game, parts);
-        var func:Function = obj[funcName] as Function;
-        return JSON.stringify(func.apply(null, args));
+        try {
+            var parts:Array = path.split('.');
+            var funcName:String = parts.pop();
+            var obj:* = _getObjectA(instance.game, parts);
+            var func:Function = obj[funcName] as Function;
+            return JSON.stringify(func.apply(obj, args));
+        } catch (error:Error) {
+            instance.external.debug('callGameFunction error path=' + path + ' ' + error.name + ': ' + error.message);
+            throw error;
+        }
+        return "null";
     }
 
     public static function callGameFunction0(path:String):String {
-        var parts:Array = path.split('.');
-        var funcName:String = parts.pop();
-        var obj:* = _getObjectA(instance.game, parts);
-        var func:Function = obj[funcName] as Function;
-        return JSON.stringify(func.apply());
+        try {
+            var parts:Array = path.split('.');
+            var funcName:String = parts.pop();
+            var obj:* = _getObjectA(instance.game, parts);
+            var func:Function = obj[funcName] as Function;
+            return JSON.stringify(func.apply(obj));
+        } catch (error:Error) {
+            instance.external.debug('callGameFunction0 error path=' + path + ' ' + error.name + ': ' + error.message);
+            throw error;
+        }
+        return "null";
     }
 
     public static function selectArrayObjects(path:String, selector:String):String {
@@ -391,6 +466,10 @@ public class Main extends MovieClip {
 
     public static function catchPackets():void {
         instance.game.sfc.addEventListener(SFSEvent.onDebugMessage, packetReceived);
+    }
+
+    public static function sendPacket(packet:String):void {
+        instance.game.sfc.sendString(packet);
     }
 
     public static function sendClientPacket(packet:String, type:String):void {

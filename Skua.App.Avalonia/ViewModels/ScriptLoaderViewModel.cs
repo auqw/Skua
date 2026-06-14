@@ -132,6 +132,8 @@ public partial class ScriptLoaderViewModel : BotControlViewModelBase
             }
             ScriptStatus = "[Error]";
             ScriptErrorToolTip = $"Error while starting script:\r\n{ex}";
+            if (string.Equals(Environment.GetEnvironmentVariable("SKUA_SCRIPT_ERROR_LOG"), "1", StringComparison.Ordinal))
+                File.AppendAllText("/tmp/skua-script-error.log", $"{DateTimeOffset.Now}: Error while starting script {ScriptManager.LoadedScript}\n{ex}\n\n");
             ToggleScriptEnabled = true;
         }
         else

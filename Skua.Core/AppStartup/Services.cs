@@ -70,8 +70,8 @@ public static class Services
         }
 
         compiler.AddAssemblies(_cachedBaseReferences);
-        compiler.AddNamespaces(new[]
-        {
+        List<string> namespaces =
+        [
             "System",
             "System.Collections",
             "System.Collections.Generic",
@@ -90,7 +90,6 @@ public static class Services
             "System.Threading",
             "System.Threading.Tasks",
             "System.Timers",
-            "System.Windows.Forms",
             "Skua.Core",
             "Skua.Core.Interfaces",
             "Skua.Core.Models",
@@ -108,7 +107,10 @@ public static class Services
             "CommunityToolkit.Mvvm.DependencyInjection",
             "Newtonsoft.Json",
             "Newtonsoft.Json.Linq",
-        });
+        ];
+        if (Type.GetType("System.Windows.Forms.Form, System.Windows.Forms") is not null)
+            namespaces.Add("System.Windows.Forms");
+        compiler.AddNamespaces(namespaces.ToArray());
         compiler.SaveGeneratedCode = true;
         return compiler;
     }
