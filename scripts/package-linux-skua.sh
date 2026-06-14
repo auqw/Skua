@@ -113,7 +113,10 @@ if [[ "${SKUA_PACKAGE_LOCAL_RUNTIME:-0}" == "1" ]]; then
 fi
 
 tar -C "$(dirname "$stage_dir")" -czf "$archive_path" "$(basename "$stage_dir")"
-sha256sum "$archive_path" > "$archive_path.sha256"
+(
+  cd "$releases_dir"
+  sha256sum "$(basename "$archive_path")" > "$(basename "$archive_path").sha256"
+)
 
 printf 'Created %s\n' "$archive_path"
 printf 'Checksum %s.sha256\n' "$archive_path"

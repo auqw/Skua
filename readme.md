@@ -2,7 +2,7 @@
 
 ![Skua Icon](https://raw.githubusercontent.com/auqw/Skua/refs/heads/master/SkuaIcon.ico)
 
-## [Usage](./usage.md) | [Build Guide](./BUILD.md) | [Linux Preview](#linux-preview-avalonia) | [Contributors](#contributors) | [Support](#skua-developers)
+## [Linux Release](https://github.com/NaxeCode/Skua/releases/latest) | [Usage](./usage.md) | [Build Guide](./BUILD.md) | [Linux Preview](#linux-preview-avalonia) | [Contributors](#contributors) | [Support](#skua-developers)
 
 </div>
 
@@ -11,6 +11,8 @@
 Skua is the successor to [RBot](https://github.com/rodit/RBot) (originally made by "[rodit](https://github.com/rodit)"), now remade and rebranded by [BrenoHenrike](https://github.com/BrenoHenrike/), with the help of [Lord Exelot](https://github.com/BrenoHenrike/), and a handful of scripters. It is a third-party client made by the people mentioned above. It also has many "features" and quirks. Overall, it will make this glorified flash game on steroids a piece of cake.
 
 ## Linux Preview (Avalonia)
+
+**Latest Linux preview release:** <https://github.com/NaxeCode/Skua/releases/latest>
 
 The Avalonia build can run AQW natively on Linux without Wine by launching a small Electron 8 + PPAPI Flash sidecar and bridging Flash `ExternalInterface` calls back to Skua over localhost WebSocket RPC.
 
@@ -21,7 +23,90 @@ Status:
 - Login, server selection, packet events, and basic scripts work.
 - Windows ActiveX Flash path remains unchanged.
 
-Quick dev run:
+### Linux release contents
+
+The public tarball includes Skua, `skua.swf`, the Linux Flash host source files, and `run-skua.sh`.
+
+It does **not** redistribute these local/proprietary runtime files by default:
+
+- Electron 8 binary
+- `node_modules`
+- PPAPI Flash plugin (`libpepflashplayer.so`)
+
+You must provide Electron 8 and PPAPI Flash paths with environment variables.
+
+### Install runtime dependencies
+
+Arch / EndeavourOS / Manjaro:
+
+```bash
+sudo pacman -S dotnet-runtime dotnet-sdk nss gtk3 libxss alsa-lib
+```
+
+Ubuntu / Debian / Pop!_OS / Mint:
+
+```bash
+sudo apt update
+sudo apt install dotnet-runtime-10.0 dotnet-sdk-10.0 libnss3 libgtk-3-0 libxss1 libasound2t64
+```
+
+If `libasound2t64` is not available on your Debian/Ubuntu version, use:
+
+```bash
+sudo apt install libasound2
+```
+
+Fedora:
+
+```bash
+sudo dnf install dotnet-runtime-10.0 dotnet-sdk-10.0 nss gtk3 libXScrnSaver alsa-lib
+```
+
+openSUSE:
+
+```bash
+sudo zypper install dotnet-runtime-10.0 dotnet-sdk-10.0 mozilla-nss gtk3 libXScrnSaver alsa
+```
+
+NixOS / nix shell example:
+
+```bash
+nix shell nixpkgs#dotnet-sdk_10 nixpkgs#nss nixpkgs#gtk3 nixpkgs#libXScrnSaver nixpkgs#alsa-lib
+```
+
+### Download and run release
+
+```bash
+curl -L -o skua-linux-x64.tar.gz \
+  https://github.com/NaxeCode/Skua/releases/latest/download/skua-linux-x64.tar.gz
+
+tar -xzf skua-linux-x64.tar.gz
+cd skua-linux-x64-*
+
+export SKUA_ELECTRON_BIN=/path/to/electron-8/electron
+export SKUA_FLASH_PLUGIN=/path/to/libpepflashplayer.so
+
+./run-skua.sh
+```
+
+Optional checksum verification:
+
+```bash
+curl -L -o skua-linux-x64.tar.gz.sha256 \
+  https://github.com/NaxeCode/Skua/releases/latest/download/skua-linux-x64.tar.gz.sha256
+sha256sum -c skua-linux-x64.tar.gz.sha256
+```
+
+### Runtime variables
+
+```bash
+SKUA_ELECTRON_BIN=/path/to/electron-8/electron
+SKUA_FLASH_PLUGIN=/path/to/libpepflashplayer.so
+SKUA_FLASH_TRACE=1                 # verbose Linux Flash bridge diagnostics
+SKUA_FLASH_TRACE_PAYLOADS=1        # larger payload previews
+```
+
+### Development run from source
 
 ```bash
 export SKUA_ELECTRON_BIN=/path/to/electron-8/electron
@@ -29,7 +114,7 @@ export SKUA_FLASH_PLUGIN=/path/to/libpepflashplayer.so
 ./scripts/dev-linux-skua.sh
 ```
 
-Create a Linux release artifact:
+Create a Linux release artifact from source:
 
 ```bash
 ./scripts/package-linux-skua.sh
@@ -42,22 +127,13 @@ releases/skua-linux-x64-<commit>.tar.gz
 releases/skua-linux-x64-<commit>.tar.gz.sha256
 ```
 
-Run an unpacked artifact:
+For local/private bundles where you may include local runtime files:
 
 ```bash
-tar -xzf releases/skua-linux-x64-<commit>.tar.gz
-cd skua-linux-x64-<commit>
-export SKUA_ELECTRON_BIN=/path/to/electron-8/electron
-export SKUA_FLASH_PLUGIN=/path/to/libpepflashplayer.so
-./run-skua.sh
+SKUA_PACKAGE_LOCAL_RUNTIME=1 ./scripts/package-linux-skua.sh
 ```
 
-Notes:
-
-- Electron, `node_modules`, and Flash plugin binaries are not redistributed by default.
-- Set `SKUA_PACKAGE_LOCAL_RUNTIME=1 ./scripts/package-linux-skua.sh` only for private/local bundles where you are allowed to include those runtime files.
-- Verbose Linux bridge diagnostics: `SKUA_FLASH_TRACE=1 ./run-skua.sh`.
-- Implementation checklist: [`docs/linux-flash-host-plan.md`](./docs/linux-flash-host-plan.md).
+Implementation checklist: [`docs/linux-flash-host-plan.md`](./docs/linux-flash-host-plan.md).
 
 ### Do we store information online?
 
