@@ -10,6 +10,8 @@
 
 Skua is the successor to [RBot](https://github.com/rodit/RBot) (originally made by "[rodit](https://github.com/rodit)"), now remade and rebranded by [BrenoHenrike](https://github.com/BrenoHenrike/), with the help of [Lord Exelot](https://github.com/BrenoHenrike/), and a handful of scripters. It is a third-party client made by the people mentioned above. It also has many "features" and quirks. Overall, it will make this glorified flash game on steroids a piece of cake.
 
+This fork is extended by [NaxeCode](https://github.com/NaxeCode) to bring Skua to Linux through the Avalonia client, a native Electron 8 + PPAPI Flash sidecar, localhost Flash/C# bridge, Linux packaging, and release artifacts.
+
 ## Linux Preview (Avalonia)
 
 **Latest Linux preview release:** <https://github.com/NaxeCode/Skua/releases/latest>
