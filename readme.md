@@ -2,13 +2,62 @@
 
 ![Skua Icon](https://raw.githubusercontent.com/auqw/Skua/refs/heads/master/SkuaIcon.ico)
 
-## [Usage](./usage.md) | [Contributors](#contributors) | [Build Guide](./BUILD.md) | [Support](#skua-developers)
+## [Usage](./usage.md) | [Build Guide](./BUILD.md) | [Linux Preview](#linux-preview-avalonia) | [Contributors](#contributors) | [Support](#skua-developers)
 
 </div>
 
 ### About Skua
 
 Skua is the successor to [RBot](https://github.com/rodit/RBot) (originally made by "[rodit](https://github.com/rodit)"), now remade and rebranded by [BrenoHenrike](https://github.com/BrenoHenrike/), with the help of [Lord Exelot](https://github.com/BrenoHenrike/), and a handful of scripters. It is a third-party client made by the people mentioned above. It also has many "features" and quirks. Overall, it will make this glorified flash game on steroids a piece of cake.
+
+## Linux Preview (Avalonia)
+
+The Avalonia build can run AQW natively on Linux without Wine by launching a small Electron 8 + PPAPI Flash sidecar and bridging Flash `ExternalInterface` calls back to Skua over localhost WebSocket RPC.
+
+Status:
+
+- Native Linux UI through `Skua.App.Avalonia`.
+- AQW loads in a separate Flash host window.
+- Login, server selection, packet events, and basic scripts work.
+- Windows ActiveX Flash path remains unchanged.
+
+Quick dev run:
+
+```bash
+export SKUA_ELECTRON_BIN=/path/to/electron-8/electron
+export SKUA_FLASH_PLUGIN=/path/to/libpepflashplayer.so
+./scripts/dev-linux-skua.sh
+```
+
+Create a Linux release artifact:
+
+```bash
+./scripts/package-linux-skua.sh
+```
+
+Output:
+
+```txt
+releases/skua-linux-x64-<commit>.tar.gz
+releases/skua-linux-x64-<commit>.tar.gz.sha256
+```
+
+Run an unpacked artifact:
+
+```bash
+tar -xzf releases/skua-linux-x64-<commit>.tar.gz
+cd skua-linux-x64-<commit>
+export SKUA_ELECTRON_BIN=/path/to/electron-8/electron
+export SKUA_FLASH_PLUGIN=/path/to/libpepflashplayer.so
+./run-skua.sh
+```
+
+Notes:
+
+- Electron, `node_modules`, and Flash plugin binaries are not redistributed by default.
+- Set `SKUA_PACKAGE_LOCAL_RUNTIME=1 ./scripts/package-linux-skua.sh` only for private/local bundles where you are allowed to include those runtime files.
+- Verbose Linux bridge diagnostics: `SKUA_FLASH_TRACE=1 ./run-skua.sh`.
+- Implementation checklist: [`docs/linux-flash-host-plan.md`](./docs/linux-flash-host-plan.md).
 
 ### Do we store information online?
 

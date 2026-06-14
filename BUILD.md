@@ -6,6 +6,7 @@ This document provides instructions for building the Skua project from source, i
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [Build Scripts](#build-scripts)
+- [Linux Avalonia Preview](#linux-avalonia-preview)
 - [Manual Building](#manual-building)
 - [CI/CD](#cicd)
 - [Troubleshooting](#troubleshooting)
@@ -43,6 +44,23 @@ This document provides instructions for building the Skua project from source, i
 
 - **Git** for version control
 - **GitHub CLI** for releases
+
+### Linux Preview Requirements
+
+The Linux Avalonia preview additionally needs:
+
+1. **.NET 10 SDK/runtime**
+2. **Electron 8.5.x** with PPAPI plugin support
+3. **Linux PPAPI Flash plugin** (`libpepflashplayer.so`)
+4. **AS3 output SWF** at `Skua.AS3/skua/bin/skua.swf`
+
+Runtime paths can be supplied with:
+
+```bash
+export SKUA_ELECTRON_BIN=/path/to/electron-8/electron
+export SKUA_FLASH_PLUGIN=/path/to/libpepflashplayer.so
+export SKUA_SWF_PATH=/path/to/skua.swf   # optional override
+```
 
 ## Quick Start
 
@@ -130,6 +148,58 @@ The PowerShell script can be run in several ways:
    ```powershell
    powershell.exe -ExecutionPolicy Bypass -File "Build-Skua.ps1"
    ```
+
+## Linux Avalonia Preview
+
+### Development run
+
+```bash
+export SKUA_ELECTRON_BIN=/path/to/electron-8/electron
+export SKUA_FLASH_PLUGIN=/path/to/libpepflashplayer.so
+./scripts/dev-linux-skua.sh
+```
+
+Useful diagnostics:
+
+```bash
+SKUA_FLASH_TRACE=1 ./scripts/dev-linux-skua.sh
+SKUA_FLASH_TRACE=1 SKUA_FLASH_TRACE_PAYLOADS=1 ./scripts/dev-linux-skua.sh
+```
+
+### Package a Linux artifact
+
+```bash
+./scripts/package-linux-skua.sh
+```
+
+This publishes `Skua.App.Avalonia` for `linux-x64`, stages a runnable folder, adds `run-skua.sh`, and writes:
+
+```txt
+releases/skua-linux-x64-<commit>.tar.gz
+releases/skua-linux-x64-<commit>.tar.gz.sha256
+```
+
+Override package metadata:
+
+```bash
+VERSION=preview-1 RELEASES_DIR=./releases ./scripts/package-linux-skua.sh
+```
+
+By default, the package does **not** include Electron, `node_modules`, or Flash plugin binaries. For a private/local-only bundle that includes local runtime files under `tools/linux-flash-host/`, run:
+
+```bash
+SKUA_PACKAGE_LOCAL_RUNTIME=1 ./scripts/package-linux-skua.sh
+```
+
+### Run packaged output
+
+```bash
+tar -xzf releases/skua-linux-x64-<commit>.tar.gz
+cd skua-linux-x64-<commit>
+export SKUA_ELECTRON_BIN=/path/to/electron-8/electron
+export SKUA_FLASH_PLUGIN=/path/to/libpepflashplayer.so
+./run-skua.sh
+```
 
 ## Manual Building
 
