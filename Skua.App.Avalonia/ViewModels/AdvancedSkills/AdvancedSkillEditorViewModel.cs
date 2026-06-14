@@ -50,6 +50,9 @@ public partial class AdvancedSkillEditorViewModel : ObservableRecipient
     [ObservableProperty]
     private string _currentClassName = string.Empty;
 
+    [ObservableProperty]
+    private bool _resetComboOnTargetChange;
+
     public string[] ClassUseModes { get; }
     public SkillRulesViewModel UseRules { get; }
     public IRelayCommand ClearSkillsCommand { get; }
@@ -72,7 +75,7 @@ public partial class AdvancedSkillEditorViewModel : ObservableRecipient
             skillStrings.Add(skill.Convert());
         string skills = string.Join(" | ", skillStrings);
         string modeString = SelectedClassUseMode >= 0 && SelectedClassUseMode < ClassUseModes.Length ? ClassUseModes[SelectedClassUseMode] : "Base";
-        AdvancedSkill advSkill = new(CurrentClassName, skills, CurrentSkillTimeout, modeString, UseWaitModeBool ? SkillUseMode.WaitForCooldown : SkillUseMode.UseIfAvailable);
+        AdvancedSkill advSkill = new(CurrentClassName, skills, CurrentSkillTimeout, modeString, UseWaitModeBool ? SkillUseMode.WaitForCooldown : SkillUseMode.UseIfAvailable, ResetComboOnTargetChange);
         OnPropertyChanged(nameof(CurrentSkillsList));
         Messenger.Send<SaveAdvancedSkillMessage>(new(advSkill));
     }
@@ -159,6 +162,7 @@ public partial class AdvancedSkillEditorViewModel : ObservableRecipient
         recipient.CurrentSkillsList.Clear();
         recipient.CurrentSkillTimeout = message.AdvSkill.SkillTimeout;
         recipient.UseWaitModeBool = message.AdvSkill.SkillUseMode != SkillUseMode.UseIfAvailable;
+        recipient.ResetComboOnTargetChange = message.AdvSkill.ResetComboOnTargetChange;
         recipient.CurrentClassName = message.AdvSkill.ClassName;
         recipient.SelectedClassUseMode = (int)message.AdvSkill.ClassUseMode;
         recipient.CurrentSkillsList.AddRange(message.AdvSkill.Skills.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(s => new SkillItemViewModel(s.Trim())));

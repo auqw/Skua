@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
 
@@ -13,6 +13,13 @@ public class EqualToConverter : IValueConverter
 
         if (value is null || parameter is null)
             return false;
+
+        // Try numeric comparison first
+        if (int.TryParse(value?.ToString() ?? string.Empty, out int intVal) && 
+            int.TryParse(parameter?.ToString() ?? string.Empty, out int intParam))
+        {
+            return intVal == intParam;
+        }
 
         return value.Equals(parameter) || value.ToString().Equals(parameter.ToString());
     }

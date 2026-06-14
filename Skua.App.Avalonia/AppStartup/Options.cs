@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
+using Skua.App.Avalonia.ViewModels.MainMenu;
 using Skua.App.Avalonia.ViewModels.Options;
 using Skua.Core.Interfaces;
 using Skua.Core.Scripts;
@@ -71,6 +72,12 @@ internal class Options
             CreateSettingOptionItem<bool>("Check for AdvanceSkill Sets Updates", "Whether to check for scripts updates when launching the Manager", "CheckAdvanceSkillSetsUpdates"),
             CreateSettingOptionItem<bool>("Auto Update Junk Items", "Whether to auto update junk items when launching the Manager, needs \"Check for Junk Items Updates\" to be true", "AutoUpdateJunkItems"),
             CreateSettingOptionItem<bool>("Check for Junk Items Updates", "Whether to check for junk items updates when launching the Manager", "CheckJunkItemsUpdates"),
+            
+            new CommandOptionItemViewModel<bool>("Show Username in Title", "Whether to show the current username in the window title and tray tooltip", "ShowUsernameInTitle", new RelayCommand<bool>(value =>
+            {
+                Ioc.Default.GetRequiredService<MainViewModel>().ShowUsernameInTitle = value;
+            }), Ioc.Default.GetRequiredService<ISettingsService>().Get("ShowUsernameInTitle", false)),
+            
             new CommandOptionItemViewModel<int>("* Client Animation Frame-rate", "Client side animation frame-rate setting", "ClientAnim", "FPS", new RelayCommand<string>(value =>
             {
                 if (!int.TryParse(value, out int result) || result < 1)

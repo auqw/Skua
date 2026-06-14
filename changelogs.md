@@ -1,3 +1,66 @@
+# Skua 1.4.3.0
+## Released: March 21, 2026
+
+# Drops Fix Summary
+
+## What was fixed
+- Stabilized the drop handling loop to avoid breaking on bad states or interruptions.
+- Improved handling for pickup names/IDs and `Reject Else` behavior.
+
+## General changes
+- Updated drop-task state checks so start/enable logic tracks an actively running task.
+- Added safer cancellation/exception handling in the drop processing loop.
+- Switched pickup operations to snapshot-based arrays each cycle.
+- Improved whitelist construction for `Reject Else` to account for configured names, IDs, and active drops.
+- Corrected drop update broadcasts for pickup IDs.
+
+## Result
+- More reliable drop processing.
+- Cleaner pickup/reject behavior.
+- Reduced chance of stuck or failed drop handling.
+
+<!-- --------------------------- -->
+# Hotkey Fix Summary
+
+## What was fixed
+- Prevented invalid modifier-only combos like `Ctrl+Ctrl` from being accepted.
+- Stopped crashes caused by invalid hotkey strings during hotkey parsing/reload.
+
+## General changes
+- Added validation in the hotkey assignment dialog to require a non-modifier key.
+- Added inline hint text to guide users during key capture and invalid input.
+- Hardened hotkey parsing to safely return invalid instead of throwing exceptions.
+
+## Result
+- Invalid combinations are now rejected gracefully.
+- Valid hotkeys continue to save/reload normally.
+- Hotkey setup UX is clearer and safer.
+
+<!-- --------------------------- -->
+# Options Fix Summary
+
+## What was fixed
+- Enum-based options could miss category assignment because constructor flow returned early for enums.
+
+## General changes
+- Updated `Skua.Core/ViewModels/OptionContainerItemViewModel.cs`.
+- Moved `Category = option.Category;` earlier in the constructor (before the enum early-return path).
+
+## Result
+- Enum options now keep their category metadata consistently.
+- Option grouping/display behavior is now aligned with non-enum options.
+
+## New Contributors
+* @robmart made their first contribution in https://github.com/auqw/Skua/pull/37
+
+**Full Changelog**: https://github.com/auqw/Skua/compare/1.4.2.0...1.4.3.0
+
+## What's Changed
+* fix enum options by @ArrowDev123 in https://github.com/auqw/Skua/pull/36
+* Give access to missing packets by @robmart in https://github.com/auqw/Skua/pull/37
+
+---
+
 # Skua 1.4.2.0
 ## Released: February 12, 2026
 

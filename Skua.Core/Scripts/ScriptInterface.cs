@@ -339,8 +339,12 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
         string connDetail = Flash.IsNull("mcConnDetail.stage") ? "null" : Flash.GetGameObject("mcConnDetail.txtDetail.text", "null")!;
         if (connDetail == "null")
             return (Environment.TickCount, connDetail);
-        if (connDetail.Contains("has been lost") && !_waitForLogin)
+        string connDetailLower = connDetail.ToLowerInvariant();
+        if ((connDetailLower.Contains("has been lost") || connDetailLower.Contains("restart") || connDetailLower.Contains("maintenance")) && !_waitForLogin)
+        {
+            Log($"Connection state changed ({connDetail}). Triggering re-login.");
             _ = OnLogout();
+        }
         else if (Environment.TickCount - lastConnChange >= Options.LoadTimeout && connDetail == lastConnDetail && !_waitForLogin)
         {
             if (connDetail.Contains("loading map"))
@@ -658,8 +662,10 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
         {
             Stats.Relogins++;
             bool relogged = await Servers.EnsureRelogin(_reloginCTS.Token);
-            if (startScript)
+            if (startScript && relogged)
                 await Ioc.Default.GetService<IScriptManager>()!.StartScript();
+            else if (startScript && !relogged)
+                Log("Skipping script restart because re-login did not succeed.");
             Log($"Re-login was {(relogged ? "successful" : "cancelled or unsuccessful")}.");
             _reloginCTS.Dispose();
             _reloginCTS = null;
