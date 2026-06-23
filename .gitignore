@@ -384,6 +384,7 @@ FodyWeavers.xsd
 /ignore
 desktop.ini
 WARP.md
+AGENTS.md
 Skua.Installer/ComponentsGenerated.wxs
 Skua.Installer/FFDecComponentsGenerated.wxs
 Skua.Installer/ComponentsGenerated.wxs

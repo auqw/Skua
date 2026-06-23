@@ -4,7 +4,7 @@ import flash.events.Event;
 import skua.Main;
 
 public class Modules {
-    private static var _modules:* = new Object();
+    private static var _modules:* = {};
 
     public static function getModule(name:String):Module {
         return _modules[name];
@@ -46,6 +46,7 @@ public class Modules {
     }
 
     public static function init():void {
+        registerModule(new QuestRequirementWiki());
         registerModule(new QuestItemRates());
         registerModule(new HidePlayers());
         registerModule(new DisableCollisions());

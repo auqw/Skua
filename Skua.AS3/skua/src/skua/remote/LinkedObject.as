@@ -11,7 +11,7 @@ public class LinkedObject {
         this._id = id;
         this._parent = parent;
         this._name = name;
-        this._children = new Object();
+        this._children = {};
     }
 
     public function getId():int {
