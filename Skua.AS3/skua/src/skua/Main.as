@@ -12,6 +12,7 @@ import flash.events.MouseEvent;
 import flash.events.TimerEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
+import flash.system.System;
 import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
 import flash.system.Security;
@@ -64,6 +65,10 @@ public class Main extends MovieClip {
     public static function loadGame():void {
         Main.instance.onAddedToStage();
         Main.instance.external.call('pre-load');
+    }
+
+    public static function getFlashTotalMemory():Number {
+        return Number(System.totalMemory);
     }
 
     public static function setBackgroundValues(sBGValue:String, customBackground:String):void {
