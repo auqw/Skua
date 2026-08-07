@@ -1,3 +1,15 @@
+# Skua 1.4.4.1
+## Released: August 07, 2026
+
+## What's Changed
+This is "temporary" until tato comes back and fixes his changes
+* Revert ScriptRepoView UI by @l0newolf12 in https://github.com/auqw/Skua/pull/47
+
+
+**Full Changelog**: https://github.com/auqw/Skua/compare/1.4.4.0...1.4.4.1
+
+---
+
 # Skua 1.4.4.0
 ## Released: August 01, 2026
 
