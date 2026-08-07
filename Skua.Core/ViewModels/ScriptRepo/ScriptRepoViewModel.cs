@@ -48,6 +48,7 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     public int ScriptQuantity => _getScriptsService?.Total ?? 0;
     public int BotScriptQuantity => _scripts.Count;
     public IRelayCommand OpenScriptFolderCommand { get; }
+    public Action? RebuildIndexCallback { get; set; }
 
     private void SetProgressMessage(string message)
     {
@@ -106,6 +107,8 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
             });
             _scripts.AddRange(scriptViewModels);
         }
+
+        RebuildIndexCallback?.Invoke();
 
         OnPropertyChanged(nameof(Scripts));
         OnPropertyChanged(nameof(DownloadedQuantity));

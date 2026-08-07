@@ -44,11 +44,22 @@
                             DockPanel.Dock="Right"
                             Command="{Binding RefreshScriptsCommand}" />
 
-                    <TextBox x:Name="SearchBox"
-                             Margin="10,0"
-                             Padding="6"
-                             materialDesign:HintAssist.Hint="Search scripts..."
-                             TextChanged="TextBox_TextChanged" />
+                    <DockPanel Width="300" LastChildFill="True" Margin="10,0">
+                        <ComboBox x:Name="SearchScopeCombo"
+                                  Width="80"
+                                  Margin="0,0,6,0"
+                                  materialDesign:HintAssist.Hint="Scope"
+                                  SelectedIndex="0">
+                            <ComboBoxItem Content="All" />
+                            <ComboBoxItem Content="Name" />
+                            <ComboBoxItem Content="Tag" />
+                            <ComboBoxItem Content="Desc" />
+                        </ComboBox>
+                        <TextBox x:Name="SearchBox"
+                                 Padding="6"
+                                 materialDesign:HintAssist.Hint="Search scripts..."
+                                 TextChanged="TextBox_TextChanged" />
+                    </DockPanel>
                 </DockPanel>
             </Border>
             <!-- ================= DATA GRID ================= -->

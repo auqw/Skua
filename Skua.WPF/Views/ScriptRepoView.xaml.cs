@@ -2,6 +2,7 @@ using Skua.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -11,6 +12,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Skua.WPF.Views;
+
+public enum SearchScope
+{
+    All,
+    Name,
+    Tag,
+    Desc
+}
 
 public partial class ScriptRepoView : UserControl
 {
@@ -29,6 +38,12 @@ public partial class ScriptRepoView : UserControl
     private HashSet<ScriptInfoViewModel>? _activeSet;
 
     private CancellationTokenSource? _searchCts;
+
+    private SearchScope _currentScope = SearchScope.All;
+
+    private ComboBox? _searchScopeCombo;
+
+    private const string SearchScopeComboBoxName = "SearchScopeCombo";
 
     public ScriptRepoView()
     {
@@ -55,14 +70,35 @@ public partial class ScriptRepoView : UserControl
         // IMPORTANT: single shared view instance
         _view = CollectionViewSource.GetDefaultView(vm.Scripts);
 
-        // reset filter every time view is recreated
+        _searchScopeCombo = (ComboBox)FindName(SearchScopeComboBoxName);
+        _searchScopeCombo.SelectionChanged += SearchScope_SelectionChanged;
+
+        BuildIndex(_items);
+
+        if (_vm is not null)
+            _vm.RebuildIndexCallback = () => BuildIndex(_items);
+
         _view.Filter = null;
+    }
+
+    private void SearchScope_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_searchScopeCombo?.SelectedIndex is int idx && idx >= 0)
+            _currentScope = (SearchScope)idx;
+        else
+            _currentScope = SearchScope.All;
+
+        if (!string.IsNullOrWhiteSpace(SearchBox?.Text))
+        {
+            string query = SearchBox.Text;
+            ApplySearch(query, CancellationToken.None);
+        }
     }
 
     // =========================================================
     // BUILD INVERTED INDEX (ONE TIME)
     // =========================================================
-    private void BuildIndex(IList<ScriptInfoViewModel> scripts)
+    public void BuildIndex(IList<ScriptInfoViewModel> scripts)
     {
         _index.Clear();
 
@@ -73,6 +109,7 @@ public partial class ScriptRepoView : UserControl
             AddToIndex(item.Info?.Name, item);
             AddToIndex(item.Info?.Description, item);
             AddToIndex(item.ScriptPath, item);
+            AddToIndex(Path.GetFileNameWithoutExtension(item.ScriptPath), item);
 
             if (item.InfoTags == null)
                 continue;
@@ -93,14 +130,13 @@ public partial class ScriptRepoView : UserControl
 
         for (int i = 0; i <= span.Length; i++)
         {
-            if (i != span.Length &&
-                span[i] != ' ' && span[i] != '_' && span[i] != '-' &&
-                span[i] != '.' && span[i] != '/' && span[i] != '\\')
-                continue;
+            bool shouldSplit = i != span.Length &&
+                (span[i] == ' ' || span[i] == '_' || span[i] == '-' ||
+                 span[i] == '.' || span[i] == '/' || span[i] == '\\');
 
-            if (i > start)
+            if (i > start && (shouldSplit || i == span.Length))
             {
-                string token = span.Slice(start, i - start).ToString();
+                string token = span.Slice(start, i - start).ToString().ToLowerInvariant();
 
                 if (!_index.TryGetValue(token, out var list))
                 {
@@ -109,9 +145,41 @@ public partial class ScriptRepoView : UserControl
                 }
 
                 list.Add(item);
+
+                start = i + 1;
             }
 
-            start = i + 1;
+            if (shouldSplit)
+                continue;
+
+            if (i > 0 && i < span.Length && char.IsUpper(span[i]) &&
+                char.IsLower(span[i - 1]))
+            {
+                string token = span.Slice(start, i - start).ToString().ToLowerInvariant();
+
+                if (!_index.TryGetValue(token, out var list))
+                {
+                    list = new List<ScriptInfoViewModel>(4);
+                    _index[token] = list;
+                }
+
+                list.Add(item);
+
+                start = i;
+            }
+        }
+
+        if (start < span.Length)
+        {
+            string token = span.Slice(start).ToString().ToLowerInvariant();
+
+            if (!_index.TryGetValue(token, out var list))
+            {
+                list = new List<ScriptInfoViewModel>(4);
+                _index[token] = list;
+            }
+
+            list.Add(item);
         }
     }
 
@@ -168,31 +236,51 @@ public partial class ScriptRepoView : UserControl
             if (token.IsCancellationRequested)
                 return;
 
-            string t = tokens[i];
+            string t = tokens[i].ToLowerInvariant();
 
-            if (_index.TryGetValue(t, out var list))
+            if (_currentScope == SearchScope.All)
             {
-                if (result is null)
+                if (_index.TryGetValue(t, out var list))
                 {
-                    result = new HashSet<ScriptInfoViewModel>(list);
+                    if (result is null)
+                    {
+                        result = new HashSet<ScriptInfoViewModel>(list);
+                    }
+                    else
+                    {
+                        result.IntersectWith(list);
+                    }
                 }
                 else
                 {
-                    result.IntersectWith(list);
+                    HashSet<ScriptInfoViewModel> tempSet = new();
+
+                    for (int j = 0; j < _items.Count; j++)
+                    {
+                        var item = _items[j];
+
+                        if (ItemContains(item, t, _currentScope))
+                            tempSet.Add(item);
+                    }
+
+                    result?.IntersectWith(tempSet);
+                    result ??= tempSet;
                 }
             }
             else
             {
-                // 🔥 fallback: partial scan instead of failing everything
-                result ??= new HashSet<ScriptInfoViewModel>();
+                HashSet<ScriptInfoViewModel> tempSet = new();
 
                 for (int j = 0; j < _items.Count; j++)
                 {
                     var item = _items[j];
 
-                    if (ItemContains(item, t))
-                        result.Add(item);
+                    if (ItemContains(item, t, _currentScope))
+                        tempSet.Add(item);
                 }
+
+                result?.IntersectWith(tempSet);
+                result ??= tempSet;
             }
         }
 
@@ -202,24 +290,36 @@ public partial class ScriptRepoView : UserControl
         _view.Refresh();
     }
 
-    private static bool ItemContains(ScriptInfoViewModel item, string token)
+    private static bool ItemContains(ScriptInfoViewModel item, string token, SearchScope scope)
     {
-        if (item.Info?.Name?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
-            return true;
-
-        if (item.Info?.Description?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
-            return true;
-
-        if (item.ScriptPath?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
-            return true;
-
-        if (item.InfoTags == null)
-            return false;
-
-        for (int i = 0; i < item.InfoTags.Count; i++)
+        if (scope == SearchScope.All || scope == SearchScope.Name)
         {
-            if (item.InfoTags[i]?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+            if (item.Info?.Name?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
                 return true;
+        }
+
+        if (scope == SearchScope.All || scope == SearchScope.Desc)
+        {
+            if (item.Info?.Description?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        }
+
+        if (scope == SearchScope.All || scope == SearchScope.Tag)
+        {
+            if (item.InfoTags == null)
+                return false;
+
+            for (int i = 0; i < item.InfoTags.Count; i++)
+            {
+                if (string.Equals(item.InfoTags[i], token, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            for (int i = 0; i < item.InfoTags.Count; i++)
+            {
+                if (item.InfoTags[i]?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
         }
 
         return false;
