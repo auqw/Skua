@@ -68,7 +68,7 @@
         "state": "uploaded",
         "size": 23547294,
         "digest": "sha256:ef9049ac0fa5e8393a7102a41706877ac37194c2f0ad4c40da0fbf66971471d8",
-        "download_count": 1351,
+        "download_count": 1385,
         "created_at": "2026-08-07T00:04:49Z",
         "updated_at": "2026-08-07T00:04:53Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.4.1/Skua-1.4.4.1-Release-x64.msi"
@@ -104,7 +104,7 @@
         "state": "uploaded",
         "size": 23530914,
         "digest": "sha256:12b81c27f2436e40879498203b0af42828cc506a41788705fd25c0db62edd177",
-        "download_count": 11,
+        "download_count": 12,
         "created_at": "2026-08-07T00:04:53Z",
         "updated_at": "2026-08-07T00:04:57Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.4.1/Skua-1.4.4.1-Release-x86.msi"
