@@ -164,9 +164,13 @@
 
                                             <TextBlock Text="{Binding Info.Description}"
                                                        Foreground="#AAA"
-                                                       TextTrimming="CharacterEllipsis"
-                                                       MaxHeight="32"
+                                                       TextWrapping="Wrap"
                                                        Margin="0,4,0,0" />
+
+                                            <TextBlock Text="{Binding ScriptPathFromScriptsDir}"
+                                                       Foreground="#666"
+                                                       FontSize="10"
+                                                       Margin="0,2,0,0" />
 
                                             <ItemsControl ItemsSource="{Binding InfoTags}"
                                                           Margin="0,6,0,0">
@@ -195,19 +199,8 @@
                                         <!-- RIGHT ACTIONS -->
                                         <StackPanel Grid.Column="1"
                                                     Orientation="Horizontal"
-                                                    VerticalAlignment="Center">
-
-                                            <StackPanel.Style>
-                                                <Style TargetType="StackPanel">
-                                                    <Setter Property="Opacity" Value="0" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=DataGridRow}}"
-                                                                     Value="True">
-                                                            <Setter Property="Opacity" Value="1" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
+                                                    VerticalAlignment="Center"
+                                                    Margin="0,0,0,0">
 
                                             <Button Content="Start"
                                                     Width="70"
