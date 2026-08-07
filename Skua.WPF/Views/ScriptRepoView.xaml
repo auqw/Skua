@@ -89,11 +89,13 @@
                             Header="Open in VSCode"
                             IsEnabled="{Binding PlacementTarget.DataContext.SelectedItem.Downloaded, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}" />
                         <MenuItem
-                            Command="{Binding PlacementTarget.DataContext.LoadScriptCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            Command="{Binding PlacementTarget.DataContext.SelectedItem.LoadScriptCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            CommandParameter="{Binding PlacementTarget.DataContext.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                             Header="Load"
                             IsEnabled="{Binding PlacementTarget.DataContext.SelectedItem.Downloaded, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}" />
                         <MenuItem
-                            Command="{Binding PlacementTarget.DataContext.StartScriptCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            Command="{Binding PlacementTarget.DataContext.SelectedItem.StartScriptCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            CommandParameter="{Binding PlacementTarget.DataContext.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                             Header="Start"
                             IsEnabled="{Binding PlacementTarget.DataContext.SelectedItem.Downloaded, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}" />
                     </ContextMenu>
@@ -200,7 +202,7 @@
                                         <StackPanel Grid.Column="1"
                                                     Orientation="Horizontal"
                                                     VerticalAlignment="Center"
-                                                    Margin="0,0,0,0">
+                                                    Margin="8,0,0,0">
 
                                             <Button Content="Start"
                                                     Width="70"
