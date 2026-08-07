@@ -22,6 +22,7 @@ public partial class ScriptInfoViewModel : ObservableObject
     public string LocalFile => Info.LocalFile;
     public string FilePath => Info.FilePath;
     public string ScriptPath => Path.Combine(ClientFileSources.SkuaScriptsDIR, FilePath.Replace("/", "\\"));
+    public string ScriptPathFromScriptsDir => ScriptPath.Replace(ClientFileSources.SkuaScriptsDIR + Path.DirectorySeparatorChar, "");
 
     private ObservableCollection<string>? _infoTags;
     public ObservableCollection<string> InfoTags => _infoTags ??= new(Info.Tags);

@@ -1,3 +1,31 @@
+# Skua 1.4.4.1
+## Released: August 07, 2026
+
+## What's Changed
+This is "temporary" until tato comes back and fixes his changes
+* Revert ScriptRepoView UI by @l0newolf12 in https://github.com/auqw/Skua/pull/47
+
+
+**Full Changelog**: https://github.com/auqw/Skua/compare/1.4.4.0...1.4.4.1
+
+---
+
+# Skua 1.4.4.0
+## Released: August 01, 2026
+
+Will have tato update this
+
+## What's Changed
+* Added a feature to show the username in the application window and tray icon, and added features in Skua Manager to unselect selected accounts and move a single selected account up or down in the list by @l0newolf12 in https://github.com/auqw/Skua/pull/42
+* Added a toggle to Advanced Skills to reset on target change by @l0newolf12 in https://github.com/auqw/Skua/pull/44
+
+## New Contributors
+* @l0newolf12 made their first contribution in https://github.com/auqw/Skua/pull/42
+
+**Full Changelog**: https://github.com/auqw/Skua/compare/1.4.3.0...1.4.4.0
+
+---
+
 # Skua 1.4.3.0
 ## Released: March 21, 2026
 

@@ -1,4 +1,4 @@
-﻿using Skua.Core.ViewModels;
+using Skua.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
