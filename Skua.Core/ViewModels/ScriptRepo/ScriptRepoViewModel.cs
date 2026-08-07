@@ -49,6 +49,12 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     public int BotScriptQuantity => _scripts.Count;
     public IRelayCommand OpenScriptFolderCommand { get; }
 
+    private void SetProgressMessage(string message)
+    {
+        ProgressReportMessage = message;
+        _ = Task.Delay(3000).ContinueWith(_ => ProgressReportMessage = string.Empty);
+    }
+
     [RelayCommand]
     private void OpenScript()
     {
@@ -112,6 +118,7 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     public void ProgressHandler(string message)
     {
         ProgressReportMessage = message;
+        _ = Task.Delay(3000).ContinueWith(_ => ProgressReportMessage = string.Empty);
     }
 
     [RelayCommand]
@@ -120,9 +127,9 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
         IsBusy = true;
         if (_selectedItem is null)
             return;
-        ProgressReportMessage = $"Deleting {_selectedItem.FileName}.";
+        SetProgressMessage($"Deleting {_selectedItem.FileName}.");
         await _getScriptsService.DeleteScriptAsync(_selectedItem.Info);
-        ProgressReportMessage = $"Deleted {_selectedItem.FileName}.";
+        SetProgressMessage($"Deleted {_selectedItem.FileName}.");
         _selectedItem.Downloaded = false;
         OnPropertyChanged(nameof(DownloadedQuantity));
         OnPropertyChanged(nameof(OutdatedQuantity));
@@ -137,9 +144,9 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
         IsBusy = true;
         if (_selectedItem is null)
             return;
-        ProgressReportMessage = $"Downloading {_selectedItem.FileName}.";
+        SetProgressMessage($"Downloading {_selectedItem.FileName}.");
         await _getScriptsService.DownloadScriptAsync(_selectedItem.Info);
-        ProgressReportMessage = $"Downloaded {_selectedItem.FileName}.";
+        SetProgressMessage($"Downloaded {_selectedItem.FileName}.");
         _selectedItem.Downloaded = true;
         OnPropertyChanged(nameof(DownloadedQuantity));
         OnPropertyChanged(nameof(OutdatedQuantity));
@@ -152,9 +159,9 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     private async Task UpdateAll()
     {
         IsBusy = true;
-        ProgressReportMessage = "Updating scripts...";
+        SetProgressMessage("Updating scripts...");
         int count = await _getScriptsService.DownloadAllWhereAsync(s => s.Outdated);
-        ProgressReportMessage = $"Updated {count} scripts.";
+        SetProgressMessage($"Updated {count} scripts.");
         await RefreshScriptsList();
     }
 
@@ -162,9 +169,9 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     private async Task DownloadAll()
     {
         IsBusy = true;
-        ProgressReportMessage = "Downloading outdated/missing scripts...";
+        SetProgressMessage("Downloading outdated/missing scripts...");
         int count = await Task.Run(async () => await _getScriptsService.DownloadAllWhereAsync(s => !s.Downloaded || s.Outdated));
-        ProgressReportMessage = $"Downloaded {count} scripts.";
+        SetProgressMessage($"Downloaded {count} scripts.");
         await RefreshScriptsList();
     }
 
