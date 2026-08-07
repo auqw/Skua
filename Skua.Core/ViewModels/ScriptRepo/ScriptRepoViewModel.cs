@@ -20,7 +20,7 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
 
     protected override void OnActivated()
     {
-        _ = RefreshScriptsList();
+        _ = RefreshScripts(CancellationToken.None);
     }
 
     private readonly IGetScriptsService _getScriptsService;

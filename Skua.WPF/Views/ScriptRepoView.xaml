@@ -4,233 +4,263 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:Skua.WPF.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vms="clr-namespace:Skua.Core.ViewModels;assembly=Skua.Core"
-    xmlns:wpf="clr-namespace:Skua.WPF"
-    d:DataContext="{d:DesignInstance vms:ScriptRepoViewModel}"
-    d:DesignHeight="600"
-    d:DesignWidth="850"
-    mc:Ignorable="d">
-    <Grid Margin="6">
-        <DockPanel>
-            <DockPanel Margin="0,0,0,6" DockPanel.Dock="Top">
-                <Button
-                    Margin="0,0,3,0"
-                    Command="{Binding UpdateAllCommand}"
-                    Content="Update All"
-                    DockPanel.Dock="Left"
-                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}" />
-                <Button
-                    Margin="3,0"
-                    Command="{Binding DownloadAllCommand}"
-                    Content="Download All"
-                    DockPanel.Dock="Left"
-                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}" />
-                <Button
-                    Margin="3,0,0,0"
-                    Command="{Binding RefreshScriptsCommand}"
-                    Content="Refresh"
-                    DockPanel.Dock="Right"
-                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}" />
-                <TextBox
-                    x:Name="SearchBox"
-                    Margin="3,0"
-                    materialDesign:HintAssist.Hint="Search:"
-                    MaxLines="1"
-                    UseLayoutRounding="True"
-                    TextChanged="TextBox_TextChanged" />
-            </DockPanel>
-            <Border
-                Margin="0,6,0,0"
-                Background="{DynamicResource MaterialDesignPaper}"
-                BorderBrush="{DynamicResource PrimaryHueLightBrush}"
-                BorderThickness="1"
-                CornerRadius="4"
-                DockPanel.Dock="Bottom">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock
-                        Grid.Column="0"
-                        Margin="6,4,2,4"
-                        VerticalAlignment="Center"
-                        Text="Bot Scripts: " />
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="2"
-                        VerticalAlignment="Center">
-                        <Run Text="{Binding BotScriptQuantity, Mode=OneWay, FallbackValue=000}" />
-                    </TextBlock>
-                    <TextBlock
-                        Grid.Column="2"
-                        Margin="6,4,2,4"
-                        VerticalAlignment="Center"
-                        Text="Downloaded Script Files:" />
-                    <TextBlock
-                        Grid.Column="3"
-                        Margin="2"
-                        VerticalAlignment="Center">
-                        <Run Text="{Binding DownloadedQuantity, Mode=OneWay, FallbackValue=000}" />
-                        <Run Text="/" />
-                        <Run Text="{Binding ScriptQuantity, Mode=OneWay, FallbackValue=000}" />
-                    </TextBlock>
-                    <TextBlock
-                        Grid.Column="4"
-                        Margin="6,4,2,4"
-                        VerticalAlignment="Center"
-                        Text="Outdated:" />
-                    <TextBlock
-                        Grid.Column="5"
-                        Margin="2"
-                        VerticalAlignment="Center"
-                        Text="{Binding OutdatedQuantity, Mode=OneWay, FallbackValue=0}" />
-                </Grid>
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance vms:ScriptRepoViewModel}">
+
+    <Grid Margin="8">
+
+        <!-- ================= MAIN LAYOUT ================= -->
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- ================= TOP BAR ================= -->
+            <Border Grid.Row="0"
+                    Margin="0,0,0,8"
+                    Padding="10"
+                    Background="#1E1E1E"
+                    CornerRadius="6">
+
+                <DockPanel LastChildFill="True">
+
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                        <Button Content="Update All"
+                                Margin="0,0,6,0"
+                                Command="{Binding UpdateAllCommand}" />
+
+                        <Button Content="Download All"
+                                Margin="0,0,6,0"
+                                Command="{Binding DownloadAllCommand}" />
+                    </StackPanel>
+
+                    <Button Content="Refresh"
+                            DockPanel.Dock="Right"
+                            Command="{Binding RefreshScriptsCommand}" />
+
+                    <TextBox x:Name="SearchBox"
+                             Margin="10,0"
+                             Padding="6"
+                             materialDesign:HintAssist.Hint="Search scripts..."
+                             TextChanged="TextBox_TextChanged" />
+                </DockPanel>
             </Border>
-            <DataGrid
-                x:Name="ScriptsDataGrid"
-                AutoGenerateColumns="False"
-                EnableRowVirtualization="True"
-                VirtualizingPanel.ScrollUnit="Pixel"
-                HorizontalScrollBarVisibility="Disabled"
-                IsEnabled="{Binding ElementName=ScriptsDataGrid, Path=HasItems}"
-                IsReadOnly="True"
-                ItemsSource="{Binding Scripts}"
-                SelectedItem="{Binding SelectedItem}"
-                SelectionMode="Single"
-                SelectionUnit="FullRow">
+            <!-- ================= DATA GRID ================= -->
+            <DataGrid Grid.Row="1"
+                      x:Name="ScriptsDataGrid"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      HeadersVisibility="None"
+                      GridLinesVisibility="None"
+
+                      EnableRowVirtualization="True"
+                      EnableColumnVirtualization="True"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling"
+
+                      VirtualizingPanel.ScrollUnit="Pixel"
+                      ScrollViewer.CanContentScroll="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+
+                      SelectedItem="{Binding SelectedItem}"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow"
+                      PreviewMouseRightButtonDown="ScriptsDataGrid_PreviewMouseRightButtonDown">
+
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem
-                            Command="{Binding DownloadCommand}"
+                            Command="{Binding PlacementTarget.DataContext.DownloadCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                             Header="Download"
-                            IsEnabled="{Binding SelectedItem.Downloaded, Converter={StaticResource InvertBooleanConverter}, FallbackValue=False}" />
+                            IsEnabled="{Binding PlacementTarget.DataContext.SelectedItem.Downloaded, Converter={StaticResource InvertBooleanConverter}, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}" />
                         <MenuItem
-                            Command="{Binding DeleteCommand}"
+                            Command="{Binding PlacementTarget.DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                             Header="Delete"
-                            IsEnabled="{Binding SelectedItem.Downloaded, FallbackValue=False}" />
+                            IsEnabled="{Binding PlacementTarget.DataContext.SelectedItem.Downloaded, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}" />
                         <MenuItem
-                            Command="{Binding OpenScriptCommand}"
+                            Command="{Binding PlacementTarget.DataContext.OpenScriptCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                             Header="Open in VSCode"
-                            IsEnabled="{Binding SelectedItem.Downloaded, FallbackValue=False}" />
+                            IsEnabled="{Binding PlacementTarget.DataContext.SelectedItem.Downloaded, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}" />
+                        <MenuItem
+                            Command="{Binding PlacementTarget.DataContext.LoadScriptCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            Header="Load"
+                            IsEnabled="{Binding PlacementTarget.DataContext.SelectedItem.Downloaded, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}" />
+                        <MenuItem
+                            Command="{Binding PlacementTarget.DataContext.StartScriptCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                            Header="Start"
+                            IsEnabled="{Binding PlacementTarget.DataContext.SelectedItem.Downloaded, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
-                <DataGrid.Resources>
-                    <DataTemplate x:Key="ScriptFileInfoTemplate">
-                        <StackPanel Orientation="Vertical">
-                            <DockPanel>
-                                <TextBlock Text="Name:"
-                                    Foreground="#919191"
-                                    Margin="30,0,5,0" />
-                                <TextBlock Text="{Binding Info.Name}"
-                                    Foreground="#97d2de"
-                                    FontWeight="DemiBold" />
-                            </DockPanel>
-                            <DockPanel>
-                                <TextBlock Text="Description:"
-                                     Foreground="#919191"
-                                     Margin="0,0,5,0" />
-                                <TextBlock
-                                    TextWrapping="Wrap"
-                                    Text="{Binding Info.Description}"
-                                     Margin="0,0,0,5" />
-                            </DockPanel>
-                            <DockPanel>
-                                <TextBlock Text="Tags:"
-                                    Foreground="#919191"
-                                    Margin="40,0,5,0" />
-                                <ItemsControl ItemsSource="{Binding InfoTags}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border
-                                                BorderBrush="#97d2de"
-                                                BorderThickness="1"
-                                                CornerRadius="5"
-                                                Padding="5,0,5,2"
-                                                Margin="0,1,5,5">
-                                                <TextBlock
-                                                    Foreground="#97d2de"
-                                                    Text="{Binding}" />
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </DockPanel>
-                            <DockPanel>
-                                <TextBlock Text="ScriptPath:"
-                                     Foreground="#919191"
-                                     Margin="9,0,5,5" />
-                                <TextBlock
-                                    TextWrapping="Wrap"
-                                    Foreground="#a8a8a8"
-                                    Text="{Binding ScriptPath}" />
-                            </DockPanel>
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate x:Key="ScriptFileActionTemplate">
-                        <DockPanel>
-                            <Button Content="Start"
-                                Width="70"
-                                Command="{Binding StartScriptCommand}"
-                                CommandParameter="{Binding}"
-                                IsEnabled="{Binding Downloaded, FallbackValue=False}"
-                                Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsManagerMode, Converter={StaticResource InverseBooleanToVisibilityConverter}, FallbackValue=Visible}" />
-                            <Button Content="Load"
-                                Width="70"
-                                Command="{Binding LoadScriptCommand}"
-                                CommandParameter="{Binding}"
-                                IsEnabled="{Binding Downloaded, FallbackValue=False}" />
-                        </DockPanel>
-                    </DataTemplate>
-                    <Style x:Key="CenterGridHeaderStyle" TargetType="DataGridColumnHeader">
-                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                        <Setter Property="Background" Value="Transparent" />
-                    </Style>
-                </DataGrid.Resources>
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn CellTemplate="{StaticResource ScriptFileInfoTemplate}"
-                         Header="Script"
-                         Width="600*" />
-                    <DataGridTemplateColumn CellTemplate="{StaticResource ScriptFileActionTemplate}"
-                         Header="Action"
-                         HeaderStyle="{StaticResource CenterGridHeaderStyle}"
-                         Width="180" />
-                </DataGrid.Columns>
+
+                <!-- ROW STYLE -->
                 <DataGrid.RowStyle>
-                    <Style BasedOn="{StaticResource MaterialDesignDataGridRow}" TargetType="DataGridRow">
-                        <Style.Resources>
-                            <SolidColorBrush x:Key="DownloadedBrush" Opacity="0.2" Color="#456796" />
-                            <SolidColorBrush x:Key="NotDownloadedBrush" Opacity="0.2" Color="Red" />
-                            <SolidColorBrush x:Key="OutdatedBrush" Opacity="0.2" Color="Yellow" />
-                        </Style.Resources>
+                    <Style TargetType="DataGridRow"
+                           BasedOn="{StaticResource MaterialDesignDataGridRow}">
+
+                        <Setter Property="Background" Value="Transparent" />
+
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Downloaded}" Value="True">
-                                <Setter Property="Background" Value="{StaticResource DownloadedBrush}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Downloaded}" Value="False">
-                                <Setter Property="Background" Value="{StaticResource NotDownloadedBrush}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Outdated}" Value="True">
-                                <Setter Property="Background" Value="{StaticResource OutdatedBrush}" />
-                            </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.97" />
+                            </Trigger>
+
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#2D2D2D" />
+                            </Trigger>
                         </Style.Triggers>
                     </Style>
                 </DataGrid.RowStyle>
+
+                <!-- COLUMN -->
+                <DataGrid.Columns>
+
+                    <DataGridTemplateColumn Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+
+                            <DataTemplate>
+
+                                <Border Margin="4"
+                                        Padding="10"
+                                        Background="#1E1E1E"
+                                        CornerRadius="6"
+                                        BorderBrush="#2A2A2A"
+                                        BorderThickness="1">
+
+                                    <!-- TOOLTIP -->
+                                    <Border.ToolTip>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Info.Name}"
+                                                       FontWeight="Bold"
+                                                       Foreground="White" />
+
+                                            <TextBlock Text="{Binding Info.Description}"
+                                                       TextWrapping="Wrap"
+                                                       Width="260"
+                                                       Foreground="#AAA" />
+                                        </StackPanel>
+                                    </Border.ToolTip>
+
+                                    <Grid>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- LEFT -->
+                                        <StackPanel>
+
+                                            <TextBlock Text="{Binding Info.Name}"
+                                                       Foreground="White"
+                                                       FontSize="14"
+                                                       FontWeight="SemiBold" />
+
+                                            <TextBlock Text="{Binding Info.Description}"
+                                                       Foreground="#AAA"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       MaxHeight="32"
+                                                       Margin="0,4,0,0" />
+
+                                            <ItemsControl ItemsSource="{Binding InfoTags}"
+                                                          Margin="0,6,0,0">
+
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Horizontal" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Background="#2A2A2A"
+                                                                CornerRadius="4"
+                                                                Padding="6,2"
+                                                                Margin="0,0,6,0">
+                                                            <TextBlock Text="{Binding}"
+                                                                       Foreground="#97d2de"
+                                                                       FontSize="11" />
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+
+                                        <!-- RIGHT ACTIONS -->
+                                        <StackPanel Grid.Column="1"
+                                                    Orientation="Horizontal"
+                                                    VerticalAlignment="Center">
+
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Setter Property="Opacity" Value="0" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=DataGridRow}}"
+                                                                     Value="True">
+                                                            <Setter Property="Opacity" Value="1" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+
+                                            <Button Content="Start"
+                                                    Width="70"
+                                                    Margin="0,0,6,0"
+                                                    Command="{Binding StartScriptCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    IsEnabled="{Binding Downloaded}" />
+
+                                            <Button Content="Load"
+                                                    Width="70"
+                                                    Command="{Binding LoadScriptCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    IsEnabled="{Binding Downloaded}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
             </DataGrid>
-        </DockPanel>
-        <materialDesign:Snackbar IsActive="{Binding ProgressReportMessage, Converter={StaticResource StringToBoolConverter}}">
+
+            <!-- ================= STATUS BAR ================= -->
+            <Border Grid.Row="2"
+                    Margin="0,8,0,0"
+                    Padding="10"
+                    Background="#1E1E1E"
+                    CornerRadius="6">
+
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBlock Text="Scripts:" Foreground="#888" Margin="0,0,6,0" />
+                    <TextBlock Text="{Binding BotScriptQuantity}" Foreground="White" Margin="0,0,18,0" />
+
+                    <TextBlock Text="Downloaded:" Foreground="#888" Margin="0,0,6,0" />
+                    <TextBlock Text="{Binding DownloadedQuantity}" Foreground="White" Margin="0,0,4,0" />
+                    <TextBlock Text="/" Foreground="#888" />
+                    <TextBlock Text="{Binding ScriptQuantity}" Foreground="White" Margin="0,0,18,0" />
+
+                    <TextBlock Text="Outdated:" Foreground="#888" Margin="0,0,6,0" />
+                    <TextBlock Text="{Binding OutdatedQuantity}" Foreground="#FFD166" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ================= FLOATING SNACKBAR (FIXED) ================= -->
+        <materialDesign:Snackbar
+            Panel.ZIndex="999"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Margin="12"
+            IsActive="{Binding ProgressReportMessage, Converter={StaticResource StringToBoolConverter}}">
+
             <materialDesign:SnackbarMessage
                 ActionCommand="{Binding CancelTaskCommand}"
                 ActionContent="{materialDesign:PackIcon Kind=Cancel}"
