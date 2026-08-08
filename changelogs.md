@@ -1,3 +1,14 @@
+# Skua 1.4.4.3
+## Released: August 08, 2026
+
+## What's Changed
+* file name search filter added by @l0newolf12 in https://github.com/auqw/Skua/pull/50
+
+
+**Full Changelog**: https://github.com/auqw/Skua/compare/1.4.4.2...1.4.4.3
+
+---
+
 # Skua 1.4.4.2
 ## Released: August 08, 2026
 
