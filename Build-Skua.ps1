@@ -188,6 +188,87 @@ function Build-Installer([string]$Platform) {
     }
 }
 
+function Build-AS3 {
+    Write-Header "Building Skua AS3"
+
+    $as3Directory = Join-Path $PSScriptRoot "Skua.AS3"
+    $compilerScript = Join-Path $as3Directory "compile-as3.ps1"
+    $outputFile = Join-Path $as3Directory "skua\bin\skua.swf"
+
+    $mxmlc = Get-Command mxmlc -ErrorAction SilentlyContinue
+
+    if (-not $mxmlc) {
+        $compilerPath = $null
+
+        # First try the standard FLEX_HOME environment variable.
+        if (![string]::IsNullOrWhiteSpace($env:FLEX_HOME)) {
+            $candidate = Join-Path $env:FLEX_HOME "bin\mxmlc.bat"
+
+            if (Test-Path -LiteralPath $candidate) {
+                $compilerPath = $candidate
+            }
+        }
+
+        # Then look for a Moonshine-installed Flex SDK.
+        if (-not $compilerPath) {
+            $moonshineRoot = "C:\MoonshineSDKs\Flex_SDK"
+
+            if (Test-Path -LiteralPath $moonshineRoot) {
+                $moonshineSdk = Get-ChildItem -LiteralPath $moonshineRoot -Directory |
+                    Sort-Object Name -Descending |
+                    Where-Object {
+                        Test-Path -LiteralPath(
+                            Join-Path $_.FullName "bin\mxmlc.bat"
+                        )
+                    } |
+                    Select-Object -First 1
+
+                if ($moonshineSdk) {
+                    $env:FLEX_HOME = $moonshineSdk.FullName
+                    $compilerPath = Join-Path $env:FLEX_HOME "bin\mxmlc.bat"
+                }
+            }
+        }
+
+        if ($compilerPath) {
+            $compilerDirectory = Split-Path $compilerPath -Parent
+            $env:PATH = "$compilerDirectory;$env:PATH"
+            $mxmlc = Get-Command mxmlc -ErrorAction SilentlyContinue
+        }
+    }
+
+    if (-not $mxmlc) {
+        throw "No ActionScript compiler was found. Install a Flex SDK or configure FLEX_HOME."
+    }
+
+    Write-Info "Using ActionScript compiler: $($mxmlc.Source)"
+
+    # Only remove the old output after confirming that a compiler exists.
+    if (Test-Path -LiteralPath $outputFile) {
+        Remove-Item -LiteralPath $outputFile -Force
+    }
+
+    Push-Location $as3Directory
+
+    try {
+        $result = & pwsh -NoProfile -ExecutionPolicy Bypass `
+            -File $compilerScript 2>&1
+
+        $exitCode = $LASTEXITCODE
+    }
+    finally {
+        Pop-Location
+    }
+
+    if ($exitCode -ne 0 -or !(Test-Path -LiteralPath $outputFile)) {
+        Write-Host $result -ForegroundColor Red
+        throw "AS3 compilation failed. Refusing to package a stale or missing skua.swf."
+    }
+
+    $swf = Get-Item -LiteralPath $outputFile
+    Write-Success "AS3 compiled successfully: $($swf.Length) bytes"
+}
+
 function Show-Summary([TimeSpan]$TotalTime, [bool]$Success) {
     Write-Header "Build Summary"
     if ($Success) { Write-Success "Build completed successfully!" } else { Write-BuildError "Build completed with errors" }
@@ -226,6 +307,8 @@ function Main {
         Write-Header "Skua Build Automation"
         Test-Prerequisites
         if (-not $SkipClean) { CleanSolution }
+		
+		Build-AS3
         
         # Warn if using -Parallel with single platform
         if ($Parallel -and $Platforms.Count -eq 1) {
