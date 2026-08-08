@@ -68,7 +68,7 @@
         "state": "uploaded",
         "size": 23547294,
         "digest": "sha256:ef9049ac0fa5e8393a7102a41706877ac37194c2f0ad4c40da0fbf66971471d8",
-        "download_count": 1391,
+        "download_count": 1468,
         "created_at": "2026-08-07T00:04:49Z",
         "updated_at": "2026-08-07T00:04:53Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.4.1/Skua-1.4.4.1-Release-x64.msi"
@@ -104,7 +104,7 @@
         "state": "uploaded",
         "size": 23530914,
         "digest": "sha256:12b81c27f2436e40879498203b0af42828cc506a41788705fd25c0db62edd177",
-        "download_count": 12,
+        "download_count": 15,
         "created_at": "2026-08-07T00:04:53Z",
         "updated_at": "2026-08-07T00:04:57Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.4.1/Skua-1.4.4.1-Release-x86.msi"
@@ -150,7 +150,7 @@
     "immutable": false,
     "prerelease": false,
     "created_at": "2026-08-01T10:26:23Z",
-    "updated_at": "2026-08-01T10:29:32Z",
+    "updated_at": "2026-08-07T23:31:55Z",
     "published_at": "2026-08-01T10:29:32Z",
     "assets": [
       {
@@ -184,7 +184,7 @@
         "state": "uploaded",
         "size": 23543198,
         "digest": "sha256:7e6d768558fe60f77592c7a2e698c2b060a8724a5e07eb51236b159bf1b02ccf",
-        "download_count": 3388,
+        "download_count": 3389,
         "created_at": "2026-08-01T10:28:31Z",
         "updated_at": "2026-08-01T10:28:35Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.4.0/Skua-1.4.4.0-Release-x64.msi"
@@ -228,8 +228,8 @@
     ],
     "tarball_url": "https://api.github.com/repos/auqw/Skua/tarball/1.4.4.0",
     "zipball_url": "https://api.github.com/repos/auqw/Skua/zipball/1.4.4.0",
-    "body": "Will have tato update this\r\n\r\n## What's Changed\r\n* Added a feature to show the username in the application window and tray icon, and added features in Skua Manager to unselect selected accounts and move a single selected account up or down in the list by @l0newolf12 in https://github.com/auqw/Skua/pull/42\r\n* Added a toggle to Advanced Skills to reset on target change by @l0newolf12 in https://github.com/auqw/Skua/pull/44\r\n\r\n## New Contributors\r\n* @l0newolf12 made their first contribution in https://github.com/auqw/Skua/pull/42\r\n\r\n**Full Changelog**: https://github.com/auqw/Skua/compare/1.4.3.0...1.4.4.0",
-    "mentions_count": 1
+    "body": "## What's Changed\r\n\r\n### Username in Window Title\r\n\r\n* Added an option to display the current AQW username in the Skua window title.\r\n* The username is also displayed in the tray icon tooltip.\r\n* Added **Show Username in Title** to Application Options.\r\n* The option is **disabled by default**.\r\n* Username changes are detected automatically while Skua is running.\r\n\r\n### Skua Manager Account Improvements\r\n\r\n* Added **Unselect Selected** to quickly clear selected accounts without removing them.\r\n* Added **Move Selected Up** and **Move Selected Down** controls.\r\n* Account reordering is only available when exactly one account is selected.\r\n* Account order is saved automatically after moving an account.\r\n* Existing tag filtering is reapplied after reordering.\r\n\r\n### Advanced Skills — Reset on Target Change\r\n\r\n* Added **Reset on Target Change** to Advanced Skills.\r\n* When enabled, the current advanced skill combo resets when:\r\n\r\n  * The target dies.\r\n  * The target disappears.\r\n  * The target changes.\r\n* Target identity is tracked using the monster's identity rather than relying solely on the previous temporary target key.\r\n* Skill polling now aborts the current skill attempt when a target reset occurs.\r\n* Prevents the skill system from continuing to wait for or execute a skill against an outdated target.\r\n* The setting is saved with Advanced Skill configurations.\r\n* Added the option to the Advanced Skill editor.\r\n* Added support for loading the setting from saved Advanced Skill configurations.\r\n\r\n### Script Repository\r\n\r\n* Completely revamped the Script Repository UI.\r\n* Updated the layout with a cleaner card-style interface and refreshed controls.\r\n* Improved DataGrid virtualization and scrolling behavior.\r\n* Added pixel-based virtualization scrolling.\r\n* Reworked script searching using a tokenized inverted index.\r\n* Significantly reduced allocations during incremental searches.\r\n* Added cancellation for rapid search input.\r\n* Reused a single collection view for filtering.\r\n* Improved filtering performance for large script repositories.\r\n* Fixed right-click selection so the clicked script row is properly selected.\r\n* Improved DataContext and `ItemsSource` handling.\r\n\r\n### Script Update Reliability\r\n\r\n* Improved reliability of the script download/update system.\r\n* Added stronger handling for invalid or empty `scripts.json` data.\r\n* Improved handling of missing script directories.\r\n* Added safer file and directory operations.\r\n* Improved handling of network/socket-related exceptions.\r\n* Script downloads can now run in parallel using `Parallel.ForEachAsync`.\r\n* Cached script data is cleared after script updates to prevent stale files from being used.\r\n* Improved incremental update handling and fallback behavior.\r\n* Failed incremental updates now fall back to a full refresh more cleanly.\r\n* Simplified and clarified update progress messages.\r\n* Improved commit SHA handling when the stored SHA cannot be read.\r\n\r\n### Quest Requirement Wiki Links\r\n\r\n* Added clickable quest requirements in the AQW client.\r\n* Clicking a quest requirement opens its corresponding AQW Wiki page.\r\n* Temporary items are not supported by the Wiki linking system.\r\n\r\n### Jump / Movement Fix\r\n\r\n* Fixed an issue with player movement/jumping when other players are present in the area.\r\n* Improved handling of area users when determining movement positions.\r\n* Added null checks for missing user objects.\r\n* Updated the client build configuration used for the movement fix.\r\n\r\n### Miscellaneous Improvements\r\n\r\n* Improved `EqualToConverter` numeric comparisons.\r\n* Added various cleanup and optimization improvements throughout the client.\r\n* Removed temporary debugging output from the Advanced Skills target-reset implementation.\r\n* Improved internal AS3 module initialization and object handling.\r\n* Updated the AS3/Flex SDK configuration used by the client.\r\n\r\n## Contributors\r\n\r\n* @l0newolf12\r\n* @SharpTheNightmare\r\n* @wtffidy\r\n\r\n### New Contributors\r\n\r\n* @l0newolf12 made their first contribution to Skua in this release.\r\n\r\n**Full Changelog:** `1.4.3.0...1.4.4.0`\r\n",
+    "mentions_count": 3
   },
   {
     "url": "https://api.github.com/repos/auqw/Skua/releases/299758492",
