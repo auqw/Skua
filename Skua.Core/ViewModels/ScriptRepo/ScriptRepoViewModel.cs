@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
+using Skua.Core.Models;
 using Skua.Core.Models.GitHub;
 using Skua.Core.Utils;
 
@@ -10,8 +11,12 @@ namespace Skua.Core.ViewModels;
 
 public partial class ScriptRepoViewModel : BotControlViewModelBase
 {
+    private readonly IGetScriptsService _getScriptsService;
+    private readonly IProcessService _processService;
+    private readonly SemaphoreSlim _refreshGate = new(1, 1);
+
     public ScriptRepoViewModel(IGetScriptsService getScripts, IProcessService processService)
-        : base("Search Scripts", 800, 450)
+        : base("Search Scripts", 969, 500)
     {
         _getScriptsService = getScripts;
         _processService = processService;
@@ -20,11 +25,23 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
 
     protected override void OnActivated()
     {
-        _ = RefreshScripts(CancellationToken.None);
+        _getScriptsService.PropertyChanged += GetScriptsService_PropertyChanged;
+        if (_scripts.Count == 0 || _getScriptsService.Scripts.Count == 0)
+            _ = RefreshScripts(CancellationToken.None);
+        else
+            _ = RefreshScriptsList();
     }
 
-    private readonly IGetScriptsService _getScriptsService;
-    private readonly IProcessService _processService;
+    protected override void OnDeactivated()
+    {
+        _getScriptsService.PropertyChanged -= GetScriptsService_PropertyChanged;
+    }
+
+    private void GetScriptsService_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(IGetScriptsService.Scripts))
+            _ = RefreshScriptsList();
+    }
 
     [ObservableProperty]
     private bool _isManagerMode;
@@ -43,18 +60,28 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     [ObservableProperty]
     private string _progressReportMessage = string.Empty;
 
-    public int DownloadedQuantity => _getScriptsService?.Downloaded ?? 0;
-    public int OutdatedQuantity => _getScriptsService?.Outdated ?? 0;
-    public int ScriptQuantity => _getScriptsService?.Total ?? 0;
+    [ObservableProperty]
+    private string _sortBy = "Name";
+
+    [ObservableProperty]
+    private bool _sortDescending;
+
+    [ObservableProperty]
+    private string _filterBy = "All";
+
+    public List<string> SortOptions { get; } = new() { "Name", "Date Created" };
+    public List<string> FilterOptions { get; } = new() { "All", "Army", "Classes", "Dailies", "Evil", "Farm", "Good", "Legion", "Local", "Nation", "Other", "Rep", "Seasonal", "Story", "Ultras" };
+
+    public int DownloadedQuantity => _getScriptsService.Downloaded;
+    public int OutdatedQuantity => _getScriptsService.Outdated;
+    public int ScriptQuantity => _getScriptsService.Total;
     public int BotScriptQuantity => _scripts.Count;
     public IRelayCommand OpenScriptFolderCommand { get; }
     public Action? RebuildIndexCallback { get; set; }
 
-    private void SetProgressMessage(string message)
-    {
-        ProgressReportMessage = message;
-        _ = Task.Delay(3000).ContinueWith(_ => ProgressReportMessage = string.Empty);
-    }
+    partial void OnSortByChanged(string value) => _ = RefreshScriptsList();
+    partial void OnSortDescendingChanged(bool value) => _ = RefreshScriptsList();
+    partial void OnFilterByChanged(string value) => _ = RefreshScriptsList();
 
     [RelayCommand]
     private void OpenScript()
@@ -71,51 +98,146 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
         IsBusy = true;
         try
         {
-            await Task.Run(async () =>
-            {
-                Progress<string> progress = new(ProgressHandler);
-                await _getScriptsService.GetScriptsAsync(progress, token);
-            }, token);
+            Progress<string> progress = new(ProgressHandler);
+            await _getScriptsService.RefreshScriptsAsync(progress, token);
         }
         catch { }
+
         await RefreshScriptsList();
+    }
+
+    [RelayCommand]
+    private async Task UpdateDates(CancellationToken token)
+    {
+        IsBusy = true;
+        try
+        {
+            Progress<string> progress = new(ProgressHandler);
+            await _getScriptsService.RefreshScriptsAsync(progress, token);
+        }
+        catch { }
+
+        await RefreshScriptsList();
+    }
+
+    [RelayCommand]
+    private void AddCustomFolder()
+    {
+        var fileDialog = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<IFileDialogService>();
+        string? folder = fileDialog.OpenFolder(ClientFileSources.SkuaScriptsDIR);
+        if (!string.IsNullOrEmpty(folder))
+        {
+            CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<ISettingsService>().Set("UserCustomScriptsFolder", folder);
+            _ = RefreshScriptsList();
+        }
+    }
+
+    [RelayCommand]
+    private void ClearCustomFolder()
+    {
+        CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<ISettingsService>().Set("UserCustomScriptsFolder", string.Empty);
+        _ = RefreshScriptsList();
+    }
+
+    [RelayCommand]
+    private void LoadLocalScript()
+    {
+        var fileDialog = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<IFileDialogService>();
+        string? path = fileDialog.OpenFile(ClientFileSources.SkuaScriptsDIR, "Skua Scripts (*.cs)|*.cs");
+        if (string.IsNullOrEmpty(path))
+            return;
+
+        var settings = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetRequiredService<ISettingsService>();
+        var list = settings.Get<System.Collections.Specialized.StringCollection>("UserCustomScriptsList") ?? new System.Collections.Specialized.StringCollection();
+        if (!list.Contains(path))
+        {
+            list.Add(path);
+            settings.Set("UserCustomScriptsList", list);
+            _ = RefreshScriptsList();
+        }
+
+        StrongReferenceMessenger.Default.Send<LoadScriptMessage, int>(new(path), (int)MessageChannels.ScriptStatus);
     }
 
     private async Task RefreshScriptsList()
     {
-        _scripts.Clear();
-        if (_getScriptsService?.Scripts != null)
+        await _refreshGate.WaitAsync();
+        try
         {
-            List<ScriptInfoViewModel> scriptViewModels = await Task.Run(() =>
+            _scripts.Clear();
+
+            if (_getScriptsService.Scripts != null)
             {
-                List<ScriptInfoViewModel> viewModels = new();
-                foreach (ScriptInfo script in _getScriptsService.Scripts)
+                List<ScriptInfoViewModel> scriptViewModels = await Task.Run(() =>
                 {
-                    if (script?.Name != null && !script.Name.Equals("null"))
+                    List<ScriptInfoViewModel> viewModels = new();
+                    HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
+                    foreach (ScriptInfo script in _getScriptsService.Scripts)
                     {
-                        if (script.Description?.Equals("null") == true)
-                            script.Description = "No description provided.";
+                        if (!PassesFilter(script))
+                            continue;
 
-                        if (script.Tags?.Contains("null") == true && (script.Tags.Length == 1))
-                            script.Tags = new[] { "no-tags" };
-                        else script.Tags ??= new[] { "no-tags" };
+                        if (script?.Name != null && !script.Name.Equals("null"))
+                        {
+                            if (!seen.Add(script.FilePath))
+                                continue;
 
-                        viewModels.Add(new(script));
+                            if (script.Description?.Equals("null") == true)
+                                script.Description = "No description provided.";
+
+                            if (script.Tags?.Contains("null") == true && script.Tags.Length == 1)
+                                script.Tags = new[] { "no-tags" };
+                            else
+                                script.Tags ??= new[] { "no-tags" };
+
+                            viewModels.Add(new(script));
+                        }
                     }
-                }
-                return viewModels;
-            });
-            _scripts.AddRange(scriptViewModels);
+
+                    return ApplySort(viewModels);
+                });
+
+                _scripts.AddRange(scriptViewModels);
+            }
+
+            RebuildIndexCallback?.Invoke();
+
+            OnPropertyChanged(nameof(DownloadedQuantity));
+            OnPropertyChanged(nameof(OutdatedQuantity));
+            OnPropertyChanged(nameof(ScriptQuantity));
+            OnPropertyChanged(nameof(BotScriptQuantity));
+            IsBusy = false;
+        }
+        finally
+        {
+            _refreshGate.Release();
+        }
+    }
+
+    private bool PassesFilter(ScriptInfo script)
+    {
+        if (FilterBy == "All")
+            return true;
+
+        if (FilterBy == "Local")
+            return script.Tags?.Contains("Local") == true || script.FilePath.Contains("UserCustom", StringComparison.OrdinalIgnoreCase);
+
+        string[] filterParts = script.FilePath.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+        return filterParts.Any(part => part.StartsWith(FilterBy, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private List<ScriptInfoViewModel> ApplySort(List<ScriptInfoViewModel> viewModels)
+    {
+        if (SortBy == "Date Created")
+        {
+            return SortDescending
+                ? viewModels.OrderByDescending(x => x.Info.CreationDate ?? DateTime.MinValue).ToList()
+                : viewModels.OrderBy(x => x.Info.CreationDate ?? DateTime.MinValue).ToList();
         }
 
-        RebuildIndexCallback?.Invoke();
-
-        OnPropertyChanged(nameof(Scripts));
-        OnPropertyChanged(nameof(DownloadedQuantity));
-        OnPropertyChanged(nameof(OutdatedQuantity));
-        OnPropertyChanged(nameof(ScriptQuantity));
-        OnPropertyChanged(nameof(BotScriptQuantity));
-        IsBusy = false;
+        return SortDescending
+            ? viewModels.OrderByDescending(x => x.FileName).ToList()
+            : viewModels.OrderBy(x => x.FileName).ToList();
     }
 
     public void ProgressHandler(string message)
@@ -130,9 +252,10 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
         IsBusy = true;
         if (_selectedItem is null)
             return;
-        SetProgressMessage($"Deleting {_selectedItem.FileName}.");
+
+        ProgressReportMessage = $"Deleting {_selectedItem.FileName}.";
         await _getScriptsService.DeleteScriptAsync(_selectedItem.Info);
-        SetProgressMessage($"Deleted {_selectedItem.FileName}.");
+        ProgressReportMessage = $"Deleted {_selectedItem.FileName}.";
         _selectedItem.Downloaded = false;
         OnPropertyChanged(nameof(DownloadedQuantity));
         OnPropertyChanged(nameof(OutdatedQuantity));
@@ -147,9 +270,10 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
         IsBusy = true;
         if (_selectedItem is null)
             return;
-        SetProgressMessage($"Downloading {_selectedItem.FileName}.");
+
+        ProgressReportMessage = $"Downloading {_selectedItem.FileName}.";
         await _getScriptsService.DownloadScriptAsync(_selectedItem.Info);
-        SetProgressMessage($"Downloaded {_selectedItem.FileName}.");
+        ProgressReportMessage = $"Downloaded {_selectedItem.FileName}.";
         _selectedItem.Downloaded = true;
         OnPropertyChanged(nameof(DownloadedQuantity));
         OnPropertyChanged(nameof(OutdatedQuantity));
@@ -162,9 +286,9 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     private async Task UpdateAll()
     {
         IsBusy = true;
-        SetProgressMessage("Updating scripts...");
+        ProgressReportMessage = "Updating scripts...";
         int count = await _getScriptsService.DownloadAllWhereAsync(s => s.Outdated);
-        SetProgressMessage($"Updated {count} scripts.");
+        ProgressReportMessage = $"Updated {count} scripts.";
         await RefreshScriptsList();
     }
 
@@ -172,9 +296,9 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     private async Task DownloadAll()
     {
         IsBusy = true;
-        SetProgressMessage("Downloading outdated/missing scripts...");
-        int count = await Task.Run(async () => await _getScriptsService.DownloadAllWhereAsync(s => !s.Downloaded || s.Outdated));
-        SetProgressMessage($"Downloaded {count} scripts.");
+        ProgressReportMessage = "Downloading outdated/missing scripts...";
+        int count = await _getScriptsService.DownloadAllWhereAsync(s => !s.Downloaded || s.Outdated);
+        ProgressReportMessage = $"Downloaded {count} scripts.";
         await RefreshScriptsList();
     }
 

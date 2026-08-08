@@ -29,6 +29,11 @@
                     CornerRadius="6">
 
                 <DockPanel LastChildFill="True">
+                    <DockPanel.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                            <Setter Property="Margin" Value="0,0,6,0" />
+                        </Style>
+                    </DockPanel.Resources>
 
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                         <Button Content="Update All"
@@ -44,22 +49,24 @@
                             DockPanel.Dock="Right"
                             Command="{Binding RefreshScriptsCommand}" />
 
-                    <DockPanel Width="300" LastChildFill="True" Margin="10,0">
-                        <ComboBox x:Name="SearchScopeCombo"
-                                  Width="80"
-                                  Margin="0,0,6,0"
-                                  materialDesign:HintAssist.Hint="Scope"
-                                  SelectedIndex="0">
-                            <ComboBoxItem Content="All" />
-                            <ComboBoxItem Content="Name" />
-                            <ComboBoxItem Content="Tag" />
-                            <ComboBoxItem Content="Desc" />
-                        </ComboBox>
-                        <TextBox x:Name="SearchBox"
-                                 Padding="6"
-                                 materialDesign:HintAssist.Hint="Search scripts..."
-                                 TextChanged="TextBox_TextChanged" />
-                    </DockPanel>
+                    <ComboBox x:Name="SearchScopeCombo"
+                              Width="90"
+                              Margin="10,0,6,0"
+                              SelectedIndex="0"
+                              SelectionChanged="SearchScopeCombo_SelectionChanged">
+                        <ComboBoxItem Content="All" />
+                        <ComboBoxItem Content="Name" />
+                        <ComboBoxItem Content="Tag" />
+                        <ComboBoxItem Content="Desc" />
+                    </ComboBox>
+
+                    <TextBox x:Name="SearchBox"
+                             Margin="0,0,0,0"
+                             Padding="6"
+                             materialDesign:HintAssist.Hint="Search scripts..."
+                             MaxLines="1"
+                             UseLayoutRounding="True"
+                             TextChanged="TextBox_TextChanged" />
                 </DockPanel>
             </Border>
             <!-- ================= DATA GRID ================= -->

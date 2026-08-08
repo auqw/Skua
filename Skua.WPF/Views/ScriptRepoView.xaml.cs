@@ -1,8 +1,7 @@
 using Skua.Core.ViewModels;
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -13,329 +12,168 @@ using System.Windows.Media;
 
 namespace Skua.WPF.Views;
 
-public enum SearchScope
-{
-    All,
-    Name,
-    Tag,
-    Desc
-}
-
 public partial class ScriptRepoView : UserControl
 {
-    private ScriptRepoViewModel? _vm;
-    private ICollectionView? _view;
-
-    private IList<ScriptInfoViewModel>? _items;
-
-    // =========================
-    // ZERO-ALLOCATION INDEX
-    // token -> scripts
-    // =========================
-    private readonly Dictionary<string, List<ScriptInfoViewModel>> _index = new(StringComparer.OrdinalIgnoreCase);
-
-    // active result cache (fast lookup, no allocations per filter)
-    private HashSet<ScriptInfoViewModel>? _activeSet;
-
-    private CancellationTokenSource? _searchCts;
-
+    private ListCollectionView? _listView;
+    private System.Threading.Timer? _debounceTimer;
+    private readonly object _syncLock = new();
     private SearchScope _currentScope = SearchScope.All;
+    private string _searchText = string.Empty;
 
-    private ComboBox? _searchScopeCombo;
+    private enum SearchScope
+    {
+        All,
+        Name,
+        Tag,
+        Desc
+    }
 
-    private const string SearchScopeComboBoxName = "SearchScopeCombo";
+    private sealed class SearchComparer : IComparer
+    {
+        private readonly string _query;
+        private readonly SearchScope _scope;
+
+        public SearchComparer(string query, SearchScope scope)
+        {
+            _query = query;
+            _scope = scope;
+        }
+
+        public int Compare(object? x, object? y)
+        {
+            if (ReferenceEquals(x, y))
+                return 0;
+            if (x is not ScriptInfoViewModel a || y is not ScriptInfoViewModel b)
+                return 0;
+
+            int rankA = Rank(a);
+            int rankB = Rank(b);
+
+            if (rankA != rankB)
+                return rankA.CompareTo(rankB);
+
+            return string.Compare(a.FileName, b.FileName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private int Rank(ScriptInfoViewModel item)
+        {
+            if (string.IsNullOrWhiteSpace(_query))
+                return 0;
+
+            if (_scope is SearchScope.Tag)
+            {
+                foreach (string tag in item.InfoTags)
+                {
+                    if (string.Equals(tag, _query, StringComparison.OrdinalIgnoreCase))
+                        return -1;
+                    if (tag.StartsWith(_query, StringComparison.OrdinalIgnoreCase))
+                        return 0;
+                    if (tag.Contains(_query, StringComparison.OrdinalIgnoreCase))
+                        return 1;
+                }
+                return 2;
+            }
+
+            if (item.Info.Name?.Contains(_query, StringComparison.OrdinalIgnoreCase) == true)
+                return -1;
+            if (item.Info.Description?.Contains(_query, StringComparison.OrdinalIgnoreCase) == true)
+                return 0;
+            return 1;
+        }
 
     public ScriptRepoView()
     {
         InitializeComponent();
         DataContextChanged += OnDataContextChanged;
+        Unloaded += ScriptRepoView_Unloaded;
     }
 
-    // =========================================================
-    // INIT
-    // =========================================================
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (e.NewValue is not ScriptRepoViewModel vm)
-            return;
-
-        _vm = vm;
-
-        // IMPORTANT: bind once, let WPF own updates
-        if (ScriptsDataGrid.ItemsSource != vm.Scripts)
+        if (e.NewValue is ScriptRepoViewModel vm)
+        {
+            BindingOperations.EnableCollectionSynchronization(vm.Scripts, _syncLock);
             ScriptsDataGrid.ItemsSource = vm.Scripts;
-
-        _items = vm.Scripts;
-
-        // IMPORTANT: single shared view instance
-        _view = CollectionViewSource.GetDefaultView(vm.Scripts);
-
-        _searchScopeCombo = (ComboBox)FindName(SearchScopeComboBoxName);
-        _searchScopeCombo.SelectionChanged += SearchScope_SelectionChanged;
-
-        BuildIndex(_items);
-
-        if (_vm is not null)
-            _vm.RebuildIndexCallback = () => BuildIndex(_items);
-
-        _view.Filter = null;
-    }
-
-    private void SearchScope_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (_searchScopeCombo?.SelectedIndex is int idx && idx >= 0)
-            _currentScope = (SearchScope)idx;
-        else
-            _currentScope = SearchScope.All;
-
-        if (!string.IsNullOrWhiteSpace(SearchBox?.Text))
-        {
-            string query = SearchBox.Text;
-            ApplySearch(query, CancellationToken.None);
+            _listView = CollectionViewSource.GetDefaultView(vm.Scripts) as ListCollectionView;
+            ApplySearchView();
         }
     }
 
-    // =========================================================
-    // BUILD INVERTED INDEX (ONE TIME)
-    // =========================================================
-    public void BuildIndex(IList<ScriptInfoViewModel> scripts)
+    private void ScriptRepoView_Unloaded(object sender, RoutedEventArgs e)
     {
-        _index.Clear();
-
-        for (int i = 0; i < scripts.Count; i++)
-        {
-            ScriptInfoViewModel item = scripts[i];
-
-            AddToIndex(item.Info?.Name, item);
-            AddToIndex(item.Info?.Description, item);
-            AddToIndex(item.ScriptPath, item);
-            AddToIndex(Path.GetFileNameWithoutExtension(item.ScriptPath), item);
-
-            if (item.InfoTags == null)
-                continue;
-
-            for (int j = 0; j < item.InfoTags.Count; j++)
-                AddToIndex(item.InfoTags[j], item);
-        }
+        _debounceTimer?.Dispose();
+        _debounceTimer = null;
     }
 
-    private void AddToIndex(string? text, ScriptInfoViewModel item)
+    private void SearchScopeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(text))
-            return;
-
-        ReadOnlySpan<char> span = text.AsSpan();
-
-        int start = 0;
-
-        for (int i = 0; i <= span.Length; i++)
+        _currentScope = SearchScopeCombo.SelectedIndex switch
         {
-            bool shouldSplit = i != span.Length &&
-                (span[i] == ' ' || span[i] == '_' || span[i] == '-' ||
-                 span[i] == '.' || span[i] == '/' || span[i] == '\\');
+            1 => SearchScope.Name,
+            2 => SearchScope.Tag,
+            3 => SearchScope.Desc,
+            _ => SearchScope.All
+        };
 
-            if (i > start && (shouldSplit || i == span.Length))
-            {
-                string token = span.Slice(start, i - start).ToString().ToLowerInvariant();
-
-                if (!_index.TryGetValue(token, out var list))
-                {
-                    list = new List<ScriptInfoViewModel>(4);
-                    _index[token] = list;
-                }
-
-                list.Add(item);
-
-                start = i + 1;
-            }
-
-            if (shouldSplit)
-                continue;
-
-            if (i > 0 && i < span.Length && char.IsUpper(span[i]) &&
-                char.IsLower(span[i - 1]))
-            {
-                string token = span.Slice(start, i - start).ToString().ToLowerInvariant();
-
-                if (!_index.TryGetValue(token, out var list))
-                {
-                    list = new List<ScriptInfoViewModel>(4);
-                    _index[token] = list;
-                }
-
-                list.Add(item);
-
-                start = i;
-            }
-        }
-
-        if (start < span.Length)
-        {
-            string token = span.Slice(start).ToString().ToLowerInvariant();
-
-            if (!_index.TryGetValue(token, out var list))
-            {
-                list = new List<ScriptInfoViewModel>(4);
-                _index[token] = list;
-            }
-
-            list.Add(item);
-        }
+        ApplySearchView();
     }
 
-    // =========================================================
-    // SEARCH ENTRY (INSTANT, NO TASK.RUN)
-    // =========================================================
-    private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+    private bool Search(object obj)
     {
-        if (_view is null || _items is null)
-            return;
+        if (string.IsNullOrWhiteSpace(_searchText))
+            return true;
 
-        _searchCts?.Cancel();
-        _searchCts = new CancellationTokenSource();
-        CancellationToken token = _searchCts.Token;
+        if (obj is not ScriptInfoViewModel script)
+            return false;
 
-        string query = SearchBox.Text ?? string.Empty;
-
-        if (string.IsNullOrWhiteSpace(query))
+        if (_currentScope is SearchScope.All or SearchScope.Name)
         {
-            _activeSet = null;
-
-            _view.Filter = null;
-            _view.Refresh();
-            return;
-        }
-
-        ApplySearch(query, token);
-    }
-
-    // =========================================================
-    // SEARCH ENGINE (INDEX POWERED)
-    // =========================================================
-    private void ApplySearch(string query, CancellationToken token)
-    {
-        if (_view is null || _items is null)
-            return;
-
-        string[] tokens = query.Split(
-            new[] { ' ', '_', '-', '.', '/', '\\' },
-            StringSplitOptions.RemoveEmptyEntries);
-
-        if (tokens.Length == 0)
-        {
-            _activeSet = null;
-            _view.Filter = null;
-            _view.Refresh();
-            return;
-        }
-
-        HashSet<ScriptInfoViewModel>? result = null;
-
-        for (int i = 0; i < tokens.Length; i++)
-        {
-            if (token.IsCancellationRequested)
-                return;
-
-            string t = tokens[i].ToLowerInvariant();
-
-            if (_currentScope == SearchScope.All)
-            {
-                if (_index.TryGetValue(t, out var list))
-                {
-                    if (result is null)
-                    {
-                        result = new HashSet<ScriptInfoViewModel>(list);
-                    }
-                    else
-                    {
-                        result.IntersectWith(list);
-                    }
-                }
-                else
-                {
-                    HashSet<ScriptInfoViewModel> tempSet = new();
-
-                    for (int j = 0; j < _items.Count; j++)
-                    {
-                        var item = _items[j];
-
-                        if (ItemContains(item, t, _currentScope))
-                            tempSet.Add(item);
-                    }
-
-                    result?.IntersectWith(tempSet);
-                    result ??= tempSet;
-                }
-            }
-            else
-            {
-                HashSet<ScriptInfoViewModel> tempSet = new();
-
-                for (int j = 0; j < _items.Count; j++)
-                {
-                    var item = _items[j];
-
-                    if (ItemContains(item, t, _currentScope))
-                        tempSet.Add(item);
-                }
-
-                result?.IntersectWith(tempSet);
-                result ??= tempSet;
-            }
-        }
-
-        _activeSet = result ?? new HashSet<ScriptInfoViewModel>(_items);
-
-        _view.Filter = FilterPredicate;
-        _view.Refresh();
-    }
-
-    private static bool ItemContains(ScriptInfoViewModel item, string token, SearchScope scope)
-    {
-        if (scope == SearchScope.All || scope == SearchScope.Name)
-        {
-            if (item.Info?.Name?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+            if (script.Info.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) == true)
                 return true;
         }
 
-        if (scope == SearchScope.All || scope == SearchScope.Desc)
+        if (_currentScope is SearchScope.All or SearchScope.Desc)
         {
-            if (item.Info?.Description?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+            if (script.Info.Description?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) == true)
                 return true;
         }
 
-        if (scope == SearchScope.All || scope == SearchScope.Tag)
+        if (_currentScope is SearchScope.All or SearchScope.Tag)
         {
-            if (item.InfoTags == null)
-                return false;
-
-            for (int i = 0; i < item.InfoTags.Count; i++)
-            {
-                if (string.Equals(item.InfoTags[i], token, StringComparison.OrdinalIgnoreCase))
-                    return true;
-            }
-
-            for (int i = 0; i < item.InfoTags.Count; i++)
-            {
-                if (item.InfoTags[i]?.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
-                    return true;
-            }
+            return script.InfoTags.Any(tag => tag.Contains(_searchText, StringComparison.OrdinalIgnoreCase));
         }
 
         return false;
     }
 
-    private bool FilterPredicate(object item)
+    private void ApplySearchView()
     {
-        if (_activeSet is null)
-            return true;
+        if (_listView is null)
+            return;
 
-        return item is ScriptInfoViewModel s && _activeSet.Contains(s);
+        _listView.Filter = Search;
+        _listView.CustomSort = string.IsNullOrWhiteSpace(_searchText)
+            ? null
+            : new SearchComparer(_searchText, _currentScope);
+        _listView.Refresh();
     }
 
-    // =========================================================
-    // RIGHT CLICK FIX
-    // =========================================================
+    private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (_listView is null)
+            return;
+
+        _debounceTimer?.Change(System.Threading.Timeout.Infinite, 0);
+        _debounceTimer = new System.Threading.Timer(_ =>
+        {
+            Dispatcher.Invoke(() =>
+            {
+                _searchText = SearchBox.Text ?? string.Empty;
+                ApplySearchView();
+            });
+        }, null, 250, System.Threading.Timeout.Infinite);
+    }
+
     private void ScriptsDataGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (e.OriginalSource is not DependencyObject dep)
