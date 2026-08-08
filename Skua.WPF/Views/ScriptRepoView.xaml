@@ -58,6 +58,7 @@
                         <ComboBoxItem Content="Name" />
                         <ComboBoxItem Content="Tag" />
                         <ComboBoxItem Content="Desc" />
+                        <ComboBoxItem Content="File" />
                     </ComboBox>
 
                     <TextBox x:Name="SearchBox"

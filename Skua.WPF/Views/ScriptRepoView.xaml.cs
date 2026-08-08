@@ -25,7 +25,8 @@ public partial class ScriptRepoView : UserControl
         All,
         Name,
         Tag,
-        Desc
+        Desc,
+        File
     }
 
     private sealed class SearchComparer : IComparer
@@ -82,6 +83,22 @@ public partial class ScriptRepoView : UserControl
                     if (tag.Contains(_query, StringComparison.OrdinalIgnoreCase))
                         return 1;
                 }
+                return 2;
+            }
+
+            if (_scope is SearchScope.File)
+            {
+                string file = item.ScriptPathFromScriptsDir ?? string.Empty;
+
+                if (string.Equals(file, _query, StringComparison.OrdinalIgnoreCase))
+                    return -1;
+
+                if (file.StartsWith(_query, StringComparison.OrdinalIgnoreCase))
+                    return 0;
+
+                if (file.Contains(_query, StringComparison.OrdinalIgnoreCase))
+                    return 1;
+
                 return 2;
             }
 
@@ -153,6 +170,7 @@ public partial class ScriptRepoView : UserControl
             1 => SearchScope.Name,
             2 => SearchScope.Tag,
             3 => SearchScope.Desc,
+            4 => SearchScope.File,
             _ => SearchScope.All
         };
 
@@ -186,6 +204,12 @@ public partial class ScriptRepoView : UserControl
                 if (tag.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
                     return true;
             }
+        }
+
+        if (_currentScope is SearchScope.All or SearchScope.File)
+        {
+            if (script.ScriptPathFromScriptsDir?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) == true)
+                return true;
         }
 
         return false;
