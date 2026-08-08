@@ -1,9 +1,9 @@
 using Skua.Core.ViewModels;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading;
+using System.Windows.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,7 +15,7 @@ namespace Skua.WPF.Views;
 public partial class ScriptRepoView : UserControl
 {
     private ListCollectionView? _listView;
-    private System.Threading.Timer? _debounceTimer;
+    private readonly DispatcherTimer _searchDebounceTimer;
     private readonly object _syncLock = new();
     private SearchScope _currentScope = SearchScope.All;
     private string _searchText = string.Empty;
@@ -32,6 +32,7 @@ public partial class ScriptRepoView : UserControl
     {
         private readonly string _query;
         private readonly SearchScope _scope;
+        private readonly Dictionary<ScriptInfoViewModel, int> _rankCache = new();
 
         public SearchComparer(string query, SearchScope scope)
         {
@@ -46,13 +47,23 @@ public partial class ScriptRepoView : UserControl
             if (x is not ScriptInfoViewModel a || y is not ScriptInfoViewModel b)
                 return 0;
 
-            int rankA = Rank(a);
-            int rankB = Rank(b);
+            int rankA = GetRank(a);
+            int rankB = GetRank(b);
 
             if (rankA != rankB)
                 return rankA.CompareTo(rankB);
 
             return string.Compare(a.FileName, b.FileName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private int GetRank(ScriptInfoViewModel item)
+        {
+            if (_rankCache.TryGetValue(item, out int rank))
+                return rank;
+
+            rank = Rank(item);
+            _rankCache[item] = rank;
+            return rank;
         }
 
         private int Rank(ScriptInfoViewModel item)
@@ -80,10 +91,18 @@ public partial class ScriptRepoView : UserControl
                 return 0;
             return 1;
         }
-
+    }
     public ScriptRepoView()
     {
         InitializeComponent();
+
+        _searchDebounceTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(250)
+        };
+
+        _searchDebounceTimer.Tick += SearchDebounceTimer_Tick;
+
         DataContextChanged += OnDataContextChanged;
         Unloaded += ScriptRepoView_Unloaded;
     }
@@ -93,16 +112,32 @@ public partial class ScriptRepoView : UserControl
         if (e.NewValue is ScriptRepoViewModel vm)
         {
             BindingOperations.EnableCollectionSynchronization(vm.Scripts, _syncLock);
-            ScriptsDataGrid.ItemsSource = vm.Scripts;
+            ScriptsList.ItemsSource = vm.Scripts;
             _listView = CollectionViewSource.GetDefaultView(vm.Scripts) as ListCollectionView;
             ApplySearchView();
         }
     }
 
+    private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (_listView is null)
+            return;
+
+        _searchDebounceTimer.Stop();
+        _searchDebounceTimer.Start();
+    }
+
+    private void SearchDebounceTimer_Tick(object? sender, EventArgs e)
+    {
+        _searchDebounceTimer.Stop();
+
+        _searchText = SearchBox.Text ?? string.Empty;
+        ApplySearchView();
+    }
+
     private void ScriptRepoView_Unloaded(object sender, RoutedEventArgs e)
     {
-        _debounceTimer?.Dispose();
-        _debounceTimer = null;
+        _searchDebounceTimer.Stop();
     }
 
     private void SearchScopeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -140,7 +175,11 @@ public partial class ScriptRepoView : UserControl
 
         if (_currentScope is SearchScope.All or SearchScope.Tag)
         {
-            return script.InfoTags.Any(tag => tag.Contains(_searchText, StringComparison.OrdinalIgnoreCase));
+            foreach (string tag in script.InfoTags)
+            {
+                if (tag.Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
         }
 
         return false;
@@ -151,44 +190,35 @@ public partial class ScriptRepoView : UserControl
         if (_listView is null)
             return;
 
-        _listView.Filter = Search;
-        _listView.CustomSort = string.IsNullOrWhiteSpace(_searchText)
-            ? null
-            : new SearchComparer(_searchText, _currentScope);
-        _listView.Refresh();
-    }
-
-    private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (_listView is null)
-            return;
-
-        _debounceTimer?.Change(System.Threading.Timeout.Infinite, 0);
-        _debounceTimer = new System.Threading.Timer(_ =>
+        using (_listView.DeferRefresh())
         {
-            Dispatcher.Invoke(() =>
+            if (string.IsNullOrWhiteSpace(_searchText))
             {
-                _searchText = SearchBox.Text ?? string.Empty;
-                ApplySearchView();
-            });
-        }, null, 250, System.Threading.Timeout.Infinite);
+                _listView.Filter = null;
+                _listView.CustomSort = null;
+                return;
+            }
+
+            _listView.Filter = Search;
+            _listView.CustomSort = new SearchComparer(_searchText, _currentScope);
+        }
     }
 
-    private void ScriptsDataGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    private void ScriptsList_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (e.OriginalSource is not DependencyObject dep)
             return;
 
         DependencyObject? current = dep;
 
-        while (current != null && current is not DataGridRow)
+        while (current != null && current is not ListBoxItem)
             current = VisualTreeHelper.GetParent(current);
 
-        if (current is not DataGridRow row)
+        if (current is not ListBoxItem item)
             return;
 
-        if (!row.IsSelected)
-            row.IsSelected = true;
+        if (!item.IsSelected)
+            item.IsSelected = true;
 
         e.Handled = false;
     }
