@@ -104,9 +104,14 @@ public partial class ScriptRepoView : UserControl
 
             if (item.Info.Name?.Contains(_query, StringComparison.OrdinalIgnoreCase) == true)
                 return -1;
+
             if (item.Info.Description?.Contains(_query, StringComparison.OrdinalIgnoreCase) == true)
                 return 0;
-            return 1;
+
+            if (_scope is SearchScope.All && item.ScriptPathFromScriptsDir?.Contains(_query, StringComparison.OrdinalIgnoreCase) == true)
+                return 1;
+
+            return 2;
         }
     }
     public ScriptRepoView()
