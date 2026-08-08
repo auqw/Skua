@@ -23,9 +23,31 @@ public partial class ScriptInfoViewModel : ObservableObject
     public string FilePath => Info.FilePath;
     public string ScriptPath => Path.Combine(ClientFileSources.SkuaScriptsDIR, FilePath.Replace("/", "\\"));
     public string ScriptPathFromScriptsDir => ScriptPath.Replace(ClientFileSources.SkuaScriptsDIR + Path.DirectorySeparatorChar, "");
+    public string FormattedCreationDate => Info.CreationDate.HasValue && Info.CreationDate.Value > DateTime.MinValue ? Info.CreationDate.Value.ToString("MMM dd, yyyy") : "Unknown";
 
     private ObservableCollection<string>? _infoTags;
-    public ObservableCollection<string> InfoTags => _infoTags ??= new(Info.Tags);
+    public ObservableCollection<string> InfoTags => _infoTags ??= new(ParseTags(Info.Tags));
+    public string TagSearchText => string.Join(' ', InfoTags);
+
+    private static IEnumerable<string> ParseTags(IEnumerable<string>? tags)
+    {
+        if (tags is null)
+            yield break;
+
+        HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
+
+        foreach (string? tag in tags)
+        {
+            if (string.IsNullOrWhiteSpace(tag))
+                continue;
+
+            foreach (string part in tag.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            {
+                if (!string.IsNullOrWhiteSpace(part) && seen.Add(part))
+                    yield return part;
+            }
+        }
+    }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Outdated))]
@@ -35,6 +57,15 @@ public partial class ScriptInfoViewModel : ObservableObject
 
     [RelayCommand]
     private void LoadScript(ScriptInfoViewModel selectedScript)
+    {
+        if (selectedScript is null || !selectedScript.Downloaded)
+            return;
+
+        StrongReferenceMessenger.Default.Send<LoadScriptMessage, int>(new(selectedScript.LocalFile), (int)MessageChannels.ScriptStatus);
+    }
+
+    [RelayCommand]
+    private void QueueScript(ScriptInfoViewModel selectedScript)
     {
         if (selectedScript is null || !selectedScript.Downloaded)
             return;
