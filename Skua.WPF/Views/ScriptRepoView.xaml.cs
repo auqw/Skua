@@ -101,8 +101,7 @@ public partial class ScriptRepoView : UserControl
             Interval = TimeSpan.FromMilliseconds(250)
         };
 
-        _searchDebounceTimer.Tick += SearchDebounceTimer_Tick;
-
+        Loaded += ScriptRepoView_Loaded;
         DataContextChanged += OnDataContextChanged;
         Unloaded += ScriptRepoView_Unloaded;
     }
@@ -120,6 +119,8 @@ public partial class ScriptRepoView : UserControl
 
     private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
     {
+        _searchText = SearchBox.Text ?? string.Empty;
+
         if (_listView is null)
             return;
 
@@ -130,14 +131,19 @@ public partial class ScriptRepoView : UserControl
     private void SearchDebounceTimer_Tick(object? sender, EventArgs e)
     {
         _searchDebounceTimer.Stop();
-
-        _searchText = SearchBox.Text ?? string.Empty;
         ApplySearchView();
+    }
+
+    private void ScriptRepoView_Loaded(object sender, RoutedEventArgs e)
+    {
+        _searchDebounceTimer.Tick -= SearchDebounceTimer_Tick;
+        _searchDebounceTimer.Tick += SearchDebounceTimer_Tick;
     }
 
     private void ScriptRepoView_Unloaded(object sender, RoutedEventArgs e)
     {
         _searchDebounceTimer.Stop();
+        _searchDebounceTimer.Tick -= SearchDebounceTimer_Tick;
     }
 
     private void SearchScopeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
