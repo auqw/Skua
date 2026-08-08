@@ -1,3 +1,18 @@
+# Skua 1.4.4.2
+## Released: August 08, 2026
+
+# **This change was mostly for UI & functionality changes of the `Search Script` window.**
+## -- What's Changed --
+* Fixed search not properly working. by @wtffidy 
+* Add new filtered view for "all/name/tag/description" (copied stuff from vibeskua)
+* performance upgrades to scriptrepoview by @l0newolf12 in https://github.com/auqw/Skua/pull/49
+  - this also fixed tags not showing proper scripts for the right tag.
+
+
+**Full Changelog**: https://github.com/auqw/Skua/compare/1.4.4.1...1.4.4.2
+
+---
+
 # Skua 1.4.4.1
 ## Released: August 07, 2026
 
