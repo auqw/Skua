@@ -80,8 +80,9 @@ public partial class ScriptRepoView : UserControl
                 return 0;
             return 1;
         }
+    }
 
-    public ScriptRepoView()
+        public ScriptRepoView()
     {
         InitializeComponent();
         DataContextChanged += OnDataContextChanged;
