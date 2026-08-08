@@ -13,16 +13,100 @@ This is "temporary" until tato comes back and fixes his changes
 # Skua 1.4.4.0
 ## Released: August 01, 2026
 
-Will have tato update this
-
 ## What's Changed
-* Added a feature to show the username in the application window and tray icon, and added features in Skua Manager to unselect selected accounts and move a single selected account up or down in the list by @l0newolf12 in https://github.com/auqw/Skua/pull/42
-* Added a toggle to Advanced Skills to reset on target change by @l0newolf12 in https://github.com/auqw/Skua/pull/44
 
-## New Contributors
-* @l0newolf12 made their first contribution in https://github.com/auqw/Skua/pull/42
+### Username in Window Title
 
-**Full Changelog**: https://github.com/auqw/Skua/compare/1.4.3.0...1.4.4.0
+* Added an option to display the current AQW username in the Skua window title.
+* The username is also displayed in the tray icon tooltip.
+* Added **Show Username in Title** to Application Options.
+* The option is **disabled by default**.
+* Username changes are detected automatically while Skua is running.
+
+### Skua Manager Account Improvements
+
+* Added **Unselect Selected** to quickly clear selected accounts without removing them.
+* Added **Move Selected Up** and **Move Selected Down** controls.
+* Account reordering is only available when exactly one account is selected.
+* Account order is saved automatically after moving an account.
+* Existing tag filtering is reapplied after reordering.
+
+### Advanced Skills — Reset on Target Change
+
+* Added **Reset on Target Change** to Advanced Skills.
+* When enabled, the current advanced skill combo resets when:
+
+  * The target dies.
+  * The target disappears.
+  * The target changes.
+* Target identity is tracked using the monster's identity rather than relying solely on the previous temporary target key.
+* Skill polling now aborts the current skill attempt when a target reset occurs.
+* Prevents the skill system from continuing to wait for or execute a skill against an outdated target.
+* The setting is saved with Advanced Skill configurations.
+* Added the option to the Advanced Skill editor.
+* Added support for loading the setting from saved Advanced Skill configurations.
+
+### Script Repository
+
+* Completely revamped the Script Repository UI.
+* Updated the layout with a cleaner card-style interface and refreshed controls.
+* Improved DataGrid virtualization and scrolling behavior.
+* Added pixel-based virtualization scrolling.
+* Reworked script searching using a tokenized inverted index.
+* Significantly reduced allocations during incremental searches.
+* Added cancellation for rapid search input.
+* Reused a single collection view for filtering.
+* Improved filtering performance for large script repositories.
+* Fixed right-click selection so the clicked script row is properly selected.
+* Improved DataContext and `ItemsSource` handling.
+
+### Script Update Reliability
+
+* Improved reliability of the script download/update system.
+* Added stronger handling for invalid or empty `scripts.json` data.
+* Improved handling of missing script directories.
+* Added safer file and directory operations.
+* Improved handling of network/socket-related exceptions.
+* Script downloads can now run in parallel using `Parallel.ForEachAsync`.
+* Cached script data is cleared after script updates to prevent stale files from being used.
+* Improved incremental update handling and fallback behavior.
+* Failed incremental updates now fall back to a full refresh more cleanly.
+* Simplified and clarified update progress messages.
+* Improved commit SHA handling when the stored SHA cannot be read.
+
+### Quest Requirement Wiki Links
+
+* Added clickable quest requirements in the AQW client.
+* Clicking a quest requirement opens its corresponding AQW Wiki page.
+* Temporary items are not supported by the Wiki linking system.
+
+### Jump / Movement Fix
+
+* Fixed an issue with player movement/jumping when other players are present in the area.
+* Improved handling of area users when determining movement positions.
+* Added null checks for missing user objects.
+* Updated the client build configuration used for the movement fix.
+
+### Miscellaneous Improvements
+
+* Improved `EqualToConverter` numeric comparisons.
+* Added various cleanup and optimization improvements throughout the client.
+* Removed temporary debugging output from the Advanced Skills target-reset implementation.
+* Improved internal AS3 module initialization and object handling.
+* Updated the AS3/Flex SDK configuration used by the client.
+
+## Contributors
+
+* @l0newolf12
+* @SharpTheNightmare
+* @wtffidy
+
+### New Contributors
+
+* @l0newolf12 made their first contribution to Skua in this release.
+
+**Full Changelog:** `1.4.3.0...1.4.4.0`
+
 
 ---
 
