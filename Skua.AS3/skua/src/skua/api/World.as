@@ -31,14 +31,14 @@ public class World {
         var map:Object = world.map;
         var timer:Timer = new Timer(JUMP_CORRECTION_INTERVAL, JUMP_CORRECTION_ATTEMPTS);
         _jumpCorrectionTimer = timer;
-        _jumpCorrectionHandler = jumpTimerEvent;
-        timer.addEventListener(TimerEvent.TIMER, jumpTimerEvent);
+        _jumpCorrectionHandler = onJumpCorrectionTimer;
+        timer.addEventListener(TimerEvent.TIMER, onJumpCorrectionTimer);
         timer.start();
 
-        function jumpTimerEvent(e:TimerEvent):void {
+        function onJumpCorrectionTimer(e:TimerEvent):void {
             if (_jumpCorrectionTimer !== timer) {
                 timer.stop();
-                timer.removeEventListener(TimerEvent.TIMER, jumpTimerEvent);
+                timer.removeEventListener(TimerEvent.TIMER, onJumpCorrectionTimer);
                 return;
             }
 
