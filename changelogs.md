@@ -1,3 +1,15 @@
+# Skua 1.4.4.4
+## Released: August 09, 2026
+
+# Fix Jump bug for Bot.Map.Jump(); when `AutoCorrect: true`
+
+* For Devs
+  - Added as3 compiler so the Skua.swf actually get recompiled when we make changes to it 🤣 
+
+**Full Changelog**: https://github.com/auqw/Skua/compare/1.4.4.3...1.4.4.4
+
+---
+
 # Skua 1.4.4.3
 ## Released: August 08, 2026
 
