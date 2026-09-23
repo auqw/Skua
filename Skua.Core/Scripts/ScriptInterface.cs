@@ -57,6 +57,7 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
     public IScriptSend Send { get; }
     public IScriptShop Shops { get; }
     public IScriptSkill Skills { get; }
+    public IScriptEnhancement Enhancements { get; }
     public IScriptWait Wait { get; }
     public IScriptServers Servers { get; }
     public IScriptHandlers Handlers { get; }
@@ -93,6 +94,7 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
         IScriptSend send,
         IScriptShop shops,
         IScriptSkill skills,
+        IScriptEnhancement enhancements,
         IScriptWait wait,
         IScriptKill kill,
         IScriptHunt hunt,
@@ -134,6 +136,7 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
         Send = send;
         Shops = shops;
         Skills = skills;
+        Enhancements = enhancements;
         Wait = wait;
         Servers = server;
         Handlers = handlers;

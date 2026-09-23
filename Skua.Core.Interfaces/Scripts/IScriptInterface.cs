@@ -1,4 +1,4 @@
-﻿using Skua.Core.Interfaces.Services;
+using Skua.Core.Interfaces.Services;
 using Skua.Core.Models;
 
 namespace Skua.Core.Interfaces;
@@ -183,6 +183,11 @@ public interface IScriptInterface
     /// Class to control how the bot will use skills.
     /// </summary>
     IScriptSkill Skills { get; }
+
+    /// <summary>
+    /// Class to enhance items and equipped gear.
+    /// </summary>
+    IScriptEnhancement Enhancements { get; }
 
     /// <summary>
     /// Class with methods to wait certain actions of the game.

@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Skua.Core.GameProxy;
@@ -61,6 +61,7 @@ public static class Services
         services.AddSingleton<IScriptAuto, ScriptAuto>();
         services.AddSingleton<IScriptSelfAuras, ScriptSelfAuras>();
         services.AddSingleton<IScriptTargetAuras, ScriptTargetAuras>();
+        services.AddSingleton<IScriptEnhancement, ScriptEnhancement>();
 
         services.AddSingleton<IScriptFaction, ScriptFaction>();
         services.AddSingleton<IScriptMonster, ScriptMonster>();
