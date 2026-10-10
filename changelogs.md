@@ -1,3 +1,76 @@
+# Skua 1.4.5.0
+## Released: October 10, 2026
+
+## Script API changes
+
+### Inventory
+
+- Add `Bot.Inventory.HasCategories` to detect separate bag, misc, class, and house inventories.
+- Add `Bot.Inventory.MiscSlots`, `MiscUsedSlots`, and `MiscFreeSlots` to read misc capacity and usage. Capacity includes the current server limit. Older clients return zero.
+- Add `Bot.Inventory.GetPool(ItemBase item)` to return `bag`, `misc`, `class`, or `house`. Older clients return `bag`.
+- Add `Bot.Inventory.HasSpaceFor(ItemBase item, int quantity = 1)` to check the destination inventory and existing stacks. For shop items, the check includes slots freed by purchase materials and tokens. The quantity is the amount to purchase.
+- Add `Bot.Inventory.CanBank(InventoryItem item)` to check the class deposit restriction. Category clients do not permit class deposits. This method does not check bank capacity.
+- Add `Bot.Inventory.IsFavorited(int itemId)` to read the current character's local favorite mark. Clients without a favorite store return `false`.
+- Remove the unused `ClassUsedSlots` API and its AS3 callback.
+
+### Shops
+
+- Add `Bot.Shop.ProtectFavorites`, with a default value of `true`. Scripted sales stop when an item is a favorite. Set this property to `false` to permit those sales. The sale setting remains on `Bot.Shop`; the favorite query is on `Bot.Inventory`.
+- Add `Bot.Shop.GetUnmetPurchaseRequirements(ShopItem item, int quantity = -1)`. It returns a list of missing inventory materials, missing tokens, and unmet quest requirements. It also reports invalid quantities, items absent from the loaded shop, and failures to read requirements. The default quantity selects the purchase bundle. Banked materials do not count.
+- Add `ShopItem.TokenID`, `TokenQuantity`, and `TokenName`. Token quantity retains fractional costs.
+- Add `ItemBase.House` to expose the game's `bHouse` flag.
+
+### Player and target auras
+
+- Add `Bot.Self.Snapshots` and `Bot.Target.Snapshots` to read the current game HUD aura data, including `auSnap` effects.
+- Add `Bot.Self.GetAuraSnapshot(string auraName)` and `Bot.Target.GetAuraSnapshot(string auraName)`. Each method returns the matching `AuraSnapshot`, or `null` when the aura is absent. Name matching is case-insensitive.
+- Add `Bot.Self.GetAuraStacks(string auraName)` and `Bot.Target.GetAuraStacks(string auraName)`. Each method returns the HUD stack count, or zero when the aura is absent.
+- Add the `AuraSnapshot` model with `Name`, `Stacks`, `Duration`, `RemainingTime`, `Persistent`, `Icon`, and `Description`. Duration and remaining time use seconds. A zero duration means no timed expiry. Each snapshot read obtains current game data.
+- Keep `Aura.Value` as the aura effect value.
+
+## Fixes and behavior changes
+
+### Navigation and display
+
+- Fix `Bot.Map.Jump` with auto-correction enabled. The correction waits for the requested cell to load and checks the map's actual pad objects. It uses the requested pad when valid, then `Left`, then the first valid pad. A new jump or a map change stops the previous correction. Checks stop after two seconds.
+- Rename the AS3 jump timer handler to `onJumpCorrectionTimer` and replace the old pad-name checks with valid-pad lookup and timer cleanup.
+- Fix clipping of the embedded game at high DPI and when moving between monitors with different display scales. Add a manifest that sets per-monitor DPI awareness before the window opens. by @lucasdcorrea1 in https://github.com/auqw/Skua/pull/52
+- Update the window title on login and when the username display option changes. Remove the one-second title polling timer.
+
+### Inventory, banking, and shops
+
+- Make inventory `UsedSlots` and `FreeSlots` report ordinary bag usage on category clients. The inventory item collection still includes all items.
+- Check the item's destination inventory before bank withdrawals, bank swaps, shop purchases, and drop pickups. Existing partial stacks can accept items when the ordinary bag is full on older clients.
+- Stop class deposits through inventory and house banking methods on category clients before sending packets or starting retries. Previously banked classes can still be withdrawn.
+- Account for the outgoing item when checking bank swap capacity. Fix `Swap(string, string)` to return the swap result. Fix `EnsureSwap(int, int)` to check that the incoming bank item reached the inventory.
+- Check shop requirements and capacity before purchase waits. Match Game4000's bundle and fractional token cost calculations. Use `ItemID` for shop item lookup by name.
+- Check inventory favorite marks before scripted sales when `ProtectFavorites` is enabled.
+- Accept native JSON Boolean values in `StringBoolConverter`, including house and temporary-item flags.
+
+### Drops and combat
+
+- Keep drops in the pickup cache when `PickupAll` cannot pick them up.
+- Fix drop rejection for custom/mobile drop data and classic drop lists. Use case-insensitive keep lists and preserve protected AC drops. Remove rejected items from the C# cache only after the AS3 bridge reports success.
+- Make the AS3 `Player.rejectExcept` result available to the C# drop handler.
+- Remove global match state from the drop quantity expression. Use regular expressions to remove leading and trailing whitespace from aura and drop names.
+- Fix Advanced Skill aura stack checks to use the player and target HUD stack counts. The previous code used aura effect values as stack counts.
+
+### Packet handling
+
+- Enable outgoing packet capture for each loaded game. Keep capture active while that game is loaded, detach listeners on removal or replacement, and restore the previous debug setting.
+- Recognize outgoing messages by their debug prefix and preserve colons inside packet payloads.
+- Decode incoming `Z` packets with zlib and Base64 before passing them to interceptors. Forward unchanged packets with their original bytes and recompress edited packets.
+- Fix UTF-8 packet encoding, preserve empty NUL separators, and clean up connections on closure or failure. Pass malformed compressed envelopes through unchanged. Close the proxy connections if decoded content exceeds 16 MiB.
+
+## New Contributors
+* @lucasdcorrea1 made their first contribution in https://github.com/auqw/Skua/pull/52
+
+Changes and release notes were made by @l0newolf12 
+
+**Full Changelog**: https://github.com/auqw/Skua/compare/1.4.4.4...1.4.5.0
+
+---
+
 # Skua 1.4.4.4
 ## Released: August 09, 2026
 
