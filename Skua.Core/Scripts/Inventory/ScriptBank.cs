@@ -127,7 +127,7 @@ public partial class ScriptBank : IScriptBank
     }
 
     private bool HasSpaceForSwap(InventoryItem invItem, InventoryItem bankItem) =>
-        Flash.Call<bool>("inventoryHasSpaceFor", JsonConvert.SerializeObject(bankItem), 1, false, JsonConvert.SerializeObject(invItem));
+        !bool.TryParse(Flash.Call("inventoryHasSpaceFor", JsonConvert.SerializeObject(bankItem), 1, false, JsonConvert.SerializeObject(invItem)), out bool hasSpace) || hasSpace;
 
     public bool ToInventory(InventoryItem item)
     {

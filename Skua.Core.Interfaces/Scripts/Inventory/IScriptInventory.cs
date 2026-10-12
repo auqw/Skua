@@ -21,7 +21,8 @@ public interface IScriptInventory : ICanEquip
     string GetPool(ItemBase item);
 
     /// <summary>Checks the destination pool, existing stack and purchase materials.
-    /// Quantity is the amount purchased, not the desired final total.</summary>
+    /// Quantity is the amount purchased, not the desired final total.
+    /// If the check is unavailable, permits the request so the game can validate it.</summary>
     bool HasSpaceFor(ItemBase item, int quantity = 1);
 
     /// <summary>Classes cannot be deposited on games with category inventories.</summary>

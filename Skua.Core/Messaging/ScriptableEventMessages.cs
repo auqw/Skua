@@ -21,6 +21,7 @@ public sealed record CounterAttackMessage(bool Faded);
 public sealed record ItemAddedToBankMessage(ItemBase Item, int QuantityNow);
 public sealed record RunToAreaMessage(string Zone);
 public sealed record ItemDroppedMessage(ItemBase Item, bool AddedToInv = false, int QuantityNow = 0);
+public sealed record ItemPickedUpMessage(int ItemID);
 public sealed record ShopLoadedMessage(ShopInfo Info);
 public sealed record BankLoadedMessage();
 public sealed record ItemBoughtMessage(int CharItemID);

@@ -76,25 +76,31 @@ public partial class ScriptShop : IScriptShop
     public bool ProtectFavorites { get; set; } = true;
 
     public List<string> GetUnmetPurchaseRequirements(ShopItem item, int quantity = -1)
+        => ReadPurchaseRequirements(item, quantity) ?? new() { "Could not read purchase requirements." };
+
+    private List<string>? ReadPurchaseRequirements(ShopItem item, int quantity)
     {
         string? requirements = Flash.Call("getUnmetPurchaseRequirements", item.ID, item.ShopItemID, quantity);
         if (string.IsNullOrWhiteSpace(requirements))
-            return new() { "Could not read purchase requirements." };
+            return null;
 
         try
         {
-            return JsonConvert.DeserializeObject<List<string>>(requirements) ?? new();
+            return JsonConvert.DeserializeObject<List<string>>(requirements);
         }
         catch (JsonException)
         {
-            return new() { "Could not read purchase requirements." };
+            return null;
         }
     }
 
     private bool CanBuy(ShopItem? item, int quantity)
     {
-        return item is not null && (quantity == -1 || quantity > 0)
-            && GetUnmetPurchaseRequirements(item, quantity).Count == 0
+        if (item is null || (quantity != -1 && quantity <= 0))
+            return false;
+
+        List<string>? requirements = ReadPurchaseRequirements(item, quantity);
+        return (requirements is null || requirements.Count == 0)
             && Inventory.HasSpaceFor(item, quantity == -1 ? Math.Max(1, item.Quantity) : quantity);
     }
 
