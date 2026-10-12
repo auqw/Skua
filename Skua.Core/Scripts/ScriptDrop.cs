@@ -157,7 +157,6 @@ public partial class ScriptDrop : ObservableRecipient, IScriptDrop, IAsyncDispos
             keep.UnionWith(CurrentDropInfos.Where(d => d.Coins).Select(d => d.Name));
         if (!Flash.Call<bool>("rejectExcept", keep.Join(',').ToLowerInvariant()))
             return;
-        _currentDropInfos.Remove(d => !keep.Contains(d.Name));
         OnPropertyChanged(nameof(CurrentDropInfos));
         OnPropertyChanged(nameof(CurrentDrops));
     }
