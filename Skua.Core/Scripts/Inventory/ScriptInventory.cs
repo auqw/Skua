@@ -59,7 +59,7 @@ public partial class ScriptInventory : IScriptInventory
     public string GetPool(ItemBase item) => Flash.Call<string>("inventoryPool", JsonConvert.SerializeObject(item)) ?? "bag";
 
     public bool HasSpaceFor(ItemBase item, int quantity = 1) =>
-        Flash.Call<bool>("inventoryHasSpaceFor", JsonConvert.SerializeObject(item), quantity, item is ShopItem);
+        !bool.TryParse(Flash.Call("inventoryHasSpaceFor", JsonConvert.SerializeObject(item), quantity, item is ShopItem), out bool hasSpace) || hasSpace;
 
     public bool CanBank(InventoryItem item) => item.Category != ItemCategory.Class || !HasCategories;
 
