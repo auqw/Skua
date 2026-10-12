@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Interfaces;
-using Skua.Core.Messaging;
 using Skua.Core.Models.Items;
+using System.ComponentModel;
 
 namespace Skua.Core.ViewModels;
 
@@ -18,13 +17,13 @@ public partial class CurrentDropsViewModel : BotControlViewModelBase
 
     protected override void OnActivated()
     {
-        StrongReferenceMessenger.Default.Register<CurrentDropsViewModel, ItemDroppedMessage, int>(this, (int)MessageChannels.GameEvents, CurrentDropsChanged);
+        _drops.PropertyChanged += CurrentDropsChanged;
         OnPropertyChanged(nameof(CurrentDrops));
     }
 
     protected override void OnDeactivated()
     {
-        StrongReferenceMessenger.Default.UnregisterAll(this);
+        _drops.PropertyChanged -= CurrentDropsChanged;
     }
 
     private readonly IScriptPlayer _player;
@@ -77,8 +76,9 @@ public partial class CurrentDropsViewModel : BotControlViewModelBase
         _drops.PickupACItems();
     }
 
-    private void CurrentDropsChanged(CurrentDropsViewModel recipient, ItemDroppedMessage message)
+    private void CurrentDropsChanged(object? sender, PropertyChangedEventArgs e)
     {
-        recipient.OnPropertyChanged(nameof(recipient.CurrentDrops));
+        if (e.PropertyName == nameof(IScriptDrop.CurrentDropInfos))
+            OnPropertyChanged(nameof(CurrentDrops));
     }
 }

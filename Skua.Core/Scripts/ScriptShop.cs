@@ -96,10 +96,8 @@ public partial class ScriptShop : IScriptShop
 
     private bool CanBuy(ShopItem? item, int quantity)
     {
-        if (quantity != -1 && quantity <= 0)
+        if (item is null || (quantity != -1 && quantity <= 0))
             return false;
-        if (item is null)
-            return true;
 
         List<string>? requirements = ReadPurchaseRequirements(item, quantity);
         return (requirements is null || requirements.Count == 0)
