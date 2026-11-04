@@ -136,14 +136,17 @@ public class AdvancedSkillContainer : ObservableRecipient, IAdvancedSkillContain
 
                     string skillsStr = ConvertSkillsToString(skillMode.Skills);
 
-                    _loadedSkills.Add(new AdvancedSkill(
+                    AdvancedSkill loaded = new(
                         className,
                         skillsStr,
                         skillMode.SkillTimeout,
                         classUseMode,
                         skillMode.SkillUseMode == "UseIfAvailable" ? SkillUseMode.UseIfAvailable : SkillUseMode.WaitForCooldown,
                         skillMode.ResetComboOnTargetChange
-                    ));
+                    );
+                    if (skillMode.SkillTimeoutMs is int timeoutMs)
+                        loaded.SkillTimeoutMs = timeoutMs;
+                    _loadedSkills.Add(loaded);
                 }
             }
         }
@@ -158,7 +161,7 @@ public class AdvancedSkillContainer : ObservableRecipient, IAdvancedSkillContain
             string skillStr = skill.SkillId.ToString();
             if (skill.Rules?.Count > 0)
             {
-                skillStr += " " + ConvertRulesToString(skill.Rules, skill.MultiAura, skill.MultiAuraOperator);
+                skillStr += " " + ConvertRulesToString(skill.Rules, skill.MultiAura, skill.MultiAuraOperator, skill.RuleOperator == "OR");
             }
             if (skill.SkipOnMatch)
             {
@@ -169,7 +172,10 @@ public class AdvancedSkillContainer : ObservableRecipient, IAdvancedSkillContain
         return string.Join(" | ", parts);
     }
 
-    private string ConvertRulesToString(List<SkillRuleJson> rules, bool isMultiAura, string? multiAuraOperator)
+    /// <summary>
+    /// The rule text of one step. With <paramref name="matchAny"/> the conditions are joined by " OR " (a multi-aura group counts as one), otherwise by spaces.
+    /// </summary>
+    private string ConvertRulesToString(List<SkillRuleJson> rules, bool isMultiAura, string? multiAuraOperator, bool matchAny = false)
     {
         List<string> ruleParts = new();
         List<SkillRuleJson> multiAuraRules = new();
@@ -221,21 +227,28 @@ public class AdvancedSkillContainer : ObservableRecipient, IAdvancedSkillContain
                 };
             }
 
+            List<string> group = new();
             for (int i = 0; i < multiAuraRules.Count; i++)
             {
                 SkillRuleJson rule = multiAuraRules[i];
                 string suffix = i < multiAuraRules.Count - 1 ? opChar : "";
-                ruleParts.Add($"MA{(rule.Comparison == "greater" ? ">" : "<")}\"{rule.AuraName}\" {rule.Value}{(rule.AuraTarget == "target" ? " TARGET" : "")}{suffix}");
+                group.Add($"MA{(rule.Comparison == "greater" ? ">" : "<")}\"{rule.AuraName}\" {rule.Value}{(rule.AuraTarget == "target" ? " TARGET" : "")}{suffix}");
             }
+            ruleParts.Add(string.Join(" ", group));
         }
         else if (singleAuraRules.Count > 1)
         {
+            // Separate aura rules become one multi-aura group: joined like the step's other conditions, so with OR
+            // any one of them is enough (":"), otherwise all of them (as before, "&").
+            string opChar = matchAny ? ":" : "&";
+            List<string> group = new();
             for (int i = 0; i < singleAuraRules.Count; i++)
             {
                 SkillRuleJson rule = singleAuraRules[i];
-                string suffix = i < singleAuraRules.Count - 1 ? "&" : "";
-                ruleParts.Add($"MA{(rule.Comparison == "greater" ? ">" : "<")}\"{rule.AuraName}\" {rule.Value}{(rule.AuraTarget == "target" ? " TARGET" : "")}{suffix}");
+                string suffix = i < singleAuraRules.Count - 1 ? opChar : "";
+                group.Add($"MA{(rule.Comparison == "greater" ? ">" : "<")}\"{rule.AuraName}\" {rule.Value}{(rule.AuraTarget == "target" ? " TARGET" : "")}{suffix}");
             }
+            ruleParts.Add(string.Join(" ", group));
         }
         else if (singleAuraRules.Count == 1)
         {
@@ -243,7 +256,7 @@ public class AdvancedSkillContainer : ObservableRecipient, IAdvancedSkillContain
             ruleParts.Add($"A{(rule.Comparison == "greater" ? ">" : "<")}\"{rule.AuraName}\" {rule.Value}{(rule.AuraTarget == "target" ? " TARGET" : "")}");
         }
 
-        return string.Join(" ", ruleParts);
+        return string.Join(matchAny ? " OR " : " ", ruleParts);
     }
 
     public Dictionary<string, List<string>> GetAvailableClassModes()
@@ -319,6 +332,8 @@ public class AdvancedSkillContainer : ObservableRecipient, IAdvancedSkillContain
             {
                 SkillUseMode = skill.SkillUseMode == SkillUseMode.UseIfAvailable ? "UseIfAvailable" : "WaitForCooldown",
                 SkillTimeout = skill.SkillTimeout,
+                // Only when the ticks can't hold it exactly, so files stay as older versions write them.
+                SkillTimeoutMs = skill.SkillTimeoutMs > 0 && skill.SkillTimeoutMs % AdvancedSkill.TickMs != 0 ? skill.SkillTimeoutMs : null,
                 ResetComboOnTargetChange = skill.ResetComboOnTargetChange,
                 Skills = AdvancedSkillsParser.ParseSkillString(skill.Skills)
             };

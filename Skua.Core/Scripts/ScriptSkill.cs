@@ -86,7 +86,30 @@ public partial class ScriptSkill : IScriptSkill
     public bool IsPaused { get; private set; } = false;
     public int SkillInterval { get; set; } = 100;
     
-    public int SkillTimeout { get; set; } = -1;
+    private int _skillTimeoutMs = -1;
+
+    // Set when the timeout was given in intervals (SkillTimeout, StartAdvanced(skills, timeout, mode)): it then stays a
+    // count of intervals and follows SkillInterval at the time of the wait, as it always did.
+    private int? _skillTimeoutIntervals;
+
+    public int SkillTimeoutMs
+    {
+        get => _skillTimeoutIntervals is int intervals
+            ? (intervals <= 0 ? intervals : (int)Math.Min(int.MaxValue, (long)intervals * Math.Max(1, SkillInterval)))
+            : _skillTimeoutMs;
+        set
+        {
+            _skillTimeoutMs = value;
+            _skillTimeoutIntervals = null;
+        }
+    }
+
+    public int SkillTimeout
+    {
+        get => _skillTimeoutIntervals
+            ?? (_skillTimeoutMs <= 0 ? _skillTimeoutMs : (int)(((long)_skillTimeoutMs + Math.Max(1, SkillInterval) - 1) / Math.Max(1, SkillInterval)));
+        set => _skillTimeoutIntervals = value;
+    }
 
     public bool ResetComboOnTargetChange { get; set; } = false;
 
@@ -203,7 +226,7 @@ public partial class ScriptSkill : IScriptSkill
 
         OverrideProvider = CreateAdvancedSkillProvider();
         OverrideProvider.Load(skill.Skills);
-        SkillTimeout = skill.SkillTimeout;
+        SkillTimeoutMs = skill.SkillTimeoutMs;
         SkillUseMode = skill.SkillUseMode;
     }
 
@@ -237,7 +260,7 @@ public partial class ScriptSkill : IScriptSkill
 
                 OverrideProvider = CreateAdvancedSkillProvider();
                 OverrideProvider.Load(skill.Skills);
-                SkillTimeout = skill.SkillTimeout;
+                SkillTimeoutMs = skill.SkillTimeoutMs;
                 SkillUseMode = skill.SkillUseMode;
             }
             else
@@ -433,7 +456,7 @@ public partial class ScriptSkill : IScriptSkill
     private bool Usable(int skill) => Options.AttackWithoutTarget ? Flash.Call<bool>("canUseSkill", skill, true) : CanUseSkill(skill);
 
     /// <summary>
-    /// Waits for the skill's cooldown to end, for up to <see cref="SkillTimeout"/> × <see cref="SkillInterval"/> ms (no limit when not above 0).
+    /// Waits for the skill's cooldown to end, for up to <see cref="SkillTimeoutMs"/> (no limit when not above 0).
     /// It sleeps for the time left rather than a whole <see cref="SkillInterval"/>, so the skill is used as soon as it is ready,
     /// but never longer than <see cref="SkillInterval"/> at a time, so a target change is still noticed.
     /// A skill held up by anything else (mana, a stun, an empty potion slot, a locked skill, no target) is not waited for: it would
@@ -443,7 +466,7 @@ public partial class ScriptSkill : IScriptSkill
     private bool WaitUntilUsable(int skill, CancellationToken token, out bool targetReset)
     {
         targetReset = false;
-        long deadline = SkillTimeout > 0 ? Environment.TickCount64 + (long)SkillTimeout * SkillInterval : long.MaxValue;
+        long deadline = SkillTimeoutMs > 0 ? Environment.TickCount64 + SkillTimeoutMs : long.MaxValue;
         while (!token.IsCancellationRequested)
         {
             if (_provider?.OnTargetReset() == true)

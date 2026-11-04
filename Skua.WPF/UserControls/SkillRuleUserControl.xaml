@@ -67,29 +67,38 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-                <StackPanel
+                <DockPanel
                     Grid.Row="0"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
-                    Orientation="Horizontal">
-                    <CheckBox
-                        Content="Use Rule?"
-                        IsChecked="{Binding UseRuleBool, UpdateSourceTrigger=PropertyChanged}"
-                        ToolTip="Whether to use the specified rule values when adding a skill."
-                        Margin="0,0,15,0" />
-                    <CheckBox
-                        Content="Multi Aura"
-                        IsChecked="{Binding MultiAuraBool, UpdateSourceTrigger=PropertyChanged}"
-                        ToolTip="Use multiple aura checks instead of single aura rule." />
-                </StackPanel>
-                <Button
-                    Grid.Row="0"
-                    Margin="1"
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    Command="{Binding ResetUseRulesCommand}"
-                    Content="Reset"
-                    Style="{StaticResource MaterialDesignPaperButton}" />
+                    LastChildFill="False">
+                    <Button
+                        Height="24"
+                        Margin="8,1,1,1"
+                        Padding="8,0"
+                        Command="{Binding ResetUseRulesCommand}"
+                        Content="Reset"
+                        DockPanel.Dock="Right"
+                        FontSize="11"
+                        Style="{StaticResource MaterialDesignPaperButton}"
+                        ToolTip="Clears the use rules." />
+                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                        <CheckBox
+                            Content="Use Rule?"
+                            IsChecked="{Binding UseRuleBool, UpdateSourceTrigger=PropertyChanged}"
+                            ToolTip="Whether to use the specified rule values when adding a skill."
+                            Margin="0,0,10,0" />
+                        <CheckBox
+                            Content="Multi Aura"
+                            IsChecked="{Binding MultiAuraBool, UpdateSourceTrigger=PropertyChanged}"
+                            ToolTip="Use multiple aura checks instead of single aura rule."
+                            Margin="0,0,10,0" />
+                        <CheckBox
+                            Content="Any (OR)"
+                            IsChecked="{Binding MatchAnyBool, UpdateSourceTrigger=PropertyChanged}"
+                            ToolTip="Use the skill when any of its conditions holds (health OR mana OR aura...), instead of only when all of them do." />
+                    </StackPanel>
+                </DockPanel>
                 <ToggleButton
                     Grid.Row="1"
                     Grid.Column="0"

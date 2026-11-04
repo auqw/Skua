@@ -61,7 +61,7 @@ public partial class SavedAdvancedSkillsUserControl : UserControl
                 {
                     ClassName = skill.ClassName,
                     Skills = skill.Skills,
-                    SkillTimeout = skill.SkillTimeout,
+                    SkillTimeoutMs = skill.SkillTimeoutMs,
                     ClassUseMode = skill.ClassUseMode,
                     SkillUseMode = skill.SkillUseMode
                 });

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Skua.Core.Models.Skills;
 using System.Text;
 
 namespace Skua.Core.ViewModels;
@@ -368,7 +369,8 @@ public class SkillItemViewModel : ObservableObject
             AuraName = multiAuraChecks.Count > 0 ? string.Empty : auraName,
             SkipUseBool = skip,
             MultiAuraBool = multiAuraChecks.Count > 0,
-            MultiAuraOperatorIndex = multiAuraOp
+            MultiAuraOperatorIndex = multiAuraOp,
+            MatchAnyBool = SkillRuleText.HasOr(rest)
         };
         foreach (AuraCheckViewModel check in multiAuraChecks)
         {
@@ -410,29 +412,17 @@ public class SkillItemViewModel : ObservableObject
         if (UseRules.WaitUseValue != 0)
             bob.Append($" - [Wait for {UseRules.WaitUseValue}]");
 
+        List<string> conditions = new();
+
+        // The rules compare inclusively, so the list shows ≥ and ≤ (the rule text keeps > and <).
         if (UseRules.HealthUseValue != 0)
-        {
-            bob.Append(" - [Health");
-            _ = UseRules.HealthGreaterThanBool ? bob.Append(" > ") : bob.Append(" < ");
-            bob.Append(UseRules.HealthUseValue);
-            bob.Append(UseRules.HealthIsPercentage ? "%]" : "#]");
-        }
+            conditions.Add($"[Health{(UseRules.HealthGreaterThanBool ? " ≥ " : " ≤ ")}{UseRules.HealthUseValue}{(UseRules.HealthIsPercentage ? "%" : "#")}]");
 
         if (UseRules.ManaUseValue != 0)
-        {
-            bob.Append(" - [Mana");
-            _ = UseRules.ManaGreaterThanBool ? bob.Append(" > ") : bob.Append(" < ");
-            bob.Append(UseRules.ManaUseValue);
-            bob.Append(UseRules.ManaIsPercentage ? "%]" : "#]");
-        }
+            conditions.Add($"[Mana{(UseRules.ManaGreaterThanBool ? " ≥ " : " ≤ ")}{UseRules.ManaUseValue}{(UseRules.ManaIsPercentage ? "%" : "#")}]");
 
         if (UseRules.PartyMemberHealthUseValue != 0)
-        {
-            bob.Append(" - [Party HP");
-            _ = UseRules.PartyMemberHealthGreaterThanBool ? bob.Append(" > ") : bob.Append(" < ");
-            bob.Append(UseRules.PartyMemberHealthUseValue);
-            bob.Append(UseRules.PartyMemberHealthIsPercentage ? "%]" : "#]");
-        }
+            conditions.Add($"[Party HP{(UseRules.PartyMemberHealthGreaterThanBool ? " ≥ " : " ≤ ")}{UseRules.PartyMemberHealthUseValue}{(UseRules.PartyMemberHealthIsPercentage ? "%" : "#")}]");
 
         if (UseRules.MultiAuraBool && UseRules.MultiAuraChecks.Count > 0)
         {
@@ -441,24 +431,20 @@ public class SkillItemViewModel : ObservableObject
                 1 => "OR",
                 _ => "AND"
             };
-            bob.Append($" - [Multi-Aura ({opStr})");
+            StringBuilder multi = new($"[Multi-Aura ({opStr})");
             foreach (AuraCheckViewModel check in UseRules.MultiAuraChecks)
-            {
-                string target = check.AuraTargetIndex == 1 ? "Tgt" : "Self";
-                bob.Append($" '{check.AuraName}'{(check.IsGreater ? ">" : "<")}{check.StackCount}");
-            }
-            bob.Append(']');
+                multi.Append($" '{check.AuraName}' {(check.IsGreater ? "≥" : "≤")} {check.StackCount}");
+            multi.Append(']');
+            conditions.Add(multi.ToString());
         }
         else if (UseRules.AuraUseValue != 0 || !string.IsNullOrEmpty(UseRules.AuraName))
         {
             string target = UseRules.AuraTargetIndex == 1 ? "Target" : "Self";
-            bob.Append($" - [Aura ({target})");
-            if (!string.IsNullOrEmpty(UseRules.AuraName))
-                bob.Append($" '{UseRules.AuraName}'");
-            _ = UseRules.AuraGreaterThanBool ? bob.Append(" > ") : bob.Append(" < ");
-            bob.Append(UseRules.AuraUseValue);
-            bob.Append(']');
+            conditions.Add($"[Aura ({target}){(string.IsNullOrEmpty(UseRules.AuraName) ? string.Empty : $" '{UseRules.AuraName}'")}{(UseRules.AuraGreaterThanBool ? " ≥ " : " ≤ ")}{UseRules.AuraUseValue}]");
         }
+
+        if (conditions.Count > 0)
+            bob.Append(" - ").Append(string.Join(UseRules.MatchAnyBool ? " OR " : " AND ", conditions));
 
         if (UseRules.SkipUseBool)
             bob.Append(" - [Skip if not available]");
@@ -474,12 +460,13 @@ public class SkillItemViewModel : ObservableObject
             return bob.ToString();
         if (UseRules.WaitUseValue != 0)
             bob.Append($" WW{UseRules.WaitUseValue}");
+        List<string> conditions = new();
         if (UseRules.HealthUseValue != 0)
-            bob.Append($" H{(UseRules.HealthGreaterThanBool ? ">" : "<")}{UseRules.HealthUseValue}{(UseRules.HealthIsPercentage ? "%" : "#")}");
+            conditions.Add($"H{(UseRules.HealthGreaterThanBool ? ">" : "<")}{UseRules.HealthUseValue}{(UseRules.HealthIsPercentage ? "%" : "#")}");
         if (UseRules.ManaUseValue != 0)
-            bob.Append($" M{(UseRules.ManaGreaterThanBool ? ">" : "<")}{UseRules.ManaUseValue}{(UseRules.ManaIsPercentage ? "%" : "#")}");
+            conditions.Add($"M{(UseRules.ManaGreaterThanBool ? ">" : "<")}{UseRules.ManaUseValue}{(UseRules.ManaIsPercentage ? "%" : "#")}");
         if (UseRules.PartyMemberHealthUseValue != 0)
-            bob.Append($" PH{(UseRules.PartyMemberHealthGreaterThanBool ? ">" : "<")}{UseRules.PartyMemberHealthUseValue}{(UseRules.PartyMemberHealthIsPercentage ? "%" : "#")}");
+            conditions.Add($"PH{(UseRules.PartyMemberHealthGreaterThanBool ? ">" : "<")}{UseRules.PartyMemberHealthUseValue}{(UseRules.PartyMemberHealthIsPercentage ? "%" : "#")}");
         if (UseRules.MultiAuraBool && UseRules.MultiAuraChecks.Count > 0)
         {
             string opChar = UseRules.MultiAuraOperatorIndex switch
@@ -487,19 +474,23 @@ public class SkillItemViewModel : ObservableObject
                 1 => ":",
                 _ => "&"
             };
+            List<string> group = new();
             for (int i = 0; i < UseRules.MultiAuraChecks.Count; i++)
             {
                 AuraCheckViewModel check = UseRules.MultiAuraChecks[i];
                 string suffix = i < UseRules.MultiAuraChecks.Count - 1 ? opChar : "";
                 string target = check.AuraTargetIndex == 1 ? " TARGET" : string.Empty;
-                bob.Append($" MA{(check.IsGreater ? ">" : "<")}\"{check.AuraName}\" {check.StackCount}{target}{suffix}");
+                group.Add($"MA{(check.IsGreater ? ">" : "<")}\"{check.AuraName}\" {check.StackCount}{target}{suffix}");
             }
+            conditions.Add(string.Join(" ", group));
         }
         else if (!string.IsNullOrEmpty(UseRules.AuraName))
         {
             string target = UseRules.AuraTargetIndex == 1 ? " TARGET" : string.Empty;
-            bob.Append($" A{(UseRules.AuraGreaterThanBool ? ">" : "<")}\"{UseRules.AuraName}\" {UseRules.AuraUseValue}{target}");
+            conditions.Add($"A{(UseRules.AuraGreaterThanBool ? ">" : "<")}\"{UseRules.AuraName}\" {UseRules.AuraUseValue}{target}");
         }
+        if (conditions.Count > 0)
+            bob.Append(' ').Append(string.Join(UseRules.MatchAnyBool ? " OR " : " ", conditions));
         if (UseRules.SkipUseBool)
             bob.Append('S');
         return bob.ToString();

@@ -7,7 +7,7 @@ namespace Skua.Core.ViewModels;
 public partial class AdvancedSkillsViewModel : BotControlViewModelBase
 {
     public AdvancedSkillsViewModel(AdvancedSkillEditorViewModel editor, SavedAdvancedSkillsViewModel savedViewModel)
-        : base("Advanced Skills", 700, 530)
+        : base("Advanced Skills", 700, 612)
     {
         EditViewModel = editor;
         SavedViewModel = savedViewModel;

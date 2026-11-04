@@ -1,5 +1,6 @@
 using Skua.Core.Interfaces;
 using Skua.Core.Models.Monsters;
+using Skua.Core.Models.Skills;
 
 namespace Skua.Core.Skills;
 
@@ -43,6 +44,7 @@ public class AdvancedSkillProvider : ISkillProvider
             {
                 _currentCommand.Skills.Add(index, skill);
                 _currentCommand.UseRules.Add(trimmed.Length <= 1 ? _none : ParseUseRule(trimmed[1..]));
+                _currentCommand.MatchAny.Add(trimmed.Length > 1 && SkillRuleText.HasOr(trimmed[1..]));
                 ++index;
             }
         }
