@@ -448,6 +448,26 @@ public partial class CBOClassSelectViewModel : ObservableObject, IManageCBOption
         SelectedBossUseMode = null;
     }
 
+    /// <summary>
+    /// Reloads the class list while keeping every slot's class and mode selection.
+    /// </summary>
+    public void RefreshClassesKeepSelection()
+    {
+        string? soloClass = SelectedSoloClass, farmClass = SelectedFarmClass, dodgeClass = SelectedDodgeClass, bossClass = SelectedBossClass;
+        ClassUseMode? soloMode = SelectedSoloUseMode, farmMode = SelectedFarmUseMode, dodgeMode = SelectedDodgeUseMode, bossMode = SelectedBossUseMode;
+
+        ReloadClasses();
+
+        SelectedSoloClass = soloClass;
+        SelectedSoloUseMode = soloMode;
+        SelectedFarmClass = farmClass;
+        SelectedFarmUseMode = farmMode;
+        SelectedDodgeClass = dodgeClass;
+        SelectedDodgeUseMode = dodgeMode;
+        SelectedBossClass = bossClass;
+        SelectedBossUseMode = bossMode;
+    }
+
     public StringBuilder Save(StringBuilder builder)
     {
         string soloClass = SelectedSoloClass == CurrentClassOption ? CurrentClassOption : SelectedSoloClass;
