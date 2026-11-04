@@ -71,6 +71,8 @@ public class Externalizer {
 
         // Skills
         this.addCallback("canUseSkill", Skills.canUseSkill);
+        this.addCallback("skillCooldownRemaining", Skills.skillCooldownRemaining);
+        this.addCallback("globalCooldownRemaining", Skills.globalCooldownRemaining);
         this.addCallback("useSkill", Skills.useSkill);
 
         // Combat
@@ -96,6 +98,7 @@ public class Externalizer {
         // Auras
         this.addCallback("getSubjectAuras", Auras.getSubjectAuras);
         this.addCallback("GetAuraSnapshots", Auras.GetAuraSnapshots);
+        this.addCallback("GetAuraRuleStacks", Auras.GetAuraRuleStacks);
         this.addCallback("HasAnyActiveAura", Auras.HasAnyActiveAura);
         this.addCallback("GetPlayerAura", Auras.GetPlayerAura);
         this.addCallback("GetMonsterAuraByName", Auras.GetMonsterAuraByName);

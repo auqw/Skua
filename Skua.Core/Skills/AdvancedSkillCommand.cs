@@ -215,11 +215,14 @@ public class AdvancedSkillCommand
 
     private float GetAuraStacks(IScriptPlayer player, IScriptSelfAuras self, IScriptTargetAuras target, string auraTarget, string auraName)
     {
+        // The HUD stack count or the summed aura values, whichever is higher: rules were written against the summed
+        // values (Lich's Ex Mortis has value 2 but no HUD stack count, so the HUD shows 1), and auras the server
+        // stacks with a stack count read as the HUD shows them.
         if (auraTarget.Equals("self", StringComparison.OrdinalIgnoreCase))
-            return self.GetAuraStacks(auraName);
+            return self.GetAuraRuleStacks(auraName);
 
         if (auraTarget.Equals("target", StringComparison.OrdinalIgnoreCase) && player.HasTarget)
-            return target.GetAuraStacks(auraName);
+            return target.GetAuraRuleStacks(auraName);
 
         return 0;
     }
