@@ -384,6 +384,7 @@ public partial class CBOClassSelectViewModel : ObservableObject, IManageCBOption
     {
         if (PlayerClasses.Count <= 1)
         {
+            OnPropertyChanged(nameof(PlayerClasses));
             return;
         }
 
@@ -446,6 +447,26 @@ public partial class CBOClassSelectViewModel : ObservableObject, IManageCBOption
         BossUseModes = new();
         SelectedBossClass = null;
         SelectedBossUseMode = null;
+    }
+
+    /// <summary>
+    /// Reloads the class list while keeping every slot's class and mode selection.
+    /// </summary>
+    public void RefreshClassesKeepSelection()
+    {
+        string? soloClass = SelectedSoloClass, farmClass = SelectedFarmClass, dodgeClass = SelectedDodgeClass, bossClass = SelectedBossClass;
+        ClassUseMode? soloMode = SelectedSoloUseMode, farmMode = SelectedFarmUseMode, dodgeMode = SelectedDodgeUseMode, bossMode = SelectedBossUseMode;
+
+        ReloadClasses();
+
+        SelectedSoloClass = soloClass;
+        SelectedSoloUseMode = soloMode;
+        SelectedFarmClass = farmClass;
+        SelectedFarmUseMode = farmMode;
+        SelectedDodgeClass = dodgeClass;
+        SelectedDodgeUseMode = dodgeMode;
+        SelectedBossClass = bossClass;
+        SelectedBossUseMode = bossMode;
     }
 
     public StringBuilder Save(StringBuilder builder)

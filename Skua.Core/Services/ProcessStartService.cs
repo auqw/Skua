@@ -1,5 +1,6 @@
 ﻿using Skua.Core.Interfaces;
 using Skua.Core.Models;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace Skua.Core.Services;
@@ -29,46 +30,66 @@ public class ProcessStartService : IProcessService
 
     public void OpenVSC()
     {
-        if (_settingsService.Get("UseLocalVSC", false))
-        {
-            Process.Start(_vscPath, _scriptsPath);
+        if (TryStartLocalVSCode(Quote(_scriptsPath)) || TryStartVSCode(Quote(_scriptsPath)))
             return;
-        }
-        try
-        {
-            VSCode(string.Empty);
-        }
-        catch
-        {
-            _dialogService.ShowMessageBox("VSCode was not found. If you have VSCode, reinstall it and be sure to check it to install in you PATH folder.", "VSCode not found");
-        }
+
+        OpenNotepad(null);
     }
 
     public void OpenVSC(string path)
     {
-        if (_settingsService.Get("UseLocalVSC", false))
-        {
-            Process.Start(_vscPath, new[] { _scriptsPath, path, "--reuse-window" });
+        if (TryStartLocalVSCode($"{Quote(_scriptsPath)} {Quote(path)} --reuse-window") || TryStartVSCode($"{Quote(_scriptsPath)} {Quote(path)}"))
             return;
-        }
+
+        OpenNotepad(path);
+    }
+
+    private bool TryStartLocalVSCode(string arguments)
+    {
+        if (!_settingsService.Get("UseLocalVSC", false))
+            return false;
+
         try
         {
-            VSCode(path);
+            Process.Start(_vscPath, arguments);
+            return true;
         }
-        catch
+        catch (Win32Exception)
         {
-            Process.Start("notepad", path);
+            return false;
         }
     }
 
-    private void VSCode(string path)
+    private static bool TryStartVSCode(string arguments)
     {
-        ProcessStartInfo psi = new("code", $"{_scriptsPath} {path}")
+        ProcessStartInfo psi = new("code", arguments)
         {
             UseShellExecute = true,
             CreateNoWindow = true
         };
 
-        Process.Start(psi);
+        try
+        {
+            Process.Start(psi);
+            return true;
+        }
+        catch (Win32Exception)
+        {
+            return false;
+        }
     }
+
+    private void OpenNotepad(string? path)
+    {
+        try
+        {
+            Process.Start("notepad", string.IsNullOrEmpty(path) ? string.Empty : Quote(path));
+        }
+        catch (Win32Exception)
+        {
+            _dialogService.ShowMessageBox("Neither VSCode nor Notepad could be started.", "Editor not found");
+        }
+    }
+
+    private static string Quote(string value) => $"\"{value}\"";
 }
