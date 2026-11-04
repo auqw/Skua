@@ -25,7 +25,7 @@ public partial class MapService : ObservableObject, IMapService
     public List<string> Cells => Map.Cells;
 
     [ObservableProperty]
-    private bool _UsePrivateRoom;
+    private bool _UsePrivateRoom = true;
 
     [ObservableProperty]
     private int _PrivateRoomNumber = 111111;
