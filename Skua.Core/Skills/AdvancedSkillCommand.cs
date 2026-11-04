@@ -216,12 +216,25 @@ public class AdvancedSkillCommand
     private float GetAuraStacks(IScriptPlayer player, IScriptSelfAuras self, IScriptTargetAuras target, string auraTarget, string auraName)
     {
         if (auraTarget.Equals("self", StringComparison.OrdinalIgnoreCase))
-            return self.GetAuraStacks(auraName);
+            return Stacks(self.GetAuraStacks(auraName), self.Auras, auraName);
 
         if (auraTarget.Equals("target", StringComparison.OrdinalIgnoreCase) && player.HasTarget)
-            return target.GetAuraStacks(auraName);
+            return Stacks(target.GetAuraStacks(auraName), target.Auras, auraName);
 
         return 0;
+    }
+
+    /// <summary>
+    /// The HUD stack count or the summed aura values, whichever is higher. Rules were written against the summed values
+    /// (Lich's Ex Mortis has value 2 but no HUD stack count, so the HUD shows 1), and auras the server stacks with a
+    /// stack count read as the HUD shows them.
+    /// </summary>
+    private static float Stacks(int hudStacks, List<Models.Auras.Aura>? auras, string auraName)
+    {
+        float values = auras?
+            .Where(a => a.Name != null && a.Name.Equals(auraName, StringComparison.OrdinalIgnoreCase))
+            .Sum(a => a.Value) ?? 0;
+        return Math.Max(hudStacks, values);
     }
 
     public void Reset()
