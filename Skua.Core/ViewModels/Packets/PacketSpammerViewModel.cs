@@ -53,13 +53,20 @@ public partial class PacketSpammerViewModel : BotControlViewModelBase
     [RelayCommand]
     private async Task Spammer(CancellationToken token)
     {
+        // Task.Delay(0) completes synchronously, so a delay below 1 ms or an empty list would spin the UI thread.
         while (!token.IsCancellationRequested)
         {
+            if (_packets.Count == 0)
+            {
+                await Task.Delay(Math.Max(_spamDelay, 1), token);
+                continue;
+            }
+
             for (int i = 0; i < _packets.Count; i++)
             {
                 SelectedIndex = i;
                 Send(_packets[i]);
-                await Task.Delay(_spamDelay, token);
+                await Task.Delay(Math.Max(_spamDelay, 1), token);
             }
         }
     }
