@@ -163,7 +163,9 @@ public partial class ScriptDrop : ObservableRecipient, IScriptDrop, IAsyncDispos
         _ctsDrops?.Dispose();
 
         _ctsDrops = new();
-        _taskDrops = HandleDrops(_timerDrops, _ctsDrops.Token);
+        CancellationToken token = _ctsDrops.Token;
+        // Run off the caller's context: started from the UI, the loop would resume on the UI thread and block it in Wait.ForPickup.
+        _taskDrops = Task.Run(() => HandleDrops(_timerDrops, token));
         OnPropertyChanged(nameof(Enabled));
     }
 
