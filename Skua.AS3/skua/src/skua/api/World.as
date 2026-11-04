@@ -112,10 +112,22 @@ public class World {
     }
 
     public static function skipCutscenes():void {
-        while (Main.instance.game.mcExtSWF.numChildren > 0) {
-            Main.instance.game.mcExtSWF.removeChildAt(0);
+        var game:* = Main.instance.game;
+        if (game.mcExtSWF.numChildren == 0)
+            return;
+
+        // The game hides the world when a cutscene loads; clearExternamSWF shows it again and stops the clips.
+        if ("clearExternamSWF" in game) {
+            game.clearExternamSWF();
+            return;
         }
-        Main.instance.game.showInterface();
+
+        while (game.mcExtSWF.numChildren > 0) {
+            game.mcExtSWF.removeChildAt(0);
+        }
+        if (game.world != null)
+            game.world.visible = true;
+        game.showInterface();
     }
 
     public static function hidePlayers(enabled:Boolean):void {
