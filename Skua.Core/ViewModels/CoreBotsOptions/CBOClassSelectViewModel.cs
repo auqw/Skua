@@ -384,6 +384,7 @@ public partial class CBOClassSelectViewModel : ObservableObject, IManageCBOption
     {
         if (PlayerClasses.Count <= 1)
         {
+            OnPropertyChanged(nameof(PlayerClasses));
             return;
         }
 
