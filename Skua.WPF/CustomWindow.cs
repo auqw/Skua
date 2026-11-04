@@ -1,4 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Messaging;
+using Skua.Core.Interfaces;
+using Skua.Core.Messaging;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,6 +56,18 @@ public partial class CustomWindow : Window
     public static readonly DependencyProperty TitleTextProperty =
         DependencyProperty.Register("TitleText", typeof(string), typeof(CustomWindow), new PropertyMetadata("Skua"));
 
+    /// <summary>
+    /// Dependency property to set if the custom window should have square corners instead of rounded ones.
+    /// Follows the "SquareWindowCorners" setting.
+    /// </summary>
+    public bool SquareCorners
+    {
+        get => (bool)GetValue(SquareCornersProperty); set => SetValue(SquareCornersProperty, value);
+    }
+
+    public static readonly DependencyProperty SquareCornersProperty =
+        DependencyProperty.Register("SquareCorners", typeof(bool), typeof(CustomWindow), new PropertyMetadata(false, SquareCorners_Changed));
+
     static CustomWindow()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
@@ -76,6 +92,9 @@ public partial class CustomWindow : Window
         ContextMenu = new();
         ContextMenu.Items.Add(_topMostMenu);
 
+        SquareCorners = ReadSquareCornersSetting();
+        WeakReferenceMessenger.Default.Register<CustomWindow, SquareWindowCornersMessage>(this, static (w, m) => w.SquareCorners = m.Square);
+
         Loaded += CustomWindow_Loaded;
     }
 
@@ -85,16 +104,37 @@ public partial class CustomWindow : Window
         _hook = new HwndSourceHook(WindowChromePatch.WindowProc);
         _handle.AddHook(_hook);
 
-        ApplyRoundedCorners(_handle.Handle);
+        ApplyCornerPreference(_handle.Handle, SquareCorners);
 
         SourceInitialized -= CustomWindow_SourceInitialized;
     }
 
-    private static unsafe void ApplyRoundedCorners(IntPtr hwnd)
+    private static void SquareCorners_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        IntPtr hwnd = new WindowInteropHelper((Window)d).Handle;
+        if (hwnd != IntPtr.Zero)
+            ApplyCornerPreference(hwnd, (bool)e.NewValue);
+    }
+
+    private static bool ReadSquareCornersSetting()
     {
         try
         {
-            DWM_WINDOW_CORNER_PREFERENCE preference = DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
+            return Ioc.Default.GetService<ISettingsService>()?.Get<bool>("SquareWindowCorners") ?? false;
+        }
+        catch
+        {
+            // No service provider (designer or before startup).
+            return false;
+        }
+    }
+
+    // Asks DWM to round (or not) the window; only Windows 11 (build 22000+) honours it, Windows 10 ignores it.
+    private static unsafe void ApplyCornerPreference(IntPtr hwnd, bool square)
+    {
+        try
+        {
+            DWM_WINDOW_CORNER_PREFERENCE preference = square ? DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DONOTROUND : DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
             PInvoke.DwmSetWindowAttribute(
                 (Windows.Win32.Foundation.HWND)hwnd,
                 DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE,
