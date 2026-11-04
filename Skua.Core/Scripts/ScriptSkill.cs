@@ -86,12 +86,29 @@ public partial class ScriptSkill : IScriptSkill
     public bool IsPaused { get; private set; } = false;
     public int SkillInterval { get; set; } = 100;
     
-    public int SkillTimeoutMs { get; set; } = -1;
+    private int _skillTimeoutMs = -1;
+
+    // Set when the timeout was given in intervals (SkillTimeout, StartAdvanced(skills, timeout, mode)): it then stays a
+    // count of intervals and follows SkillInterval at the time of the wait, as it always did.
+    private int? _skillTimeoutIntervals;
+
+    public int SkillTimeoutMs
+    {
+        get => _skillTimeoutIntervals is int intervals
+            ? (intervals <= 0 ? intervals : (int)Math.Min(int.MaxValue, (long)intervals * Math.Max(1, SkillInterval)))
+            : _skillTimeoutMs;
+        set
+        {
+            _skillTimeoutMs = value;
+            _skillTimeoutIntervals = null;
+        }
+    }
 
     public int SkillTimeout
     {
-        get => SkillTimeoutMs <= 0 ? SkillTimeoutMs : SkillTimeoutMs / Math.Max(1, SkillInterval);
-        set => SkillTimeoutMs = value <= 0 ? value : value * Math.Max(1, SkillInterval);
+        get => _skillTimeoutIntervals
+            ?? (_skillTimeoutMs <= 0 ? _skillTimeoutMs : (int)(((long)_skillTimeoutMs + Math.Max(1, SkillInterval) - 1) / Math.Max(1, SkillInterval)));
+        set => _skillTimeoutIntervals = value;
     }
 
     public bool ResetComboOnTargetChange { get; set; } = false;

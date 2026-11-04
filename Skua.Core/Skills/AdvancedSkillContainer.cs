@@ -238,11 +238,14 @@ public class AdvancedSkillContainer : ObservableRecipient, IAdvancedSkillContain
         }
         else if (singleAuraRules.Count > 1)
         {
+            // Separate aura rules become one multi-aura group: joined like the step's other conditions, so with OR
+            // any one of them is enough (":"), otherwise all of them (as before, "&").
+            string opChar = matchAny ? ":" : "&";
             List<string> group = new();
             for (int i = 0; i < singleAuraRules.Count; i++)
             {
                 SkillRuleJson rule = singleAuraRules[i];
-                string suffix = i < singleAuraRules.Count - 1 ? "&" : "";
+                string suffix = i < singleAuraRules.Count - 1 ? opChar : "";
                 group.Add($"MA{(rule.Comparison == "greater" ? ">" : "<")}\"{rule.AuraName}\" {rule.Value}{(rule.AuraTarget == "target" ? " TARGET" : "")}{suffix}");
             }
             ruleParts.Add(string.Join(" ", group));

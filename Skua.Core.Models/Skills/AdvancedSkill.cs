@@ -57,8 +57,9 @@ public class AdvancedSkill
     /// </summary>
     public int SkillTimeout
     {
-        get => SkillTimeoutMs <= 0 ? SkillTimeoutMs : (SkillTimeoutMs + TickMs - 1) / TickMs;
-        set => SkillTimeoutMs = value <= 0 ? value : value * TickMs;
+        // Rounded up, in long arithmetic: a huge value saturates at int.MaxValue instead of wrapping to "no limit".
+        get => SkillTimeoutMs <= 0 ? SkillTimeoutMs : (int)(((long)SkillTimeoutMs + TickMs - 1) / TickMs);
+        set => SkillTimeoutMs = value <= 0 ? value : (int)Math.Min(int.MaxValue, (long)value * TickMs);
     }
 
     /// <summary>The length of one timeout tick in files and older scripts: the skill timer's default interval.</summary>
