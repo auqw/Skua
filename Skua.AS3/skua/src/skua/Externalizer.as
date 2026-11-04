@@ -98,6 +98,7 @@ public class Externalizer {
         // Auras
         this.addCallback("getSubjectAuras", Auras.getSubjectAuras);
         this.addCallback("GetAuraSnapshots", Auras.GetAuraSnapshots);
+        this.addCallback("GetAuraRuleStacks", Auras.GetAuraRuleStacks);
         this.addCallback("HasAnyActiveAura", Auras.HasAnyActiveAura);
         this.addCallback("GetPlayerAura", Auras.GetPlayerAura);
         this.addCallback("GetMonsterAuraByName", Auras.GetMonsterAuraByName);

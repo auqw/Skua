@@ -26,12 +26,15 @@ public interface IScriptSkill
     ISkillProvider? OverrideProvider { get; set; }
 
     /// <summary>
-    /// The timeout in multiples of <see cref="SkillInterval"/> milliseconds before skipping the current unavailable skill when using <see cref="SkillUseMode.WaitForCooldown"/>.
+    /// The timeout in multiples of <see cref="SkillInterval"/> milliseconds before skipping the current skill while it cools down when using <see cref="SkillUseMode.WaitForCooldown"/>.
+    /// A skill held up by anything other than its cooldown (mana, a stun, an empty potion slot, a locked skill) is skipped at once.
     /// </summary>
     int SkillTimeout { get; set; }
 
     /// <summary>
-    /// The interval, in milliseconds, at which to use skills.
+    /// The longest the skill thread sleeps between checks, in milliseconds (default 100). It is not the rate at which skills are used:
+    /// the thread wakes as soon as the global cooldown or the awaited skill's cooldown ends, so skills are used as soon as they are ready.
+    /// It is also the unit of <see cref="SkillTimeout"/>.
     /// </summary>
     int SkillInterval { get; set; }
 
@@ -208,7 +211,7 @@ public interface IScriptSkill
     }
 
     /// <summary>
-    /// Starts the skill thread which uses the registered skills at the set <see cref="SkillInterval"/>.
+    /// Starts the skill thread, which uses the registered skills as soon as they are ready, checking at least every <see cref="SkillInterval"/> milliseconds.
     /// </summary>
     /// <remarks>The skill thread is automatically stopped when the bot is stopped.</remarks>
     void Start();

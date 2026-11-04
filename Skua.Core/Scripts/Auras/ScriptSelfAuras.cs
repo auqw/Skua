@@ -57,6 +57,9 @@ public partial class ScriptSelfAuras : IScriptSelfAuras
 
     public int GetAuraStacks(string auraName) => GetAuraSnapshot(auraName)?.Stacks ?? 0;
 
+    public float GetAuraRuleStacks(string auraName) =>
+        float.TryParse(Flash.Call("GetAuraRuleStacks", nameof(SubjectType.Self), auraName), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float stacks) ? stacks : 0;
+
     public Aura? GetAura(string auraName)
     {
         return Auras.FirstOrDefault(a => a.Name.Equals(auraName, StringComparison.OrdinalIgnoreCase));

@@ -71,6 +71,41 @@ public class Auras {
         return JSON.stringify(snapshots);
     }
 
+    /**
+     * The amount Advanced Skills aura rules compare: the HUD stack count or the summed aura values, whichever is
+     * higher. Both are read from the same leaf in one call, so they describe the same moment and the same target.
+     */
+    public static function GetAuraRuleStacks(subject:String, auraName:String):String {
+        var world:* = Main.instance.game.world;
+        var leaf:* = subject == "Self"
+            ? world.uoTree[Main.instance.game.sfc.myUserName.toLowerCase()]
+            : (world.myAvatar.target != null ? world.myAvatar.target.dataLeaf : null);
+        if (leaf == null || auraName == null) {
+            return "0";
+        }
+        var key:String = auraName.toLowerCase();
+        var hud:Number = 0;
+        if (leaf.hudAuras != null) {
+            for (var hudName:String in leaf.hudAuras) {
+                if (hudName.toLowerCase() == key && leaf.hudAuras[hudName] != null) {
+                    hud = Math.max(hud, int(leaf.hudAuras[hudName].n));
+                }
+            }
+        }
+        // As rebuildAuraArray does: skip expired entries, and count an aura without a value as 1.
+        var values:Number = 0;
+        if (leaf.auras != null) {
+            for each (var aura:* in leaf.auras) {
+                if (aura == null || !aura.nam || aura.e == 1 || String(aura.nam).toLowerCase() != key) {
+                    continue;
+                }
+                var value:Number = Number(aura.val);
+                values += aura.val == null || isNaN(value) ? 1 : value;
+            }
+        }
+        return Math.max(hud, values).toString();
+    }
+
     public static function getSubjectAuras(subject:String):Array {
         if (subject == 'Self')
         {
