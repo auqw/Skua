@@ -68,7 +68,7 @@
         "state": "uploaded",
         "size": 23621022,
         "digest": "sha256:51b6dbf67dccf33d6329f9b8facecc952575635ed1a4dc37f861c2e67ec0deee",
-        "download_count": 3352,
+        "download_count": 6479,
         "created_at": "2026-10-10T06:09:56Z",
         "updated_at": "2026-10-10T06:10:00Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.5.0/Skua-1.4.5.0-Release-x64.msi"
@@ -104,7 +104,7 @@
         "state": "uploaded",
         "size": 23596450,
         "digest": "sha256:45389cef0596c048ce86eea70bd355ccfea2c81a7aac4bd129cd1f1f558c98f1",
-        "download_count": 244,
+        "download_count": 538,
         "created_at": "2026-10-10T06:10:00Z",
         "updated_at": "2026-10-10T06:10:03Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.5.0/Skua-1.4.5.0-Release-x86.msi"
@@ -113,6 +113,18 @@
     "tarball_url": "https://api.github.com/repos/auqw/Skua/tarball/1.4.5.0",
     "zipball_url": "https://api.github.com/repos/auqw/Skua/zipball/1.4.5.0",
     "body": "## Script API changes\r\n\r\n### Inventory\r\n\r\n- Add `Bot.Inventory.HasCategories` to detect separate bag, misc, class, and house inventories.\r\n- Add `Bot.Inventory.MiscSlots`, `MiscUsedSlots`, and `MiscFreeSlots` to read misc capacity and usage. Capacity includes the current server limit. Older clients return zero.\r\n- Add `Bot.Inventory.GetPool(ItemBase item)` to return `bag`, `misc`, `class`, or `house`. Older clients return `bag`.\r\n- Add `Bot.Inventory.HasSpaceFor(ItemBase item, int quantity = 1)` to check the destination inventory and existing stacks. For shop items, the check includes slots freed by purchase materials and tokens. The quantity is the amount to purchase.\r\n- Add `Bot.Inventory.CanBank(InventoryItem item)` to check the class deposit restriction. Category clients do not permit class deposits. This method does not check bank capacity.\r\n- Add `Bot.Inventory.IsFavorited(int itemId)` to read the current character's local favorite mark. Clients without a favorite store return `false`.\r\n- Remove the unused `ClassUsedSlots` API and its AS3 callback.\r\n\r\n### Shops\r\n\r\n- Add `Bot.Shop.ProtectFavorites`, with a default value of `true`. Scripted sales stop when an item is a favorite. Set this property to `false` to permit those sales. The sale setting remains on `Bot.Shop`; the favorite query is on `Bot.Inventory`.\r\n- Add `Bot.Shop.GetUnmetPurchaseRequirements(ShopItem item, int quantity = -1)`. It returns a list of missing inventory materials, missing tokens, and unmet quest requirements. It also reports invalid quantities, items absent from the loaded shop, and failures to read requirements. The default quantity selects the purchase bundle. Banked materials do not count.\r\n- Add `ShopItem.TokenID`, `TokenQuantity`, and `TokenName`. Token quantity retains fractional costs.\r\n- Add `ItemBase.House` to expose the game's `bHouse` flag.\r\n\r\n### Player and target auras\r\n\r\n- Add `Bot.Self.Snapshots` and `Bot.Target.Snapshots` to read the current game HUD aura data, including `auSnap` effects.\r\n- Add `Bot.Self.GetAuraSnapshot(string auraName)` and `Bot.Target.GetAuraSnapshot(string auraName)`. Each method returns the matching `AuraSnapshot`, or `null` when the aura is absent. Name matching is case-insensitive.\r\n- Add `Bot.Self.GetAuraStacks(string auraName)` and `Bot.Target.GetAuraStacks(string auraName)`. Each method returns the HUD stack count, or zero when the aura is absent.\r\n- Add the `AuraSnapshot` model with `Name`, `Stacks`, `Duration`, `RemainingTime`, `Persistent`, `Icon`, and `Description`. Duration and remaining time use seconds. A zero duration means no timed expiry. Each snapshot read obtains current game data.\r\n- Keep `Aura.Value` as the aura effect value.\r\n\r\n## Fixes and behavior changes\r\n\r\n### Navigation and display\r\n\r\n- Fix `Bot.Map.Jump` with auto-correction enabled. The correction waits for the requested cell to load and checks the map's actual pad objects. It uses the requested pad when valid, then `Left`, then the first valid pad. A new jump or a map change stops the previous correction. Checks stop after two seconds.\r\n- Rename the AS3 jump timer handler to `onJumpCorrectionTimer` and replace the old pad-name checks with valid-pad lookup and timer cleanup.\r\n- Fix clipping of the embedded game at high DPI and when moving between monitors with different display scales. Add a manifest that sets per-monitor DPI awareness before the window opens. by @lucasdcorrea1 in https://github.com/auqw/Skua/pull/52\r\n- Update the window title on login and when the username display option changes. Remove the one-second title polling timer.\r\n\r\n### Inventory, banking, and shops\r\n\r\n- Make inventory `UsedSlots` and `FreeSlots` report ordinary bag usage on category clients. The inventory item collection still includes all items.\r\n- Check the item's destination inventory before bank withdrawals, bank swaps, shop purchases, and drop pickups. Existing partial stacks can accept items when the ordinary bag is full on older clients.\r\n- Stop class deposits through inventory and house banking methods on category clients before sending packets or starting retries. Previously banked classes can still be withdrawn.\r\n- Account for the outgoing item when checking bank swap capacity. Fix `Swap(string, string)` to return the swap result. Fix `EnsureSwap(int, int)` to check that the incoming bank item reached the inventory.\r\n- Check shop requirements and capacity before purchase waits. Match Game4000's bundle and fractional token cost calculations. Use `ItemID` for shop item lookup by name.\r\n- Check inventory favorite marks before scripted sales when `ProtectFavorites` is enabled.\r\n- Accept native JSON Boolean values in `StringBoolConverter`, including house and temporary-item flags.\r\n\r\n### Drops and combat\r\n\r\n- Keep drops in the pickup cache when `PickupAll` cannot pick them up.\r\n- Fix drop rejection for custom/mobile drop data and classic drop lists. Use case-insensitive keep lists and preserve protected AC drops. Remove rejected items from the C# cache only after the AS3 bridge reports success.\r\n- Make the AS3 `Player.rejectExcept` result available to the C# drop handler.\r\n- Remove global match state from the drop quantity expression. Use regular expressions to remove leading and trailing whitespace from aura and drop names.\r\n- Fix Advanced Skill aura stack checks to use the player and target HUD stack counts. The previous code used aura effect values as stack counts.\r\n\r\n### Packet handling\r\n\r\n- Enable outgoing packet capture for each loaded game. Keep capture active while that game is loaded, detach listeners on removal or replacement, and restore the previous debug setting.\r\n- Recognize outgoing messages by their debug prefix and preserve colons inside packet payloads.\r\n- Decode incoming `Z` packets with zlib and Base64 before passing them to interceptors. Forward unchanged packets with their original bytes and recompress edited packets.\r\n- Fix UTF-8 packet encoding, preserve empty NUL separators, and clean up connections on closure or failure. Pass malformed compressed envelopes through unchanged. Close the proxy connections if decoded content exceeds 16 MiB.\r\n\r\n## New Contributors\r\n* @lucasdcorrea1 made their first contribution in https://github.com/auqw/Skua/pull/52\r\n\r\nChanges and release notes were made by @l0newolf12 \r\n\r\n**Full Changelog**: https://github.com/auqw/Skua/compare/1.4.4.4...1.4.5.0",
+    "reactions": {
+      "url": "https://api.github.com/repos/auqw/Skua/releases/408715165/reactions",
+      "total_count": 2,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 2,
+      "rocket": 0,
+      "eyes": 0
+    },
     "mentions_count": 2
   },
   {
@@ -184,7 +196,7 @@
         "state": "uploaded",
         "size": 23530910,
         "digest": "sha256:e1a83b255b21962844ffb3c901fba80b35c768bad231453588f49a1c38c939bf",
-        "download_count": 10357,
+        "download_count": 10473,
         "created_at": "2026-08-09T00:24:12Z",
         "updated_at": "2026-08-09T00:24:12Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.4.4/Skua-1.4.4.4-Release-x64.msi"
@@ -220,7 +232,7 @@
         "state": "uploaded",
         "size": 23514530,
         "digest": "sha256:cfbc66ed950d527d1f192aba002414b31f536b24aae071024c3b51a810a8fe0f",
-        "download_count": 671,
+        "download_count": 674,
         "created_at": "2026-08-09T00:24:12Z",
         "updated_at": "2026-08-09T00:24:13Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.4.4/Skua-1.4.4.4-Release-x86.msi"
@@ -299,7 +311,7 @@
         "state": "uploaded",
         "size": 23547294,
         "digest": "sha256:11e0e5552c0aa2d6a6e2dfb666a1eef05d8cd21a4449891e32ef79bc2e00c740",
-        "download_count": 623,
+        "download_count": 628,
         "created_at": "2026-08-08T20:23:57Z",
         "updated_at": "2026-08-08T20:23:58Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.4.3/Skua-1.4.4.3-Release-x64.msi"
@@ -415,7 +427,7 @@
         "state": "uploaded",
         "size": 23547294,
         "digest": "sha256:5d98bb971c0e75097afc230d36f82d83e0078bc7d1d5819cde796cee10b3ba7f",
-        "download_count": 453,
+        "download_count": 455,
         "created_at": "2026-08-08T17:19:49Z",
         "updated_at": "2026-08-08T17:19:49Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.4.2/Skua-1.4.4.2-Release-x64.msi"
@@ -647,7 +659,7 @@
         "state": "uploaded",
         "size": 23543198,
         "digest": "sha256:7e6d768558fe60f77592c7a2e698c2b060a8724a5e07eb51236b159bf1b02ccf",
-        "download_count": 3458,
+        "download_count": 3470,
         "created_at": "2026-08-01T10:28:31Z",
         "updated_at": "2026-08-01T10:28:35Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.4.0/Skua-1.4.4.0-Release-x64.msi"
@@ -763,7 +775,7 @@
         "state": "uploaded",
         "size": 23539102,
         "digest": "sha256:d5467a2c72bc220b599ff36d1a6d0b34d4cb26b0bec25146c4b6eba00c3d18d1",
-        "download_count": 19122,
+        "download_count": 19133,
         "created_at": "2026-03-21T15:47:24Z",
         "updated_at": "2026-03-21T15:47:25Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.3.0/Skua-1.4.3.0-Release-x64.msi"
@@ -799,7 +811,7 @@
         "state": "uploaded",
         "size": 23522722,
         "digest": "sha256:9f910d37d5bf22b006f75553e4ee3759ce45787545928b6d04a384b2e2d00f46",
-        "download_count": 1460,
+        "download_count": 1461,
         "created_at": "2026-03-21T15:47:25Z",
         "updated_at": "2026-03-21T15:47:26Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.3.0/Skua-1.4.3.0-Release-x86.msi"
@@ -879,7 +891,7 @@
         "state": "uploaded",
         "size": 23539102,
         "digest": "sha256:d831b175b683cffc36acd8d57338a113a13f13bfb9fa435641ce0ea45d184021",
-        "download_count": 7046,
+        "download_count": 7048,
         "created_at": "2026-02-12T18:46:23Z",
         "updated_at": "2026-02-12T18:46:24Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.2.0/Skua-1.4.2.0-Release-x64.msi"
@@ -915,7 +927,7 @@
         "state": "uploaded",
         "size": 23518626,
         "digest": "sha256:568b2d7a2cfc95827f5d3e8933e394ab6eed3bb9d8220736367eea1e3e1c5eb0",
-        "download_count": 503,
+        "download_count": 504,
         "created_at": "2026-02-12T18:46:24Z",
         "updated_at": "2026-02-12T18:46:25Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.2.0/Skua-1.4.2.0-Release-x86.msi"
@@ -1226,7 +1238,7 @@
         "state": "uploaded",
         "size": 23510430,
         "digest": "sha256:80866e0508260b7023bd202d5e364bc2b8d7410c4fe933f049c9446f4adbe190",
-        "download_count": 3537,
+        "download_count": 3540,
         "created_at": "2026-01-28T11:06:26Z",
         "updated_at": "2026-01-28T11:06:27Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.0.5/Skua-1.4.0.5-Release-x64.msi"
@@ -1801,7 +1813,7 @@
         "state": "uploaded",
         "size": 23510430,
         "digest": "sha256:35f1566f309245a31cb5d30001f9ed657036432abf30550b6c6391b5fb0f40c2",
-        "download_count": 286,
+        "download_count": 287,
         "created_at": "2026-01-18T09:30:45Z",
         "updated_at": "2026-01-18T09:31:27Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.4.0.0/Skua-1.4.0.0-Release-x64.msi"
@@ -1916,7 +1928,7 @@
         "state": "uploaded",
         "size": 25523240,
         "digest": "sha256:4167a828fbd4d17472b78875f9c3a44dc4664991438ca5a934f6b77a1f91ee05",
-        "download_count": 1882,
+        "download_count": 1883,
         "created_at": "2026-01-14T19:20:01Z",
         "updated_at": "2026-01-14T19:20:02Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.3.3.2/Skua-1.3.3.2-Release-x64.msi"
@@ -2031,7 +2043,7 @@
         "state": "uploaded",
         "size": 25363479,
         "digest": "sha256:47a0568266039a9e0c93840ef7cd002f62d57e008fcea2e4f60aa2ddf1c0bd8b",
-        "download_count": 757,
+        "download_count": 759,
         "created_at": "2026-01-10T23:28:36Z",
         "updated_at": "2026-01-10T23:28:37Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.3.3.1/Skua-1.3.3.1-Release-x64.msi"
@@ -2376,7 +2388,7 @@
         "state": "uploaded",
         "size": 25342999,
         "digest": "sha256:b5962fd36b30449b4908c160fa210f5feb7bfde3c8c8af16abad68fab0479579",
-        "download_count": 3539,
+        "download_count": 3542,
         "created_at": "2025-12-08T08:04:17Z",
         "updated_at": "2025-12-08T08:04:35Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.3.1.0/Skua-1.3.1.0-Release-x64.msi"
@@ -2412,7 +2424,7 @@
         "state": "uploaded",
         "size": 25318427,
         "digest": "sha256:b3987da6279130d459f1353f2d63a743c9a0511b238ff1c7abf2bea72f84ce12",
-        "download_count": 357,
+        "download_count": 359,
         "created_at": "2025-12-08T08:04:35Z",
         "updated_at": "2025-12-08T08:04:52Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.3.1.0/Skua-1.3.1.0-Release-x86.msi"
@@ -2848,7 +2860,7 @@
         "state": "uploaded",
         "size": 23355530,
         "digest": "sha256:99abddaba314b070a793f491e72d0e2d57234616148d71c0b400d2b788d5627a",
-        "download_count": 962,
+        "download_count": 963,
         "created_at": "2025-11-10T14:46:28Z",
         "updated_at": "2025-11-10T14:46:46Z",
         "browser_download_url": "https://github.com/auqw/Skua/releases/download/1.3.0.0/Skua-1.3.0.0-Release-x64.msi"
