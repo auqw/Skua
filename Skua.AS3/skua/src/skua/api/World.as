@@ -9,6 +9,7 @@ import skua.Main;
 public class World {
     private static var _fxStore:Object = {};
     private static var _fxLastOpt:Boolean = false;
+    private static var _lagKiller:Boolean = false;
     private static var _jumpCorrectionTimer:Timer;
     private static var _jumpCorrectionHandler:Function;
     private static const PAD_CLASS_REGEX:RegExp = /::Pad_\d+$/;
@@ -113,21 +114,28 @@ public class World {
 
     public static function skipCutscenes():void {
         var game:* = Main.instance.game;
-        if (game.mcExtSWF.numChildren == 0)
+        var world:* = game.world;
+        // loadExternalSWF hides both the world and the UI before the clip arrives, and leaves them hidden if the
+        // load fails. Nothing else in the game hides both, so that pair (outside a map load) marks a cutscene.
+        var cutsceneHidden:Boolean = world != null && !_lagKiller && !world.visible && !game.ui.visible
+            && !world.mapLoadInProgress;
+        if (game.mcExtSWF.numChildren == 0 && !cutsceneHidden)
             return;
 
-        // The game hides the world when a cutscene loads; clearExternamSWF shows it again and stops the clips.
+        // clearExternamSWF removes and stops the clips, stops sounds, and shows the world and UI again.
         if ("clearExternamSWF" in game) {
             game.clearExternamSWF();
-            return;
+        } else {
+            while (game.mcExtSWF.numChildren > 0) {
+                game.mcExtSWF.removeChildAt(0);
+            }
+            if (world != null)
+                world.visible = true;
+            game.showInterface();
         }
 
-        while (game.mcExtSWF.numChildren > 0) {
-            game.mcExtSWF.removeChildAt(0);
-        }
-        if (game.world != null)
-            game.world.visible = true;
-        game.showInterface();
+        if (_lagKiller && world != null)
+            world.visible = false;
     }
 
     public static function hidePlayers(enabled:Boolean):void {
@@ -163,6 +171,7 @@ public class World {
     }
 
     public static function killLag(enable:Boolean):void {
+        _lagKiller = enable;
         Main.instance.game.world.visible = !enable;
         
         if (Main.instance.customBGLagKiller) {
