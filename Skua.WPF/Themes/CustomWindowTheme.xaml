@@ -20,15 +20,15 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:CustomWindow">
-                    <Border BorderBrush="DimGray" BorderThickness="1" CornerRadius="10" Background="{DynamicResource MaterialDesignBackground}">
-                        <Grid>
+                    <Border x:Name="WindowBorder" BorderBrush="DimGray" BorderThickness="1" CornerRadius="10" Background="{DynamicResource MaterialDesignBackground}">
+                        <Grid x:Name="WindowClip">
                             <Grid.Clip>
                                 <RectangleGeometry RadiusX="9" RadiusY="9" Rect="0,0,10000,10000" />
                             </Grid.Clip>
-                        <materialdesign:Card UniformCornerRadius="9">
+                        <materialdesign:Card x:Name="WindowCard" UniformCornerRadius="9">
                             <DockPanel>
                                 <!--  Title bar  -->
-                                <Border DockPanel.Dock="Top" CornerRadius="9,9,0,0" ClipToBounds="True">
+                                <Border x:Name="TitleBarBorder" DockPanel.Dock="Top" CornerRadius="9,9,0,0" ClipToBounds="True">
                                 <materialdesign:ColorZone Height="32">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -103,6 +103,14 @@
                         </materialdesign:Card>
                         </Grid>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="SquareCorners" Value="True">
+                            <Setter TargetName="WindowBorder" Property="CornerRadius" Value="0" />
+                            <Setter TargetName="WindowClip" Property="Clip" Value="{x:Null}" />
+                            <Setter TargetName="WindowCard" Property="UniformCornerRadius" Value="0" />
+                            <Setter TargetName="TitleBarBorder" Property="CornerRadius" Value="0" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

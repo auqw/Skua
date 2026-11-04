@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Skua.Core.Interfaces;
+using Skua.Core.Messaging;
 using Skua.Core.Scripts;
 using Skua.Core.Utils;
 using Skua.Core.ViewModels;
@@ -73,7 +75,13 @@ internal class Options
             {
                 Ioc.Default.GetRequiredService<MainViewModel>().ShowUsernameInTitle = value;
             }), Ioc.Default.GetRequiredService<ISettingsService>().Get("ShowUsernameInTitle", false)),
-            
+
+            new CommandOptionItemViewModel<bool>("Square Window Corners", "Whether Skua windows have square corners instead of rounded ones. On by default on Windows 10, where rounded corners show a dark square behind them", "SquareWindowCorners", new RelayCommand<bool>(value =>
+            {
+                Ioc.Default.GetRequiredService<ISettingsService>().Set("SquareWindowCorners", value);
+                WeakReferenceMessenger.Default.Send(new SquareWindowCornersMessage(value));
+            }), Ioc.Default.GetRequiredService<ISettingsService>().Get<bool>("SquareWindowCorners")),
+
             new CommandOptionItemViewModel<int>("* Client Animation Frame-rate", "Client side animation frame-rate setting", "ClientAnim", "FPS", new RelayCommand<string>(value =>
             {
                 if (!int.TryParse(value, out int result) || result < 1)

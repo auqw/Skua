@@ -159,6 +159,10 @@ public class SharedSettings
     [JsonPropertyName("CheckBotScriptsUpdates")]
     public bool CheckBotScriptsUpdates { get; set; } = true;
 
+    // Windows 10 can't round the window itself, so rounded corners show a dark square behind them there.
+    [JsonPropertyName("SquareWindowCorners")]
+    public bool SquareWindowCorners { get; set; } = !OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000);
+
     [JsonExtensionData]
     public Dictionary<string, object>? ExtensionData { get; set; }
 
