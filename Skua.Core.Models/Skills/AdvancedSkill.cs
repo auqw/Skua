@@ -47,7 +47,22 @@ public class AdvancedSkill
 
     public string ClassName { get; set; } = "Generic";
     public string Skills { get; set; } = "0 | 1 | 2 | 3 | 4";
-    public int SkillTimeout { get; set; } = 250;
+    /// <summary>
+    /// How long Wait for Cooldown waits for a skill's cooldown before skipping it, in milliseconds. 0 or less: as long as it takes.
+    /// </summary>
+    public int SkillTimeoutMs { get; set; } = 25000;
+
+    /// <summary>
+    /// The same limit in the old unit, ticks of <see cref="TickMs"/> milliseconds, as older files, scripts and constructors give it.
+    /// </summary>
+    public int SkillTimeout
+    {
+        get => SkillTimeoutMs <= 0 ? SkillTimeoutMs : (SkillTimeoutMs + TickMs - 1) / TickMs;
+        set => SkillTimeoutMs = value <= 0 ? value : value * TickMs;
+    }
+
+    /// <summary>The length of one timeout tick in files and older scripts: the skill timer's default interval.</summary>
+    public const int TickMs = 100;
     public ClassUseMode ClassUseMode { get; set; } = ClassUseMode.Base;
     public SkillUseMode SkillUseMode { get; set; } = SkillUseMode.UseIfAvailable;
     public bool ResetComboOnTargetChange { get; set; } = false;

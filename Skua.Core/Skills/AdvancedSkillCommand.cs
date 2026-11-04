@@ -16,6 +16,10 @@ public class AdvancedSkillCommand
 
     public Dictionary<int, int> Skills { get; set; } = new();
     public List<UseRule[]> UseRules { get; set; } = new();
+
+    /// <summary>Per step: <see langword="true"/> when the step is used if any of its conditions holds (OR), not only all of them.</summary>
+    public List<bool> MatchAny { get; set; } = new();
+
     private int _index = 0;
 
     public int SkillCount => Skills.Count;
@@ -41,52 +45,36 @@ public class AdvancedSkillCommand
         if (UseRules.Count == 0 || UseRules[skillIndex].First().Rule == SkillRule.None)
             return true;
 
+        bool matchAny = skillIndex < MatchAny.Count && MatchAny[skillIndex];
         bool shouldUse = true;
+        bool anyCondition = false, anyHeld = false, skipIfNone = false;
         foreach (UseRule useRule in UseRules[skillIndex])
         {
             if (!player.Alive)
                 return false;
 
-            switch (useRule.Rule)
+            if (useRule.Rule == SkillRule.Wait)
             {
-                case SkillRule.Health:
-                    shouldUse = HealthUseRule(player, useRule.Greater, (int)useRule.Value, useRule.IsPercentage);
-                    break;
-
-                case SkillRule.Mana:
-                    shouldUse = ManaUseRule(player, useRule.Greater, (int)useRule.Value, useRule.IsPercentage);
-                    break;
-
-                case SkillRule.Aura:
-                    List<AuraCheck> singleCheck = new()
-                    {
-                            new() {
-                                AuraName = useRule.AuraName,
-                                AuraTarget = useRule.AuraTarget,
-                                Greater = useRule.Greater,
-                                StackCount = useRule.Value
-                            }
-                        };
-                    shouldUse = AuraUseRule(player, self, target, singleCheck);
-                    break;
-
-                case SkillRule.MultiAura:
-                    shouldUse = MultiAuraUseRule(player, self, target, useRule.MultiAuraChecks, useRule.MultiAuraOperator);
-                    break;
-
-                case SkillRule.PartyHealth:
-                    shouldUse = PartyHealthUseRule(player, useRule.Greater, (int)useRule.Value, useRule.IsPercentage);
-                    break;
-
-                case SkillRule.Wait:
-                    if (useRule.ShouldSkip && !canUse)
-                        return null;
-                    Task.Delay((int)useRule.Value).Wait();
-                    break;
-
-                case SkillRule.None:
-                    break;
+                if (useRule.ShouldSkip && !canUse)
+                    return null;
+                Task.Delay((int)useRule.Value).Wait();
+                continue;
             }
+
+            if (useRule.Rule == SkillRule.None)
+                continue;
+
+            if (matchAny)
+            {
+                // OR: one condition that holds is enough; the rest need not be read.
+                anyCondition = true;
+                skipIfNone |= useRule.ShouldSkip;
+                if (!anyHeld)
+                    anyHeld = Holds(useRule, player, self, target);
+                continue;
+            }
+
+            shouldUse = Holds(useRule, player, self, target);
 
             if (useRule.ShouldSkip && !shouldUse)
                 return null;
@@ -94,7 +82,45 @@ public class AdvancedSkillCommand
             if (!shouldUse)
                 break;
         }
+
+        if (matchAny)
+            return !anyCondition || anyHeld ? true : skipIfNone ? null : false;
+
         return shouldUse;
+    }
+
+    private bool Holds(UseRule useRule, IScriptPlayer player, IScriptSelfAuras self, IScriptTargetAuras target)
+    {
+        switch (useRule.Rule)
+        {
+            case SkillRule.Health:
+                return HealthUseRule(player, useRule.Greater, (int)useRule.Value, useRule.IsPercentage);
+
+            case SkillRule.Mana:
+                return ManaUseRule(player, useRule.Greater, (int)useRule.Value, useRule.IsPercentage);
+
+            case SkillRule.Aura:
+                List<AuraCheck> singleCheck = new()
+                {
+                    new()
+                    {
+                        AuraName = useRule.AuraName,
+                        AuraTarget = useRule.AuraTarget,
+                        Greater = useRule.Greater,
+                        StackCount = useRule.Value
+                    }
+                };
+                return AuraUseRule(player, self, target, singleCheck);
+
+            case SkillRule.MultiAura:
+                return MultiAuraUseRule(player, self, target, useRule.MultiAuraChecks, useRule.MultiAuraOperator);
+
+            case SkillRule.PartyHealth:
+                return PartyHealthUseRule(player, useRule.Greater, (int)useRule.Value, useRule.IsPercentage);
+
+            default:
+                return true;
+        }
     }
 
     private bool HealthUseRule(IScriptPlayer player, bool greater, int health, bool isPercentage = true)

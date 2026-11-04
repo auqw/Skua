@@ -92,6 +92,8 @@ public static class AdvancedSkillsParser
                 List<SkillRuleJson>? rules = ParseRules(rulesPart, out string multiAuraOperator);
                 skill.Rules = rules?.Count > 0 ? rules : null;
                 skill.SkipOnMatch = hasSkipFlag;
+                if (SkillRuleText.HasOr(rulesPart))
+                    skill.RuleOperator = "OR";
 
                 bool hasMultiAura = rules?.Any(r => r.Type == "MultiAura") ?? false;
                 skill.MultiAura = hasMultiAura;

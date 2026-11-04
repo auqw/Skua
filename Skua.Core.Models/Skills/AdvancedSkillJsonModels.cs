@@ -23,6 +23,14 @@ public class AdvancedSkillJson
     [JsonPropertyName("multiAuraOperator")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? MultiAuraOperator { get; set; }
+
+    /// <summary>
+    /// "OR" when the step is used if any of its conditions holds; absent when all must hold. Older Skua versions ignore it
+    /// and check all of them.
+    /// </summary>
+    [JsonPropertyName("ruleOperator")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? RuleOperator { get; set; }
 }
 
 public class SkillRuleJson
@@ -60,8 +68,17 @@ public class SkillModeJson
     [JsonPropertyName("skillUseMode")]
     public string SkillUseMode { get; set; } = "UseIfAvailable";
 
+    /// <summary>The timeout in ticks of 100 ms, the unit every Skua version reads.</summary>
     [JsonPropertyName("skillTimeout")]
     public int SkillTimeout { get; set; } = 100;
+
+    /// <summary>
+    /// The timeout in milliseconds, written only when it is not a whole number of ticks; it wins over <see cref="SkillTimeout"/>.
+    /// Older Skua versions ignore it and read the ticks, rounded up.
+    /// </summary>
+    [JsonPropertyName("skillTimeoutMs")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? SkillTimeoutMs { get; set; }
 
     [JsonPropertyName("resetComboOnTargetChange")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]

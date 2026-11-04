@@ -25,8 +25,9 @@ public partial class AdvancedSkillEditorViewModel : ObservableRecipient
 
     private readonly IDialogService _dialogService;
 
+    /// <summary>The skill timeout in milliseconds.</summary>
     [ObservableProperty]
-    private int _currentSkillTimeout = 100;
+    private int _currentSkillTimeoutMs = 10000;
 
     [ObservableProperty]
     private bool _useWaitModeBool;
@@ -71,7 +72,10 @@ public partial class AdvancedSkillEditorViewModel : ObservableRecipient
             skillStrings.Add(skill.Convert());
         string skills = string.Join(" | ", skillStrings);
         string modeString = SelectedClassUseMode >= 0 && SelectedClassUseMode < ClassUseModes.Length ? ClassUseModes[SelectedClassUseMode] : "Base";
-        AdvancedSkill advSkill = new(CurrentClassName, skills, CurrentSkillTimeout, modeString, UseWaitModeBool ? SkillUseMode.WaitForCooldown : SkillUseMode.UseIfAvailable, ResetComboOnTargetChange);
+        AdvancedSkill advSkill = new(CurrentClassName, skills, -1, modeString, UseWaitModeBool ? SkillUseMode.WaitForCooldown : SkillUseMode.UseIfAvailable, ResetComboOnTargetChange)
+        {
+            SkillTimeoutMs = CurrentSkillTimeoutMs
+        };
         OnPropertyChanged(nameof(CurrentSkillsList));
         Messenger.Send<SaveAdvancedSkillMessage>(new(advSkill));
     }
@@ -156,7 +160,7 @@ public partial class AdvancedSkillEditorViewModel : ObservableRecipient
     private void EditSkill(AdvancedSkillEditorViewModel recipient, EditAdvancedSkillMessage message)
     {
         recipient.CurrentSkillsList.Clear();
-        recipient.CurrentSkillTimeout = message.AdvSkill.SkillTimeout;
+        recipient.CurrentSkillTimeoutMs = message.AdvSkill.SkillTimeoutMs;
         recipient.UseWaitModeBool = message.AdvSkill.SkillUseMode != SkillUseMode.UseIfAvailable;
         recipient.ResetComboOnTargetChange = message.AdvSkill.ResetComboOnTargetChange;
         recipient.CurrentClassName = message.AdvSkill.ClassName;
