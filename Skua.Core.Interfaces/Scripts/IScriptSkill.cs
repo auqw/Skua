@@ -61,6 +61,19 @@ public interface IScriptSkill
     bool CanUseSkill(int index);
 
     /// <summary>
+    /// Gets how long until the skill with the specified <paramref name="index"/> has cooled down: its own cooldown (with haste) or the global cooldown, whichever ends later.
+    /// </summary>
+    /// <param name="index">Index of the skill to check.</param>
+    /// <returns>The time left in milliseconds, 0 if the skill has cooled down.</returns>
+    int SkillCooldownRemaining(int index);
+
+    /// <summary>
+    /// Gets how long until the global cooldown, which starts with every skill used, has ended.
+    /// </summary>
+    /// <returns>The time left in milliseconds, 0 if no global cooldown is running.</returns>
+    int GlobalCooldownRemaining();
+
+    /// <summary>
     /// Uses the skill with the specified <paramref name="index"/> (1-4).
     /// </summary>
     /// <param name="index">Index of the skill.</param>

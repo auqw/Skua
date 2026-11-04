@@ -71,6 +71,8 @@ public class Externalizer {
 
         // Skills
         this.addCallback("canUseSkill", Skills.canUseSkill);
+        this.addCallback("skillCooldownRemaining", Skills.skillCooldownRemaining);
+        this.addCallback("globalCooldownRemaining", Skills.globalCooldownRemaining);
         this.addCallback("useSkill", Skills.useSkill);
 
         // Combat
