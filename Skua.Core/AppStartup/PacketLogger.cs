@@ -22,7 +22,7 @@ internal static class PacketLogger
             new("Jump", p =>
                 p.Length >= 3 && p[2] == "moveToCell"),
             new("Movement", p =>
-                (p.Length >= 3 && p[2] == "mv") || p[2] == "mtcid"),
+                p.Length >= 3 && (p[2] == "mv" || p[2] == "mtcid")),
             new("Get Map", p =>
                 p.Length >= 3 && p[2] == "getMapItem"),
             new("Quest", p =>
