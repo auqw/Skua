@@ -61,7 +61,7 @@ public partial class ScriptDrop : ObservableRecipient, IScriptDrop, IAsyncDispos
     [ObservableProperty]
     private bool _rejectElse;
 
-    public bool Enabled => _taskDrops is { IsCompleted: false };
+    public bool Enabled => _taskDrops is { IsCompleted: false } && _ctsDrops is { IsCancellationRequested: false };
     private readonly SynchronizedList<string> _toPickup = new();
     public IEnumerable<string> ToPickup => _toPickup.Items;
     private readonly SynchronizedList<int> _toPickupIDs = new();
@@ -92,35 +92,68 @@ public partial class ScriptDrop : ObservableRecipient, IScriptDrop, IAsyncDispos
 
     public void Pickup(params string[] names)
     {
-        foreach (string name in names)
-        {
-            Pickup(name);
-            Wait.ForPickup(name);
-        }
+        Pickup(names, CancellationToken.None);
     }
 
     public void Pickup(params int[] ids)
     {
-        foreach (int id in ids)
-        {
-            Pickup(id);
-            Wait.ForPickup(id);
-        }
+        Pickup(ids, CancellationToken.None);
     }
 
     public void PickupACItems()
     {
-        Pickup(CurrentDropInfos.Where(d => d.Coins).Select(d => d.Name).ToArray());
+        PickupACItems(CancellationToken.None);
     }
 
     public void PickupAll(bool skipWait = false)
     {
+        PickupAll(skipWait, CancellationToken.None);
+    }
+
+    // The token lets the drop loop stop between pickups and stop waiting for one, instead of finishing the whole pass.
+    private void Pickup(string[] names, CancellationToken token)
+    {
+        foreach (string name in names)
+        {
+            token.ThrowIfCancellationRequested();
+            Pickup(name);
+            WaitForPickup(() => !((IScriptDrop)this).Exists(name), token);
+        }
+    }
+
+    private void Pickup(int[] ids, CancellationToken token)
+    {
+        foreach (int id in ids)
+        {
+            token.ThrowIfCancellationRequested();
+            Pickup(id);
+            WaitForPickup(() => !((IScriptDrop)this).Exists(id), token);
+        }
+    }
+
+    private void PickupACItems(CancellationToken token)
+    {
+        Pickup(CurrentDropInfos.Where(d => d.Coins).Select(d => d.Name).ToArray(), token);
+    }
+
+    private void PickupAll(bool skipWait, CancellationToken token)
+    {
         foreach (ItemBase drop in _currentDropInfos.Items)
+        {
+            token.ThrowIfCancellationRequested();
             Pickup(drop.Name);
+        }
         OnPropertyChanged(nameof(CurrentDropInfos));
         OnPropertyChanged(nameof(CurrentDrops));
         if (!skipWait)
-            Wait.ForPickup("*");
+            WaitForPickup(() => !((IScriptDrop)this).Exists("*"), token);
+    }
+
+    // Same wait as IScriptWait.ForPickup, but it also ends when the token is cancelled.
+    private void WaitForPickup(Func<bool> pickedUp, CancellationToken token)
+    {
+        Wait.ForTrue(() => token.IsCancellationRequested || !Player.Playing || pickedUp(), Wait.OverrideTimeout ? Wait.DropActionTimeout : 10);
+        token.ThrowIfCancellationRequested();
     }
 
     public void RejectExcept(params string[] names)
@@ -158,12 +191,26 @@ public partial class ScriptDrop : ObservableRecipient, IScriptDrop, IAsyncDispos
 
     public void Start()
     {
-        if (_taskDrops is { IsCompleted: false })
+        if (Enabled)
             return;
-        _ctsDrops?.Dispose();
 
+        // A stopped loop may still be finishing a pickup, so the new one starts after it rather than beside it: two loops
+        // would pick up the same drops, and the PeriodicTimer allows only one waiter.
+        Task previous = _taskDrops ?? Task.CompletedTask;
+        CancellationTokenSource? previousCts = _ctsDrops;
         _ctsDrops = new();
-        _taskDrops = HandleDrops(_timerDrops, _ctsDrops.Token);
+        CancellationToken token = _ctsDrops.Token;
+        // Run off the caller's context: started from the UI, the loop would resume on the UI thread and block it in Wait.ForPickup.
+        _taskDrops = Task.Run(async () =>
+        {
+            try
+            {
+                await previous;
+            }
+            catch { }
+            previousCts?.Dispose();
+            await HandleDrops(_timerDrops, token);
+        });
         OnPropertyChanged(nameof(Enabled));
     }
 
@@ -174,8 +221,7 @@ public partial class ScriptDrop : ObservableRecipient, IScriptDrop, IAsyncDispos
 
         _ctsDrops?.Cancel();
         Wait.ForTrue(() => _taskDrops?.IsCompleted == true, null, 2);
-        _ctsDrops?.Dispose();
-        _taskDrops = null;
+        ClearStoppedTask();
         OnPropertyChanged(nameof(Enabled));
     }
 
@@ -186,10 +232,19 @@ public partial class ScriptDrop : ObservableRecipient, IScriptDrop, IAsyncDispos
 
         _ctsDrops?.Cancel();
         await Wait.ForTrueAsync(() => _taskDrops?.IsCompleted == true, 20);
+        ClearStoppedTask();
+        OnPropertyChanged(nameof(Enabled));
+    }
+
+    // A loop that hasn't finished yet stays in _taskDrops so the next Start waits for it.
+    private void ClearStoppedTask()
+    {
+        if (_taskDrops is not { IsCompleted: true })
+            return;
+
         _ctsDrops?.Dispose();
         _ctsDrops = null;
         _taskDrops = null;
-        OnPropertyChanged(nameof(Enabled));
     }
 
     public void Add(params string[] names)
@@ -246,29 +301,32 @@ public partial class ScriptDrop : ObservableRecipient, IScriptDrop, IAsyncDispos
 
                 if (Options.AcceptAllDrops)
                 {
-                    PickupAll();
+                    PickupAll(false, token);
                     continue;
                 }
 
+                // AC items are picked up here, so the rejects below call RejectExceptCore rather than RejectAll/RejectExcept,
+                // which would pick them up again without the token.
                 if (Options.AcceptACDrops)
-                    PickupACItems();
+                    PickupACItems(token);
 
                 if (Options.RejectAllDrops)
                 {
-                    RejectAll();
+                    RejectExceptCore(Array.Empty<string>());
                     continue;
                 }
 
                 int[] pickupIDs = _toPickupIDs.Items.ToArray();
                 if (pickupIDs.Length > 0)
-                    Pickup(pickupIDs);
+                    Pickup(pickupIDs, token);
 
                 string[] pickupNames = _toPickup.Items.ToArray();
                 if (pickupNames.Length > 0)
-                    Pickup(pickupNames);
+                    Pickup(pickupNames, token);
 
+                token.ThrowIfCancellationRequested();
                 if (RejectElse)
-                    RejectExcept(BuildRejectElseWhitelist(pickupNames, pickupIDs));
+                    RejectExceptCore(BuildRejectElseWhitelist(pickupNames, pickupIDs));
             }
             catch (OperationCanceledException) when (token.IsCancellationRequested)
             {
