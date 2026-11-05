@@ -64,6 +64,7 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     private int _outdatedQuantity;
 
     private int _countsVersion;
+    private int _messageId;
 
     [ObservableProperty]
     private bool _isBusy;
@@ -108,11 +109,11 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
             return;
 
         StrongReferenceMessenger.Default.Send<LoadScriptMessage, int>(new(script.LocalFile), (int)MessageChannels.ScriptStatus);
-        ProgressHandler($"Loaded {script.FileName}");
-    }
 
-    // The loader may ask first or refuse (another script running), so "Started" waits for ScriptStartedMessage.
-    private ScriptInfoViewModel? _pendingStart;
+        // In the Manager the account page takes the load and confirms it with its own dialog.
+        if (!IsManagerMode)
+            ProgressHandler($"Loaded {script.FileName}");
+    }
 
     [RelayCommand]
     private void StartScript(ScriptInfoViewModel? script)
@@ -120,20 +121,23 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
         if (script is null || !script.Downloaded)
             return;
 
-        _pendingStart = script;
         StrongReferenceMessenger.Default.Send<StartScriptMessage, int>(new(script.LocalFile), (int)MessageChannels.ScriptStatus);
     }
 
+    // "Started" comes from ScriptStartedMessage, not the button: the loader may ask first, and a declined or failed
+    // start sends nothing. It reports whichever script actually started while this window is open.
     private void OnScriptStarted()
     {
-        ScriptInfoViewModel? pending = _pendingStart;
-        string? started = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetService<IScriptManager>()?.LoadedScript;
-        if (pending is null || string.IsNullOrEmpty(started)
-            || !string.Equals(Path.GetFullPath(started), Path.GetFullPath(pending.LocalFile), StringComparison.OrdinalIgnoreCase))
+        IScriptManager? manager = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetService<IScriptManager>();
+        string? path = manager?.LoadedScript;
+        if (manager is null || !manager.ScriptRunning || string.IsNullOrEmpty(path))
             return;
 
-        _pendingStart = null;
-        ProgressHandler($"Started {pending.FileName}");
+        string fullPath = Path.GetFullPath(path);
+        string name = _getScriptsService.Scripts
+            .FirstOrDefault(s => string.Equals(Path.GetFullPath(s.LocalFile), fullPath, StringComparison.OrdinalIgnoreCase))?.Name
+            ?? Path.GetFileNameWithoutExtension(path);
+        ProgressHandler($"Started {name}");
     }
 
     [RelayCommand]
@@ -302,11 +306,12 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
 
     public void ProgressHandler(string message)
     {
+        int id = Interlocked.Increment(ref _messageId);
         ProgressReportMessage = message;
         _ = Task.Delay(3000).ContinueWith(_ =>
         {
-            // A newer message keeps its own 3 s.
-            if (ProgressReportMessage == message)
+            // A newer message (even with the same text, or one set directly) keeps its own time.
+            if (Volatile.Read(ref _messageId) == id && ProgressReportMessage == message)
                 ProgressReportMessage = string.Empty;
         });
     }
