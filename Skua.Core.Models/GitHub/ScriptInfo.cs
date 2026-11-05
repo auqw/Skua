@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Security.Cryptography;
 
 namespace Skua.Core.Models.GitHub;
 
@@ -42,21 +41,35 @@ public class ScriptInfo
 
     public int LocalSize => Downloaded ? (int)new FileInfo(LocalFile).Length : 0;
 
+    private sealed record LocalHashEntry(long Length, DateTime LastWriteUtc, string Hash);
+
+    // Hashing every downloaded script is slow, so reuse the last hash until the file's size or write time changes.
+    private LocalHashEntry? _localHash;
+
     public string? LocalSha256
     {
         get
         {
-            if (!Downloaded) return null;
             try
             {
-                using SHA256 sha256 = System.Security.Cryptography.SHA256.Create();
-                using FileStream stream = File.OpenRead(LocalFile);
-                byte[] hash = sha256.ComputeHash(stream);
-                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                FileInfo file = new(LocalFile);
+                if (!file.Exists) return null;
+
+                LocalHashEntry? cached = _localHash;
+                if (cached is not null && cached.Length == file.Length && cached.LastWriteUtc == file.LastWriteTimeUtc)
+                    return cached.Hash;
+
+                // Share write and delete so a download or delete during a background count doesn't fail.
+                using FileStream stream = new(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+                string hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(stream)).ToLowerInvariant();
+                _localHash = new(file.Length, file.LastWriteTimeUtc, hash);
+                return hash;
             }
             catch { return null; }
         }
     }
+
+    public void InvalidateLocalHash() => _localHash = null;
 
     public bool Outdated => Downloaded && (LocalSize != Size || (!string.IsNullOrEmpty(Sha256) && LocalSha256 != Sha256));
 
