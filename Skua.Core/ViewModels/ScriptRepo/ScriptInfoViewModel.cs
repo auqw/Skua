@@ -56,30 +56,12 @@ public partial class ScriptInfoViewModel : ObservableObject
     public bool Outdated => Downloaded && Info.LocalSize != Info.Size;
 
     [RelayCommand]
-    private void LoadScript(ScriptInfoViewModel selectedScript)
-    {
-        if (selectedScript is null || !selectedScript.Downloaded)
-            return;
-
-        StrongReferenceMessenger.Default.Send<LoadScriptMessage, int>(new(selectedScript.LocalFile), (int)MessageChannels.ScriptStatus);
-    }
-
-    [RelayCommand]
     private void QueueScript(ScriptInfoViewModel selectedScript)
     {
         if (selectedScript is null || !selectedScript.Downloaded)
             return;
 
         StrongReferenceMessenger.Default.Send<LoadScriptMessage, int>(new(selectedScript.LocalFile), (int)MessageChannels.ScriptStatus);
-    }
-
-    [RelayCommand]
-    private void StartScript(ScriptInfoViewModel selectedScript)
-    {
-        if (selectedScript is null || !selectedScript.Downloaded)
-            return;
-
-        StrongReferenceMessenger.Default.Send<StartScriptMessage, int>(new(selectedScript.LocalFile), (int)MessageChannels.ScriptStatus);
     }
 
     public override string ToString()

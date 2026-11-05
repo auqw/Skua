@@ -110,13 +110,13 @@
                                 IsEnabled="{Binding PlacementTarget.DataContext.SelectedItem.Downloaded, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}" />
 
                             <MenuItem
-                                Command="{Binding PlacementTarget.DataContext.SelectedItem.LoadScriptCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                Command="{Binding PlacementTarget.DataContext.LoadScriptCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                 CommandParameter="{Binding PlacementTarget.DataContext.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                 Header="Load"
                                 IsEnabled="{Binding PlacementTarget.DataContext.SelectedItem.Downloaded, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}" />
 
                             <MenuItem
-                                Command="{Binding PlacementTarget.DataContext.SelectedItem.StartScriptCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                Command="{Binding PlacementTarget.DataContext.StartScriptCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                 CommandParameter="{Binding PlacementTarget.DataContext.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                 Header="Start"
                                 IsEnabled="{Binding PlacementTarget.DataContext.SelectedItem.Downloaded, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}" />
@@ -224,13 +224,13 @@
                                         <Button Content="Start"
                                                 Width="70"
                                                 Margin="0,0,6,0"
-                                                Command="{Binding StartScriptCommand}"
+                                                Command="{Binding DataContext.StartScriptCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                 CommandParameter="{Binding}"
                                                 IsEnabled="{Binding Downloaded}" />
 
                                         <Button Content="Load"
                                                 Width="70"
-                                                Command="{Binding LoadScriptCommand}"
+                                                Command="{Binding DataContext.LoadScriptCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                 CommandParameter="{Binding}"
                                                 IsEnabled="{Binding Downloaded}" />
 
