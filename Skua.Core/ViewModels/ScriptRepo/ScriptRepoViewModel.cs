@@ -26,6 +26,8 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     protected override void OnActivated()
     {
         _getScriptsService.PropertyChanged += GetScriptsService_PropertyChanged;
+        if (!StrongReferenceMessenger.Default.IsRegistered<ScriptStartedMessage, int>(this, (int)MessageChannels.ScriptStatus))
+            StrongReferenceMessenger.Default.Register<ScriptRepoViewModel, ScriptStartedMessage, int>(this, (int)MessageChannels.ScriptStatus, (r, _) => r.OnScriptStarted());
         if (_scripts.Count == 0 || _getScriptsService.Scripts.Count == 0)
             _ = RefreshScripts(CancellationToken.None);
         else
@@ -35,6 +37,7 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     protected override void OnDeactivated()
     {
         _getScriptsService.PropertyChanged -= GetScriptsService_PropertyChanged;
+        StrongReferenceMessenger.Default.Unregister<ScriptStartedMessage, int>(this, (int)MessageChannels.ScriptStatus);
     }
 
     private void GetScriptsService_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -61,6 +64,7 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     private int _outdatedQuantity;
 
     private int _countsVersion;
+    private int _messageId;
 
     [ObservableProperty]
     private bool _isBusy;
@@ -96,6 +100,44 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
             return;
 
         StrongReferenceMessenger.Default.Send<EditScriptMessage, int>(new(SelectedItem.LocalFile), (int)MessageChannels.ScriptStatus);
+    }
+
+    [RelayCommand]
+    private void LoadScript(ScriptInfoViewModel? script)
+    {
+        if (script is null || !script.Downloaded)
+            return;
+
+        StrongReferenceMessenger.Default.Send<LoadScriptMessage, int>(new(script.LocalFile), (int)MessageChannels.ScriptStatus);
+
+        // In the Manager the account page takes the load and confirms it with its own dialog.
+        if (!IsManagerMode)
+            ProgressHandler($"Loaded {script.FileName}");
+    }
+
+    [RelayCommand]
+    private void StartScript(ScriptInfoViewModel? script)
+    {
+        if (script is null || !script.Downloaded)
+            return;
+
+        StrongReferenceMessenger.Default.Send<StartScriptMessage, int>(new(script.LocalFile), (int)MessageChannels.ScriptStatus);
+    }
+
+    // "Started" comes from ScriptStartedMessage, not the button: the loader may ask first, and a declined or failed
+    // start sends nothing. It reports whichever script actually started while this window is open.
+    private void OnScriptStarted()
+    {
+        IScriptManager? manager = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.GetService<IScriptManager>();
+        string? path = manager?.LoadedScript;
+        if (manager is null || !manager.ScriptRunning || string.IsNullOrEmpty(path))
+            return;
+
+        string fullPath = Path.GetFullPath(path);
+        string name = _getScriptsService.Scripts
+            .FirstOrDefault(s => string.Equals(Path.GetFullPath(s.LocalFile), fullPath, StringComparison.OrdinalIgnoreCase))?.Name
+            ?? Path.GetFileNameWithoutExtension(path);
+        ProgressHandler($"Started {name}");
     }
 
     [RelayCommand]
@@ -264,8 +306,14 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
 
     public void ProgressHandler(string message)
     {
+        int id = Interlocked.Increment(ref _messageId);
         ProgressReportMessage = message;
-        _ = Task.Delay(3000).ContinueWith(_ => ProgressReportMessage = string.Empty);
+        _ = Task.Delay(3000).ContinueWith(_ =>
+        {
+            // A newer message (even with the same text, or one set directly) keeps its own time.
+            if (Volatile.Read(ref _messageId) == id && ProgressReportMessage == message)
+                ProgressReportMessage = string.Empty;
+        });
     }
 
     [RelayCommand]
