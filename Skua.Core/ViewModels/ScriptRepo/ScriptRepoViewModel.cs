@@ -60,6 +60,8 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     [ObservableProperty]
     private int _outdatedQuantity;
 
+    private int _countsVersion;
+
     [ObservableProperty]
     private bool _isBusy;
 
@@ -220,11 +222,15 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
 
     private async Task UpdateCountsAsync()
     {
-        (int downloaded, int outdated) = await Task.Run(() =>
-        {
-            List<ScriptInfo> scripts = _getScriptsService.Scripts.ToList();
-            return (scripts.Count(s => s.Downloaded), scripts.Count(s => s.Outdated));
-        });
+        int version = Interlocked.Increment(ref _countsVersion);
+
+        // Snapshot on the calling thread, then count off it: Outdated hashes files.
+        List<ScriptInfo> scripts = _getScriptsService.Scripts.ToList();
+        (int downloaded, int outdated) = await Task.Run(() => (scripts.Count(s => s.Downloaded), scripts.Count(s => s.Outdated)));
+
+        // A newer count started meanwhile (a refresh, download or delete); its totals win.
+        if (version != Volatile.Read(ref _countsVersion))
+            return;
 
         DownloadedQuantity = downloaded;
         OutdatedQuantity = outdated;
@@ -271,8 +277,10 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
 
         ProgressReportMessage = $"Deleting {_selectedItem.FileName}.";
         await _getScriptsService.DeleteScriptAsync(_selectedItem.Info);
-        ProgressReportMessage = $"Deleted {_selectedItem.FileName}.";
-        _selectedItem.Downloaded = false;
+        _selectedItem.Downloaded = _selectedItem.Info.Downloaded;
+        ProgressReportMessage = _selectedItem.Downloaded
+            ? $"Could not delete {_selectedItem.FileName}."
+            : $"Deleted {_selectedItem.FileName}.";
         OnPropertyChanged(nameof(ScriptQuantity));
         OnPropertyChanged(nameof(BotScriptQuantity));
         await UpdateCountsAsync();

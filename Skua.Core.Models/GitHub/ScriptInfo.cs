@@ -59,7 +59,8 @@ public class ScriptInfo
                 if (cached is not null && cached.Length == file.Length && cached.LastWriteUtc == file.LastWriteTimeUtc)
                     return cached.Hash;
 
-                using FileStream stream = file.OpenRead();
+                // Share write and delete so a download or delete during a background count doesn't fail.
+                using FileStream stream = new(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
                 string hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(stream)).ToLowerInvariant();
                 _localHash = new(file.Length, file.LastWriteTimeUtc, hash);
                 return hash;
@@ -67,6 +68,8 @@ public class ScriptInfo
             catch { return null; }
         }
     }
+
+    public void InvalidateLocalHash() => _localHash = null;
 
     public bool Outdated => Downloaded && (LocalSize != Size || (!string.IsNullOrEmpty(Sha256) && LocalSha256 != Sha256));
 
