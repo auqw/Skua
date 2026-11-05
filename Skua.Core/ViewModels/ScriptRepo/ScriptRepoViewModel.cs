@@ -47,12 +47,18 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     private bool _isManagerMode;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(DownloadedQuantity), nameof(OutdatedQuantity), nameof(ScriptQuantity), nameof(BotScriptQuantity))]
+    [NotifyPropertyChangedFor(nameof(ScriptQuantity), nameof(BotScriptQuantity))]
     private RangedObservableCollection<ScriptInfoViewModel> _scripts = new();
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(DownloadedQuantity), nameof(OutdatedQuantity), nameof(ScriptQuantity), nameof(BotScriptQuantity))]
     private ScriptInfoViewModel? _selectedItem;
+
+    // Counted off the UI thread: the outdated check hashes every downloaded script.
+    [ObservableProperty]
+    private int _downloadedQuantity;
+
+    [ObservableProperty]
+    private int _outdatedQuantity;
 
     [ObservableProperty]
     private bool _isBusy;
@@ -72,8 +78,6 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
     public List<string> SortOptions { get; } = new() { "Name", "Date Created" };
     public List<string> FilterOptions { get; } = new() { "All", "Army", "Classes", "Dailies", "Evil", "Farm", "Good", "Legion", "Local", "Nation", "Other", "Rep", "Seasonal", "Story", "Ultras" };
 
-    public int DownloadedQuantity => _getScriptsService.Downloaded;
-    public int OutdatedQuantity => _getScriptsService.Outdated;
     public int ScriptQuantity => _getScriptsService.Total;
     public int BotScriptQuantity => _scripts.Count;
     public IRelayCommand OpenScriptFolderCommand { get; }
@@ -202,8 +206,6 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
 
             RebuildIndexCallback?.Invoke();
 
-            OnPropertyChanged(nameof(DownloadedQuantity));
-            OnPropertyChanged(nameof(OutdatedQuantity));
             OnPropertyChanged(nameof(ScriptQuantity));
             OnPropertyChanged(nameof(BotScriptQuantity));
             IsBusy = false;
@@ -212,6 +214,20 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
         {
             _refreshGate.Release();
         }
+
+        await UpdateCountsAsync();
+    }
+
+    private async Task UpdateCountsAsync()
+    {
+        (int downloaded, int outdated) = await Task.Run(() =>
+        {
+            List<ScriptInfo> scripts = _getScriptsService.Scripts.ToList();
+            return (scripts.Count(s => s.Downloaded), scripts.Count(s => s.Outdated));
+        });
+
+        DownloadedQuantity = downloaded;
+        OutdatedQuantity = outdated;
     }
 
     private bool PassesFilter(ScriptInfo script)
@@ -257,10 +273,9 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
         await _getScriptsService.DeleteScriptAsync(_selectedItem.Info);
         ProgressReportMessage = $"Deleted {_selectedItem.FileName}.";
         _selectedItem.Downloaded = false;
-        OnPropertyChanged(nameof(DownloadedQuantity));
-        OnPropertyChanged(nameof(OutdatedQuantity));
         OnPropertyChanged(nameof(ScriptQuantity));
         OnPropertyChanged(nameof(BotScriptQuantity));
+        await UpdateCountsAsync();
         IsBusy = false;
     }
 
@@ -275,10 +290,9 @@ public partial class ScriptRepoViewModel : BotControlViewModelBase
         await _getScriptsService.DownloadScriptAsync(_selectedItem.Info);
         ProgressReportMessage = $"Downloaded {_selectedItem.FileName}.";
         _selectedItem.Downloaded = true;
-        OnPropertyChanged(nameof(DownloadedQuantity));
-        OnPropertyChanged(nameof(OutdatedQuantity));
         OnPropertyChanged(nameof(ScriptQuantity));
         OnPropertyChanged(nameof(BotScriptQuantity));
+        await UpdateCountsAsync();
         IsBusy = false;
     }
 
