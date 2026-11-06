@@ -108,10 +108,35 @@ public class FlashUtil : IFlashUtil
 
     private void CallHandler(object sender, _IShockwaveFlashEvents_FlashCallEvent e)
     {
-        XElement el = XElement.Parse(e.request);
-        string function = el.Attribute("name")!.Value;
-        object[] args = el.Elements().Select(x => FromFlashXml(x)).ToArray();
-        FlashCall?.Invoke(function, args);
+        string function;
+        object[] args;
+        try
+        {
+            XElement el = XElement.Parse(e.request);
+            function = el.Attribute("name")!.Value;
+            args = el.Elements().Select(x => FromFlashXml(x)).ToArray();
+        }
+        catch (Exception ex)
+        {
+            _messenger.Send<FlashErrorMessage>(new(ex, "FlashCall"));
+            return;
+        }
+
+        if (FlashCall is null)
+            return;
+
+        // One throwing subscriber must not hide the call from the rest.
+        foreach (FlashCallHandler handler in FlashCall.GetInvocationList().Cast<FlashCallHandler>())
+        {
+            try
+            {
+                handler(function, args);
+            }
+            catch (Exception ex)
+            {
+                _messenger.Send<FlashErrorMessage>(new(ex, function, args));
+            }
+        }
     }
 
     public string Call(string function, params object[] args)
