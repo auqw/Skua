@@ -430,7 +430,11 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
                 break;
 
             case "pext":
-                dynamic packet = JsonConvert.DeserializeObject<dynamic>((string)args[0])!;
+                if (args is not [string pextJson, ..])
+                    break;
+                dynamic? packet = JsonConvert.DeserializeObject<dynamic>(pextJson);
+                if (packet is null)
+                    break;
                 string? pextCmd = null;
                 try
                 {
@@ -611,9 +615,11 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
                 break;
 
             case "packet":
+                if (args is not [string packetText, ..])
+                    break;
                 try
                 {
-                    string[] parts = ((string)args[0]).Split('%', StringSplitOptions.RemoveEmptyEntries);
+                    string[] parts = packetText.Split('%', StringSplitOptions.RemoveEmptyEntries);
                     switch (parts[2])
                     {
                         case "moveToCell":
@@ -643,7 +649,7 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
                 {
                     _logger.DebugLog($"Error handling packet: {ex.Message}");
                 }
-                Messenger.Send<PacketMessage, int>(new((string)args[0]), (int)MessageChannels.GameEvents);
+                Messenger.Send<PacketMessage, int>(new(packetText), (int)MessageChannels.GameEvents);
                 break;
         }
     }

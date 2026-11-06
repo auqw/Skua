@@ -122,11 +122,12 @@ public class FlashUtil : IFlashUtil
             return;
         }
 
-        if (FlashCall is null)
+        FlashCallHandler? subscribers = FlashCall;
+        if (subscribers is null)
             return;
 
         // One throwing subscriber must not hide the call from the rest.
-        foreach (FlashCallHandler handler in FlashCall.GetInvocationList().Cast<FlashCallHandler>())
+        foreach (FlashCallHandler handler in subscribers.GetInvocationList().Cast<FlashCallHandler>())
         {
             try
             {
