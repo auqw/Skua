@@ -26,8 +26,8 @@ public class LogService : ObservableRecipient, ILogService, IDisposable
     private void LogFlashError(LogService recipient, FlashErrorMessage message)
     {
         Exception ex = message.Exception;
-        // A failed call into Flash is a COMException whose managed stack only shows the interop path.
-        string error = ex is COMException ? $"{ex.GetType().Name}: {ex.Message}" : ex.ToString();
+        // Failed calls into Flash (a COMException, or an error never thrown) have no useful managed stack.
+        string error = ex is COMException || ex.StackTrace is null ? $"{ex.GetType().Name}: {ex.Message}" : ex.ToString();
         recipient.FlashLog($"{message.Function} Args[{message.Args.Length}] {(message.Args.Length > 0 ? $"= {{{string.Join(",", message.Args.Select(a => a?.ToString()))}}}" : string.Empty)}\n{error}");
     }
 

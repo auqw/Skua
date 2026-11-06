@@ -172,7 +172,13 @@ public class FlashUtil : IFlashUtil
                 req.Append("</arguments>");
             }
             req.Append("</invoke>");
-            string result = Flash?.CallFunction(req.ToString())!;
+            string? result = Flash?.CallFunction(req.ToString());
+            if (result is null)
+            {
+                // Flash has nothing to return yet, e.g. before the loader's callbacks exist.
+                _messenger.Send<FlashErrorMessage>(new(new InvalidOperationException("Flash returned no result."), function, args));
+                return default;
+            }
             XElement el = XElement.Parse(result);
             return el is null || el.FirstNode is null ? default : Convert.ChangeType(el.FirstNode.ToString(), type);
         }
