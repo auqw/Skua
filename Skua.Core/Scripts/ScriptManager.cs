@@ -105,7 +105,9 @@ public partial class ScriptManager : ObservableObject, IScriptManager, IDisposab
 
             LoadScriptConfig(script);
 
-            if (Config!.ResetOptions.Count > 0)
+            // CoreBots scripts with Skip Options off show this window themselves at start.
+            bool scriptShowsOptions = Config!.Options.Exists(o => o.Name == "SkipOption") && !Config.Get<bool>("SkipOption");
+            if (Config.ResetOptions.Count > 0 && !scriptShowsOptions)
             {
                 await Task.Run(Config.Configure);
                 lock (_configuredLock)

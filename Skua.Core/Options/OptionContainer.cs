@@ -76,7 +76,7 @@ public class OptionContainer : ObservableObject, IOptionContainer
             Save();
     }
 
-    public virtual void Configure()
+    public void Configure()
     {
         SetDefaults();
         Load();
