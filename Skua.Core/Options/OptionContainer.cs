@@ -13,6 +13,8 @@ public class OptionContainer : ObservableObject, IOptionContainer
     public Dictionary<string, List<IOption>> MultipleOptions { get; } = new();
 
     public Dictionary<IOption, string> OptionValues { get; } = new();
+
+    public List<string> ResetOptions { get; } = new();
     public virtual string OptionsFile { get; set; } = string.Empty;
 
     public OptionContainer(IDialogService dialogService)
@@ -89,6 +91,7 @@ public class OptionContainer : ObservableObject, IOptionContainer
 
     public void Load()
     {
+        ResetOptions.Clear();
         if (!File.Exists(OptionsFile))
         {
             return;
@@ -119,9 +122,27 @@ public class OptionContainer : ObservableObject, IOptionContainer
                     }
             }
         }
+        ResetInvalidEnumValues();
         OnPropertyChanged(nameof(MultipleOptions));
         OnPropertyChanged(nameof(OptionValues));
         OnPropertyChanged(nameof(Options));
+    }
+
+    private void ResetInvalidEnumValues()
+    {
+        foreach (IOption option in Options.Concat(MultipleOptions.SelectMany(kvp => kvp.Value)))
+        {
+            if (!option.Type.IsEnum
+                || !OptionValues.TryGetValue(option, out string? value)
+                || string.IsNullOrEmpty(value)
+                || Enum.TryParse(option.Type, value.Replace(' ', '_'), out _))
+                continue;
+
+            string defaultValue = option.DefaultValue?.ToString() ?? string.Empty;
+            OptionValues[option] = defaultValue;
+            string name = option.Category == "Options" ? option.ToString() : $"{option.Category} > {option}";
+            ResetOptions.Add($"{name}: \"{value}\" → \"{defaultValue.Replace('_', ' ')}\"");
+        }
     }
 
     public void Save()
