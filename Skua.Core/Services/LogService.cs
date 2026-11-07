@@ -4,6 +4,7 @@ using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
 using Skua.Core.Models;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Skua.Core.Services;
 
@@ -24,7 +25,10 @@ public class LogService : ObservableRecipient, ILogService, IDisposable
 
     private void LogFlashError(LogService recipient, FlashErrorMessage message)
     {
-        recipient.FlashLog($"{message.Function} Args[{message.Args.Length}] {(message.Args.Length > 0 ? $"= {{{string.Join(",", message.Args.Select(a => a?.ToString()))}}}" : string.Empty)}");
+        Exception ex = message.Exception;
+        // Failed calls into Flash (a COMException, or an error never thrown) have no useful managed stack.
+        string error = ex is COMException || ex.StackTrace is null ? $"{ex.GetType().Name}: {ex.Message}" : ex.ToString();
+        recipient.FlashLog($"{message.Function} Args[{message.Args.Length}] {(message.Args.Length > 0 ? $"= {{{string.Join(",", message.Args.Select(a => a?.ToString()))}}}" : string.Empty)}\n{error}");
     }
 
     private readonly List<string> _debugLogs = new();

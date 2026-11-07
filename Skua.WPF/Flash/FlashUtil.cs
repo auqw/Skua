@@ -108,10 +108,36 @@ public class FlashUtil : IFlashUtil
 
     private void CallHandler(object sender, _IShockwaveFlashEvents_FlashCallEvent e)
     {
-        XElement el = XElement.Parse(e.request);
-        string function = el.Attribute("name")!.Value;
-        object[] args = el.Elements().Select(x => FromFlashXml(x)).ToArray();
-        FlashCall?.Invoke(function, args);
+        string function;
+        object[] args;
+        try
+        {
+            XElement el = XElement.Parse(e.request);
+            function = el.Attribute("name")!.Value;
+            args = el.Elements().Select(x => FromFlashXml(x)).ToArray();
+        }
+        catch (Exception ex)
+        {
+            _messenger.Send<FlashErrorMessage>(new(ex, "FlashCall"));
+            return;
+        }
+
+        FlashCallHandler? subscribers = FlashCall;
+        if (subscribers is null)
+            return;
+
+        // One throwing subscriber must not hide the call from the rest.
+        foreach (FlashCallHandler handler in subscribers.GetInvocationList().Cast<FlashCallHandler>())
+        {
+            try
+            {
+                handler(function, args);
+            }
+            catch (Exception ex)
+            {
+                _messenger.Send<FlashErrorMessage>(new(ex, function, args));
+            }
+        }
     }
 
     public string Call(string function, params object[] args)
@@ -146,7 +172,13 @@ public class FlashUtil : IFlashUtil
                 req.Append("</arguments>");
             }
             req.Append("</invoke>");
-            string result = Flash?.CallFunction(req.ToString())!;
+            string? result = Flash?.CallFunction(req.ToString());
+            if (result is null)
+            {
+                // Flash has nothing to return yet, e.g. before the loader's callbacks exist.
+                _messenger.Send<FlashErrorMessage>(new(new InvalidOperationException("Flash returned no result."), function, args));
+                return default;
+            }
             XElement el = XElement.Parse(result);
             return el is null || el.FirstNode is null ? default : Convert.ChangeType(el.FirstNode.ToString(), type);
         }
