@@ -21,10 +21,30 @@
     </UserControl.Resources>
     <Grid Grid.IsSharedSizeScope="True" Width="Auto" Height="Auto">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Border
+            Margin="6,6,6,0"
+            BorderBrush="{DynamicResource SecondaryHueMidBrush}"
+            BorderThickness="1">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ResetNotice}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock
+                Margin="6,3"
+                Text="{Binding ResetNotice}"
+                TextWrapping="Wrap" />
+        </Border>
+        <Border
+            Grid.Row="1"
             Margin="6,6,6,3"
             BorderBrush="{DynamicResource PrimaryHueMidBrush}"
             BorderThickness="1">
@@ -138,7 +158,7 @@
         </Border>
 
         <Border
-            Grid.Row="1"
+            Grid.Row="2"
             Margin="6,3,6,6"
             BorderBrush="{DynamicResource PrimaryHueMidBrush}"
             BorderThickness="1">

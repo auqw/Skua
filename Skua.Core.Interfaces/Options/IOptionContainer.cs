@@ -33,6 +33,11 @@ public interface IOptionContainer
     Dictionary<IOption, string> OptionValues { get; }
 
     /// <summary>
+    /// Saved enum choices that no longer exist and were reset to their defaults by the last <see cref="Load"/>, one line each.
+    /// </summary>
+    List<string> ResetOptions { get; }
+
+    /// <summary>
     /// Gets the option's value.
     /// </summary>
     /// <typeparam name="T">The type to return the value as.</typeparam>

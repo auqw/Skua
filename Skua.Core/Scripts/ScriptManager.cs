@@ -105,6 +105,15 @@ public partial class ScriptManager : ObservableObject, IScriptManager, IDisposab
 
             LoadScriptConfig(script);
 
+            if (Config!.ResetOptions.Count > 0)
+            {
+                await Task.Run(Config.Configure);
+                lock (_configuredLock)
+                {
+                    _configured[Config.Storage] = true;
+                }
+            }
+
             bool needsConfig;
             lock (_configuredLock)
             {
