@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Skua.Core.Interfaces;
 using Skua.Core.Interfaces.Services;
 using Skua.Core.Messaging;
@@ -467,32 +468,8 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
                                     Messenger.Send<PlayerDeathMessage, int>((int)MessageChannels.GameEvents);
                                     break;
                                 }
-                                dynamic anims = data.anims?[0]!;
-                                if (anims is not null)
-                                {
-                                    string msg = anims["msg"];
-                                    if (msg is not null && msg.Contains("prepares a counter attack!"))
-                                    {
-                                        Messenger.Send<CounterAttackMessage, int>(new(false), (int)MessageChannels.GameEvents);
-                                        break;
-                                    }
-                                }
-                                if (data.a is not null)
-                                {
-                                    foreach (dynamic? a in data.a)
-                                    {
-                                        if (a is null)
-                                            continue;
-
-                                        if (a.aura is null || (string)a.aura["nam"] is not "Counter Attack")
-                                        {
-                                            continue;
-                                        }
-
-                                        Messenger.Send<CounterAttackMessage, int>(new(true), (int)MessageChannels.GameEvents);
-                                        break;
-                                    }
-                                }
+                                if (data is JObject ctData)
+                                    HandleCounterAttack(ctData);
                                 break;
 
                             case "sellItem":
@@ -652,6 +629,124 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
                 Messenger.Send<PacketMessage, int>(new(packetText), (int)MessageChannels.GameEvents);
                 break;
         }
+    }
+
+    private const string CounterAttackWarning = "prepares a counter attack";
+    private const string CounterAttackAnimation = "Reflect";
+    private const string CounterAttackAuraName = "Counter Attack";
+
+    // The counter in progress: the monster ("m:<MapID>", from the warning or the aura) and its counter aura's name,
+    // learned from the packet that applies it. The state is dropped once it expires, so a lost packet can't leave it on.
+    private string? _counterMonster;
+    private string? _counterAura;
+    private DateTime _counterExpires = DateTime.MinValue;
+    private DateTime _lastCounterWarning = DateTime.MinValue;
+
+    private bool CounterAttackActive => _counterMonster is not null && DateTime.Now < _counterExpires;
+
+    /// <summary>
+    /// Finds a monster's counter attack in a <c>ct</c> packet. The warning message starts it. The aura that ends it is
+    /// the aura the monster puts on itself in the same packet as its <c>Reflect</c> animation (or one named
+    /// "Counter Attack"; the shortest if there are several), so the name doesn't have to be known. It ends when that
+    /// aura is removed from that monster, or when the monster dies.
+    /// </summary>
+    private void HandleCounterAttack(JObject data)
+    {
+        string? reflectingMonster = null;
+        if (data["anims"] is JArray anims)
+        {
+            foreach (JToken anim in anims)
+            {
+                string? msg = (string?)anim["msg"];
+                if (msg is not null && msg.Contains(CounterAttackWarning, StringComparison.OrdinalIgnoreCase))
+                {
+                    _lastCounterWarning = DateTime.Now;
+                    _counterMonster = (string?)anim["cInf"];
+                    _counterAura = null;
+                    _counterExpires = DateTime.Now.AddSeconds(12);
+                    Messenger.Send<CounterAttackMessage, int>(new(false), (int)MessageChannels.GameEvents);
+                }
+
+                string? animStr = (string?)anim["animStr"];
+                if (animStr is not null && animStr.Split(',').Contains(CounterAttackAnimation))
+                    reflectingMonster = (string?)anim["cInf"];
+            }
+        }
+
+        // A dead monster can't counter.
+        if (CounterAttackActive && _counterMonster!.StartsWith("m:")
+            && data["m"] is JObject monsters && monsters[_counterMonster[2..]] is JObject monster
+            && (int?)monster["intState"] == 0)
+        {
+            EndCounterAttack();
+            return;
+        }
+
+        if (data["a"] is not JArray actions)
+            return;
+
+        string? auraMonster = null;
+        string? auraName = null;
+        float auraDuration = 0;
+        foreach (JToken action in actions)
+        {
+            string? cmd = (string?)action["cmd"];
+            string? target = (string?)action["tInf"];
+            if (cmd is null || target is null || !target.StartsWith("m:"))
+                continue;
+
+            switch (cmd)
+            {
+                case "aura+":
+                case "aura++":
+                    if ((string?)action["cInf"] != target || action["auras"] is not JArray auras)
+                        break;
+                    foreach (JToken aura in auras)
+                    {
+                        string? name = (string?)aura["nam"];
+                        if (name is null || (reflectingMonster != target && name != CounterAttackAuraName))
+                            continue;
+
+                        // Counter auras are short (3-6 s); a longer one in the same packet (e.g. "Skill Locked", 45 s)
+                        // is something else the monster cast.
+                        float duration = (float?)aura["dur"] ?? 0;
+                        if (auraName is null || (duration > 0 && (auraDuration <= 0 || duration < auraDuration)))
+                        {
+                            auraMonster = target;
+                            auraName = name;
+                            auraDuration = duration;
+                        }
+                    }
+                    break;
+
+                case "aura-":
+                case "aura--":
+                    if (_counterAura is null || target != _counterMonster || !CounterAttackActive)
+                        break;
+                    IEnumerable<JToken> removed = action["auras"] is JArray list ? list : new[] { action["aura"] }.OfType<JToken>();
+                    if (removed.Any(a => (string?)a["nam"] == _counterAura))
+                        EndCounterAttack();
+                    break;
+            }
+        }
+
+        if (auraMonster is null || auraName is null)
+            return;
+
+        // Missed the warning: the aura alone says the counter is on.
+        if (DateTime.Now - _lastCounterWarning > TimeSpan.FromSeconds(5))
+            Messenger.Send<CounterAttackMessage, int>(new(false), (int)MessageChannels.GameEvents);
+        _counterMonster = auraMonster;
+        _counterAura = auraName;
+        _counterExpires = DateTime.Now.AddSeconds((auraDuration > 0 ? auraDuration : 10) + 5);
+        Messenger.Send<CounterAttackAuraMessage, int>(new(auraMonster, auraName, auraDuration), (int)MessageChannels.GameEvents);
+    }
+
+    private void EndCounterAttack()
+    {
+        _counterMonster = null;
+        _counterAura = null;
+        Messenger.Send<CounterAttackMessage, int>(new(true), (int)MessageChannels.GameEvents);
     }
 
     private Task? _reloginTask;

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Flash;
 using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
@@ -50,6 +51,10 @@ public partial class ScriptSkill : IScriptSkill
         _lazyOptions = options;
         _lazyInventory = inventory;
         AdvancedSkillContainer = advContainer;
+
+        IMessenger messenger = StrongReferenceMessenger.Default;
+        messenger.Register<ScriptSkill, CounterAttackMessage, int>(this, (int)MessageChannels.GameEvents, CounterAttack);
+        messenger.Register<ScriptSkill, CounterAttackAuraMessage, int>(this, (int)MessageChannels.GameEvents, CounterAttackAura);
     }
 
     private ISkillProvider? _provider;
@@ -290,7 +295,7 @@ public partial class ScriptSkill : IScriptSkill
             {
                 if (Combat.StopAttacking)
                 {
-                    _counterAttack.WaitOne(10000);
+                    WaitForCounterAttack(token);
                     Combat.StopAttacking = false;
                 }
 
@@ -492,12 +497,49 @@ public partial class ScriptSkill : IScriptSkill
         return false;
     }
 
+    // Longest wait when the counter aura's duration isn't known (the warning comes ~2 s before the aura).
+    private const int CounterAttackFallbackMs = 10000;
+    // Slack on top of the aura's own duration for the removal packet to arrive.
+    private const int CounterAttackMarginMs = 1000;
+
     private readonly AutoResetEvent _counterAttack = new(false);
+    private long _counterAttackDeadline;
 
     private void CounterAttack(ScriptSkill recipient, CounterAttackMessage message)
     {
         if (message.Faded)
+        {
             recipient._counterAttack.Set();
+            return;
+        }
+
+        // A new counter: drop any "faded" left over from one that ended after the wait gave up.
+        recipient._counterAttack.Reset();
+        Interlocked.Exchange(ref recipient._counterAttackDeadline, DateTime.UtcNow.AddMilliseconds(CounterAttackFallbackMs).Ticks);
+    }
+
+    private void CounterAttackAura(ScriptSkill recipient, CounterAttackAuraMessage message)
+    {
+        if (message.Duration > 0)
+            Interlocked.Exchange(ref recipient._counterAttackDeadline, DateTime.UtcNow.AddMilliseconds(message.Duration * 1000 + CounterAttackMarginMs).Ticks);
+    }
+
+    /// <summary>
+    /// Waits until the counter-attack aura is removed (or its monster dies), until it should have run out, or until
+    /// something else allows attacks again (player death, script stop, <c>UltraBossHelper.SetAttacksStopped(false)</c>).
+    /// </summary>
+    private void WaitForCounterAttack(CancellationToken token)
+    {
+        // Attacks stopped without a counter warning (e.g. UltraBossHelper.SetAttacksStopped): keep the old 10 s wait.
+        if (Interlocked.Read(ref _counterAttackDeadline) <= DateTime.UtcNow.Ticks)
+            Interlocked.Exchange(ref _counterAttackDeadline, DateTime.UtcNow.AddMilliseconds(CounterAttackFallbackMs).Ticks);
+
+        while (!token.IsCancellationRequested)
+        {
+            long remainingMs = (Interlocked.Read(ref _counterAttackDeadline) - DateTime.UtcNow.Ticks) / TimeSpan.TicksPerMillisecond;
+            if (remainingMs <= 0 || !Combat.StopAttacking || _counterAttack.WaitOne((int)Math.Min(remainingMs, 100)))
+                return;
+        }
     }
     private AdvancedSkillProvider CreateAdvancedSkillProvider()
     {

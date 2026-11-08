@@ -18,6 +18,8 @@ public sealed record PacketMessage(string Packet);
 public sealed record PlayerAFKMessage();
 public sealed record TryBuyItemMessage(int ShopID, int ItemID, int ShopItemID);
 public sealed record CounterAttackMessage(bool Faded);
+/// <summary>Sent when a monster puts its counter-attack aura on itself; <paramref name="Duration"/> is in seconds.</summary>
+public sealed record CounterAttackAuraMessage(string Monster, string AuraName, float Duration);
 public sealed record ItemAddedToBankMessage(ItemBase Item, int QuantityNow);
 public sealed record RunToAreaMessage(string Zone);
 public sealed record ItemDroppedMessage(ItemBase Item, bool AddedToInv = false, int QuantityNow = 0);
