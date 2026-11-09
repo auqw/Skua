@@ -1,4 +1,5 @@
 ﻿using Skua.Core.Interfaces;
+using Skua.Core.Models.Players;
 
 namespace Skua.Core.Skills;
 
@@ -42,7 +43,12 @@ public class AdvancedSkillCommand
         if (skillIndex < 0 || skillIndex >= UseRules.Count)
             return true;
 
-        if (UseRules.Count == 0 || UseRules[skillIndex].First().Rule == SkillRule.None)
+        // "Skip if not available": a step whose skill cannot be used now is passed over at once, rather than waited
+        // for (Wait for Cooldown). The flag is the same on every rule of the step.
+        if (!canUse && UseRules[skillIndex].Any(r => r.ShouldSkip))
+            return null;
+
+        if (UseRules[skillIndex].First().Rule == SkillRule.None)
             return true;
 
         bool matchAny = skillIndex < MatchAny.Count && MatchAny[skillIndex];
@@ -55,8 +61,6 @@ public class AdvancedSkillCommand
 
             if (useRule.Rule == SkillRule.Wait)
             {
-                if (useRule.ShouldSkip && !canUse)
-                    return null;
                 Task.Delay((int)useRule.Value).Wait();
                 continue;
             }
@@ -162,18 +166,19 @@ public class AdvancedSkillCommand
             return false;
         try
         {
-            dynamic[]? players = _flash.GetGameObject<dynamic[]>("world.players");
-            if (players == null || players.Length == 0)
+            // world.uoTree holds every player in the map by name, this one included (the game has no world.players).
+            Dictionary<string, PlayerInfo>? players = _flash.GetGameObject<Dictionary<string, PlayerInfo>>("world.uoTree");
+            if (players == null || players.Count == 0)
                 return false;
 
-            foreach (dynamic targetPlayer in players)
+            string cell = player.Cell;
+            foreach (PlayerInfo? targetPlayer in players.Values)
             {
-                string? targetCell = targetPlayer.strFrame;
-                if (string.IsNullOrEmpty(targetCell) || targetCell != player.Cell)
+                if (targetPlayer is null || string.IsNullOrEmpty(targetPlayer.Cell) || !targetPlayer.Cell.Equals(cell, StringComparison.OrdinalIgnoreCase))
                     continue;
 
-                int targetHealth = targetPlayer.dataLeaf.intHP;
-                int targetMaxHealth = targetPlayer.dataLeaf.intHPMax;
+                int targetHealth = targetPlayer.HP;
+                int targetMaxHealth = targetPlayer.MaxHP;
 
                 if (targetHealth == 0 || (isPercentage && targetMaxHealth == 0))
                     continue;

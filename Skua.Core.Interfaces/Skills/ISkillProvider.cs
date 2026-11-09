@@ -22,9 +22,15 @@ public interface ISkillProvider
     bool ResetOnTarget { get; set; }
 
     /// <summary>
-    /// This method should return true if the bot should attempt to use a skill at the given time.
+    /// Whether the bot should use the skill of the given step now.
     /// </summary>
-    /// <returns>Whether the bot should attempt to use a skill.</returns>
+    /// <param name="skillIndex">The step, as returned by <see cref="GetNextSkill"/>.</param>
+    /// <param name="canUse">Whether the game would accept the step's skill right now (off cooldown, enough mana and so on).</param>
+    /// <returns>
+    /// <see langword="true"/> to use the skill; <see langword="false"/> to leave it and end the turn (Wait for Cooldown)
+    /// or try the next step (Use if Available); <see langword="null"/> to skip the step: the next one is asked in the
+    /// same turn and used only if this method allows it. A skipped step never forces the next skill to be used.
+    /// </returns>
     bool? ShouldUseSkill(int skillIndex, bool canUse);
 
     /// <summary>

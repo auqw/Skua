@@ -334,7 +334,8 @@ public class AdvancedSkillProvider : ISkillProvider
             rules.Add(new UseRule(SkillRule.MultiAura, shouldSkip, multiAuraChecks, op));
         }
 
-        return rules.Count == 0 ? new[] { new UseRule(SkillRule.None) } : rules.ToArray();
+        // A step with nothing but the skip flag ("3S") keeps it: use the skill if it can be used now, else move on.
+        return rules.Count == 0 ? new[] { new UseRule(SkillRule.None) { ShouldSkip = shouldSkip } } : rules.ToArray();
     }
 
     public void Save(string file)
