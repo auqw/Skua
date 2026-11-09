@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using CommunityToolkit.Mvvm.Messaging;
 using Skua.Core.Flash;
 using Skua.Core.Interfaces;
 using Skua.Core.Messaging;
@@ -50,6 +51,9 @@ public partial class ScriptSkill : IScriptSkill
         _lazyOptions = options;
         _lazyInventory = inventory;
         AdvancedSkillContainer = advContainer;
+
+        IMessenger messenger = StrongReferenceMessenger.Default;
+        messenger.Register<ScriptSkill, CounterAttackMessage, int>(this, (int)MessageChannels.GameEvents, CounterAttack);
     }
 
     private ISkillProvider? _provider;
@@ -290,8 +294,8 @@ public partial class ScriptSkill : IScriptSkill
             {
                 if (Combat.StopAttacking)
                 {
-                    _counterAttack.WaitOne(10000);
-                    Combat.StopAttacking = false;
+                    if (WaitForCounterAttack(token))
+                        Combat.StopAttacking = false;
                 }
 
                 if (!Player.Alive)
@@ -492,12 +496,38 @@ public partial class ScriptSkill : IScriptSkill
         return false;
     }
 
-    private readonly AutoResetEvent _counterAttack = new(false);
+    // Longest wait when attacks were stopped by something other than a counter attack (a script setting StopAttacking).
+    private const int StopAttackingFallbackMs = 10000;
+    // Safety net during a counter attack: ScriptInterface ends every counter itself (removal, death or expiry).
+    private const int CounterAttackSafetyMs = 30000;
+
+    private volatile bool _counterAttackActive;
+    private long _counterAttackFades;
 
     private void CounterAttack(ScriptSkill recipient, CounterAttackMessage message)
     {
+        recipient._counterAttackActive = !message.Faded;
         if (message.Faded)
-            recipient._counterAttack.Set();
+            Interlocked.Increment(ref recipient._counterAttackFades);
+    }
+
+    /// <summary>
+    /// Waits while attacks are stopped: until a counter attack ends, something else allows attacks again (player death,
+    /// script stop, <c>UltraBossHelper.SetAttacksStopped(false)</c>), or the wait runs out. Only a counter end that
+    /// happens during this wait counts, so an old one can't cut short a later pause.
+    /// </summary>
+    /// <returns>Whether the caller should allow attacks again; not while a new counter attack is on.</returns>
+    private bool WaitForCounterAttack(CancellationToken token)
+    {
+        long fades = Interlocked.Read(ref _counterAttackFades);
+        Stopwatch waited = Stopwatch.StartNew();
+        while (!token.IsCancellationRequested && Combat.StopAttacking && Interlocked.Read(ref _counterAttackFades) == fades)
+        {
+            if (waited.ElapsedMilliseconds >= (_counterAttackActive ? CounterAttackSafetyMs : StopAttackingFallbackMs))
+                return true;
+            token.WaitHandle.WaitOne(50);
+        }
+        return !_counterAttackActive;
     }
     private AdvancedSkillProvider CreateAdvancedSkillProvider()
     {
