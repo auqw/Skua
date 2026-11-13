@@ -95,6 +95,16 @@ public partial class ScriptCombat : IScriptCombat
         return Flash.Call<bool>("attackMonsterID", id);
     }
 
+    public bool SelectMonster(string name)
+    {
+        return Flash.Call<bool>("selectMonsterName", name);
+    }
+
+    public bool SelectMonster(int id)
+    {
+        return Flash.Call<bool>("selectMonsterID", id);
+    }
+
     public bool AttackPlayer(string name)
     {
         return Flash.Call<bool>("attackPlayer", name);

@@ -68,6 +68,8 @@ public class Externalizer {
         this.addCallback("getTargetMonster", Monster.getTargetMonster);
         this.addCallback("attackMonsterName", Monster.attackMonsterByName);
         this.addCallback("attackMonsterID", Monster.attackMonsterByID);
+        this.addCallback("selectMonsterName", Monster.selectMonsterByName);
+        this.addCallback("selectMonsterID", Monster.selectMonsterByID);
 
         // Skills
         this.addCallback("canUseSkill", Skills.canUseSkill);
