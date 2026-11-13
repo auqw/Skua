@@ -29,14 +29,7 @@ public interface IScriptSkill
     /// How long <see cref="SkillUseMode.WaitForCooldown"/> waits for the current skill's cooldown before skipping it, in milliseconds; 0 or less waits as long as it takes.
     /// A skill held up by anything other than its cooldown (mana, a stun, an empty potion slot, a locked skill) is skipped at once.
     /// </summary>
-    /// <remarks>
-    /// The default implementation converts to and from <see cref="SkillTimeout"/>, so implementations written before this member existed still compile.
-    /// </remarks>
-    int SkillTimeoutMs
-    {
-        get => SkillTimeout <= 0 ? SkillTimeout : (int)Math.Min(int.MaxValue, (long)SkillTimeout * Math.Max(1, SkillInterval));
-        set => SkillTimeout = value <= 0 ? value : (int)(((long)value + Math.Max(1, SkillInterval) - 1) / Math.Max(1, SkillInterval));
-    }
+    int SkillTimeoutMs { get; set; }
 
     /// <summary>
     /// <see cref="SkillTimeoutMs"/> in the older unit, multiples of <see cref="SkillInterval"/> (100 ms by default), as older scripts and
