@@ -18,7 +18,7 @@ public sealed partial class MainViewModel : ObservableObject
 
     public MainViewModel()
     {
-        ShowUsernameInTitle = _settingsService.Get("ShowUsernameInTitle", false);
+        ShowUsernameInTitle = _settingsService.Get<bool>("ShowUsernameInTitle");
 
         UpdateTitle();
         StrongReferenceMessenger.Default.Register<MainViewModel, LoginMessage, int>(

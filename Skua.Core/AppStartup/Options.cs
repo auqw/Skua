@@ -74,7 +74,7 @@ internal class Options
             new CommandOptionItemViewModel<bool>("Show Username in Title", "Whether to show the current username in the window title and tray tooltip", "ShowUsernameInTitle", new RelayCommand<bool>(value =>
             {
                 Ioc.Default.GetRequiredService<MainViewModel>().ShowUsernameInTitle = value;
-            }), Ioc.Default.GetRequiredService<ISettingsService>().Get("ShowUsernameInTitle", false)),
+            }), Ioc.Default.GetRequiredService<ISettingsService>().Get<bool>("ShowUsernameInTitle")),
 
             new CommandOptionItemViewModel<bool>("Square Window Corners", "Whether Skua windows have square corners instead of rounded ones. On by default on Windows 10, where rounded corners show a dark square behind them", "SquareWindowCorners", new RelayCommand<bool>(value =>
             {
