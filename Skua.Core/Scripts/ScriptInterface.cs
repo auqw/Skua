@@ -393,6 +393,22 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
         Handlers.Remove(rem);
     }
 
+    /// <summary>
+    /// Logs a chat message the server sent (the red, cyan and yellow "SERVER" lines) to the script log.
+    /// </summary>
+    private void LogServerMessage(string type, string? message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return;
+        string tag = type switch
+        {
+            "warning" => "Server warning",
+            "moderator" => "Moderator",
+            _ => "Server"
+        };
+        _logger.ScriptLog($"[{tag}] {message}");
+    }
+
     private void HandleFlashCall(string name, object[]? args)
     {
         switch (name)
@@ -567,9 +583,18 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
                         pextCmd = cmd;
                         switch (cmd)
                         {
+                            case "warning":
+                            case "server":
+                            case "moderator":
+                                LogServerMessage(cmd, Convert.ToString(data[2]));
+                                break;
+
                             case "popup":
                                 string b = Convert.ToString(packet);
                                 Debug.WriteLine(b);
+                                string popupType = Convert.ToString(data[2]);
+                                if (popupType is "warning" or "server" or "moderator")
+                                    LogServerMessage(popupType, Convert.ToString(data[3]));
                                 break;
 
                             case "uotls":
