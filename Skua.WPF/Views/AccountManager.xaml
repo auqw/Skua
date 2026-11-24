@@ -69,6 +69,11 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
+                <MenuItem Header="Select All" Command="{Binding SelectAllCommand}">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="SelectAll" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Deselect All" Command="{Binding DeselectAllCommand}">
                     <MenuItem.Icon>
                         <materialDesign:PackIcon Kind="SelectOff" />

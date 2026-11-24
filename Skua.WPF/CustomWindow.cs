@@ -7,6 +7,8 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using System.Windows.Shell;
 using Windows.Win32;
 using Windows.Win32.Graphics.Dwm;
@@ -22,6 +24,7 @@ public partial class CustomWindow : Window
     private Button? _btnMaximize;
     private Button? _btnMinimize;
     private readonly MenuItem _topMostMenu;
+    private readonly ListBoxSelectionMenuItems _listSelectionMenu = new();
 
     private HwndSource _handle;
     private HwndSourceHook _hook;
@@ -91,6 +94,8 @@ public partial class CustomWindow : Window
 
         ContextMenu = new();
         ContextMenu.Items.Add(_topMostMenu);
+        _listSelectionMenu.AddTo(ContextMenu);
+        ContextMenuOpening += CustomWindow_ContextMenuOpening;
 
         SquareCorners = ReadSquareCornersSetting();
         WeakReferenceMessenger.Default.Register<CustomWindow, SquareWindowCornersMessage>(this, static (w, m) => w.SquareCorners = m.Square);
@@ -205,6 +210,25 @@ public partial class CustomWindow : Window
         WindowState = WindowState.Minimized;
     }
 
+    // Offers Select All / Unselect All when the right-click lands on a multi-selection list.
+    private void CustomWindow_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+    {
+        _listSelectionMenu.Update(FindListBox(e.OriginalSource as DependencyObject), unselectForSingle: false);
+    }
+
+    private static ListBox? FindListBox(DependencyObject? element)
+    {
+        while (element is not null and not Window)
+        {
+            if (element is ListBox listBox)
+                return listBox;
+            element = element is Visual or Visual3D
+                ? VisualTreeHelper.GetParent(element)
+                : LogicalTreeHelper.GetParent(element);
+        }
+        return null;
+    }
+
     private void Topmost_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not MenuItem menuItem)
@@ -222,6 +246,7 @@ public partial class CustomWindow : Window
             _btnMinimize.Click -= WindowMinimize_Click;
         }
         _topMostMenu.Click -= Topmost_Click;
+        ContextMenuOpening -= CustomWindow_ContextMenuOpening;
         _handle.RemoveHook(_hook);
         _handle.Dispose();
         WindowChrome.SetWindowChrome(this, null);

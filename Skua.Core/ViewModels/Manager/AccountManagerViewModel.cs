@@ -213,6 +213,16 @@ public sealed partial class AccountManagerViewModel : BotControlViewModelBase
         _SaveAccounts();
     }
 
+    // Selects only the accounts the tag filter shows.
+    [RelayCommand]
+    private void SelectAll()
+    {
+        foreach (AccountItemViewModel account in FilteredAccounts)
+        {
+            account.UseCheck = true;
+        }
+    }
+
     [RelayCommand]
     private void DeselectAll()
     {

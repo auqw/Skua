@@ -29,6 +29,9 @@ internal class Options
         {
             if (pi.Name is nameof(IScriptOption.OptionDictionary) or nameof(ObservableRecipient.IsActive) or nameof(IScriptOption.GuildColor) or nameof(IScriptOption.NameColor))
                 continue;
+            // Set in CoreBots Options (Other > Bot Creators Only) instead.
+            if (ScriptOption.IsCoreBotsOption(pi.Name))
+                continue;
             if (pi.PropertyType == typeof(bool))
                 options.Add(CreateOptionItem<bool>(s, pi.Name, "1", new RelayCommand<bool>(b => pi.SetValue(scriptOpt, b))));
             else if (pi.PropertyType == typeof(string))
@@ -74,7 +77,7 @@ internal class Options
             new CommandOptionItemViewModel<bool>("Show Username in Title", "Whether to show the current username in the window title and tray tooltip", "ShowUsernameInTitle", new RelayCommand<bool>(value =>
             {
                 Ioc.Default.GetRequiredService<MainViewModel>().ShowUsernameInTitle = value;
-            }), Ioc.Default.GetRequiredService<ISettingsService>().Get("ShowUsernameInTitle", false)),
+            }), Ioc.Default.GetRequiredService<ISettingsService>().Get<bool>("ShowUsernameInTitle")),
 
             new CommandOptionItemViewModel<bool>("Square Window Corners", "Whether Skua windows have square corners instead of rounded ones. On by default on Windows 10, where rounded corners show a dark square behind them", "SquareWindowCorners", new RelayCommand<bool>(value =>
             {

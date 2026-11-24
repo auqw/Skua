@@ -55,7 +55,6 @@
             </ListBox.ItemsPanel>
             <b:Interaction.Behaviors>
                 <wpf:ListBoxCopySelectedBehavior />
-                <wpf:ListBoxUnselectAllMenuBehavior />
                 <wpf:ListBoxScrollToCaretBehavior />
             </b:Interaction.Behaviors>
         </ListBox>

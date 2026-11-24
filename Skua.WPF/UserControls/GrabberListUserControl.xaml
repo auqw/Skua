@@ -73,11 +73,9 @@
                         <TextBlock Text="{Binding Converter={StaticResource GrabberItemDisplayConverter}}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-                <ListBox.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Click="MenuItem_Click" Header="Unselect All" />
-                    </ContextMenu>
-                </ListBox.ContextMenu>
+                <b:Interaction.Behaviors>
+                    <wpf:ListBoxCommonContextMenuBehavior />
+                </b:Interaction.Behaviors>
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel />

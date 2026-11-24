@@ -95,6 +95,29 @@ public partial class ScriptOption : ObservableRecipient, IScriptOption, IOptionD
     [ObservableProperty]
     private bool _privateRooms;
 
+    // Not shown in the game Options window and not saved with the user options: each script start sets them from
+    // CoreBots Options (Other > Bot Creators Only), see ScriptManager.ApplyServerLogOptions.
+    [ObservableProperty]
+    private bool _logServerWarnings = true;
+
+    [ObservableProperty]
+    private bool _logServerMessages;
+
+    /// <summary>
+    /// Whether the option is set from CoreBots Options rather than the game Options window.
+    /// </summary>
+    internal static bool IsCoreBotsOption(string name) => name is nameof(LogServerWarnings) or nameof(LogServerMessages);
+
+    /// <summary>
+    /// CoreBots Options key for <see cref="LogServerWarnings"/>.
+    /// </summary>
+    internal const string CBOLogServerWarnings = "BCO_LogServerWarnings";
+
+    /// <summary>
+    /// CoreBots Options key for <see cref="LogServerMessages"/>.
+    /// </summary>
+    internal const string CBOLogServerMessages = "BCO_LogServerMessages";
+
     [CallBinding("magnetize", UseValue = false, Get = false, HasSetter = true)]
     private bool _magnetise;
 
@@ -204,7 +227,7 @@ public partial class ScriptOption : ObservableRecipient, IScriptOption, IOptionD
         StringCollection saveOptions = new();
         foreach (PropertyInfo pi in GetType().GetProperties())
         {
-            if (pi.Name == nameof(OptionDictionary))
+            if (pi.Name == nameof(OptionDictionary) || IsCoreBotsOption(pi.Name))
                 continue;
             string key = pi.Name;
             object? value = pi.GetValue(this);
@@ -223,7 +246,7 @@ public partial class ScriptOption : ObservableRecipient, IScriptOption, IOptionD
 
         foreach (PropertyInfo pi in GetType().GetProperties())
         {
-            if (pi.Name == nameof(OptionDictionary))
+            if (pi.Name == nameof(OptionDictionary) || IsCoreBotsOption(pi.Name))
                 continue;
             if (_userOptions.ContainsKey(pi.Name))
             {
@@ -242,7 +265,7 @@ public partial class ScriptOption : ObservableRecipient, IScriptOption, IOptionD
         ScriptOption defaults = new(_lazyFlash);
         foreach (PropertyInfo pi in GetType().GetProperties())
         {
-            if (pi.Name == nameof(OptionDictionary))
+            if (pi.Name == nameof(OptionDictionary) || IsCoreBotsOption(pi.Name))
                 continue;
 
             pi.SetValue(this, pi.GetValue(defaults), null);
