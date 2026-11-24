@@ -182,7 +182,6 @@
             <b:Interaction.Behaviors>
                 <wpf:ListBoxCopySelectedBehavior />
                 <wpf:ListBoxScrollToCaretBehavior />
-                <wpf:ListBoxUnselectAllMenuBehavior />
             </b:Interaction.Behaviors>
             <ListBox.ItemContainerStyle>
                 <Style BasedOn="{StaticResource MaterialDesignListBoxItem}" TargetType="ListBoxItem">

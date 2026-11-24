@@ -61,7 +61,7 @@
                 </ContextMenu>
             </ListBox.ContextMenu>
             <b:Interaction.Behaviors>
-                <wpf:ListBoxUnselectAllMenuBehavior />
+                <wpf:ListBoxCommonContextMenuBehavior />
             </b:Interaction.Behaviors>
         </ListBox>
         <Grid Grid.Row="1" Grid.Column="0">

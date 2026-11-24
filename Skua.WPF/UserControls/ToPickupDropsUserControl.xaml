@@ -63,7 +63,7 @@
                 </ContextMenu>
             </ListBox.ContextMenu>
             <b:Interaction.Behaviors>
-                <wpf:ListBoxUnselectAllMenuBehavior />
+                <wpf:ListBoxCommonContextMenuBehavior />
             </b:Interaction.Behaviors>
         </ListBox>
         <TextBox
