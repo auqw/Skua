@@ -265,7 +265,7 @@ public partial class ScriptOption : ObservableRecipient, IScriptOption, IOptionD
         ScriptOption defaults = new(_lazyFlash);
         foreach (PropertyInfo pi in GetType().GetProperties())
         {
-            if (pi.Name == nameof(OptionDictionary))
+            if (pi.Name == nameof(OptionDictionary) || IsCoreBotsOption(pi.Name))
                 continue;
 
             pi.SetValue(this, pi.GetValue(defaults), null);

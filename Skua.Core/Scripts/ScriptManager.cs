@@ -123,6 +123,8 @@ public partial class ScriptManager : ObservableObject, IScriptManager, IDisposab
                 _logger.ScriptLog("Script already running.");
                 return new Exception("Script already running.");
             }
+            // Before ScriptRunning, so server lines never log under the previous run's switches.
+            ApplyServerLogOptions();
             ScriptRunning = true;
         }
 
@@ -157,7 +159,6 @@ public partial class ScriptManager : ObservableObject, IScriptManager, IDisposab
             ManualResetEventSlim scriptReady = new(false);
 
             Handlers.Clear();
-            ApplyServerLogOptions();
 
             lock (_stateLock)
             {
