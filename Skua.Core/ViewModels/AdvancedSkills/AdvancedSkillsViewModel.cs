@@ -31,7 +31,7 @@ public partial class AdvancedSkillsViewModel : BotControlViewModelBase
     public SavedAdvancedSkillsViewModel SavedViewModel { get; }
 
     [ObservableProperty]
-    private bool _editExpanded;
+    private bool _editExpanded = true;
 
     private void EditSkill(AdvancedSkillsViewModel recipient, EditAdvancedSkillMessage message)
     {
