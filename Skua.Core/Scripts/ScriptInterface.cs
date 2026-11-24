@@ -394,19 +394,47 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
     }
 
     /// <summary>
-    /// Logs a chat message the server sent (the red, cyan and yellow "SERVER" lines) to the script log.
+    /// Logs a message the server sent (red, cyan and yellow "SERVER" chat lines, black banners) to the script log while
+    /// a script runs. Cyan lines need <see cref="IScriptOption.LogServerMessages"/>, the rest
+    /// <see cref="IScriptOption.LogServerWarnings"/>.
     /// </summary>
     private void LogServerMessage(string type, string? message)
     {
-        if (string.IsNullOrWhiteSpace(message))
+        if (string.IsNullOrWhiteSpace(message) || !Manager.ScriptRunning)
+            return;
+        if (!(type == "server" ? Options.LogServerMessages : Options.LogServerWarnings))
             return;
         string tag = type switch
         {
             "warning" => "Server warning",
             "moderator" => "Moderator",
+            "banner" => "Banner",
             _ => "Server"
         };
         _logger.ScriptLog($"[{tag}] {message}");
+    }
+
+    /// <summary>
+    /// Gets the text the game shows in its black banner for a JSON response from the server, or null when it shows none.
+    /// Mirrors the game's own checks (Game.as) for each response.
+    /// </summary>
+    private static string? GetBannerMessage(string cmd, JObject data)
+    {
+        string? msg = data["msg"]?.ToString();
+        string? strMessage = data["strMessage"]?.ToString();
+        return cmd switch
+        {
+            "buyItem" when IsTrue(data["bSoldOut"]) && IsFalse(data["bitSuccess"]) => $"{strMessage} is no longer in stock.",
+            "buyItem" => strMessage,
+            "savePrefs" or "house" => msg,
+            "acceptQuest" when !IsTrue(data["bSuccess"]) => msg,
+            "ccqr" when IsFalse(data["bSuccess"]) && msg is not null => $"Quest Complete Failed: {msg}",
+            "addLoadout" or "removeLoadout" or "wearItem" or "unwearItem" or "wearLoadout" when !IsTrue(data["success"]) => msg,
+            _ => null
+        };
+
+        static bool IsTrue(JToken? token) => token is not null && token.ToString() is "1" or "true" or "True";
+        static bool IsFalse(JToken? token) => token is not null && token.ToString() is "0" or "false" or "False";
     }
 
     private void HandleFlashCall(string name, object[]? args)
@@ -576,6 +604,8 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
                                 Messenger.Send<ShopLoadedMessage, int>(new(new(Shops.ID, Shops.Name, Shops.Items)), (int)MessageChannels.GameEvents);
                                 break;
                         }
+                        if (data is JObject bannerData)
+                            LogServerMessage("banner", GetBannerMessage(cmd, bannerData));
                     }
                     else if (type is not null and "str")
                     {
@@ -589,12 +619,18 @@ public class ScriptInterface : IScriptInterface, IScriptInterfaceManager, IDispo
                                 LogServerMessage(cmd, Convert.ToString(data[2]));
                                 break;
 
+                            case "notify":
+                                LogServerMessage("banner", Convert.ToString(data[2]));
+                                break;
+
                             case "popup":
                                 string b = Convert.ToString(packet);
                                 Debug.WriteLine(b);
                                 string popupType = Convert.ToString(data[2]);
                                 if (popupType is "warning" or "server" or "moderator")
                                     LogServerMessage(popupType, Convert.ToString(data[3]));
+                                else if (popupType == "blackbanner")
+                                    LogServerMessage("banner", Convert.ToString(data[3]));
                                 break;
 
                             case "uotls":

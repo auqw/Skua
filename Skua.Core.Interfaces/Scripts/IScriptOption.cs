@@ -174,6 +174,20 @@ public interface IScriptOption : INotifyPropertyChanged
     bool PrivateRooms { get; set; }
 
     /// <summary>
+    /// While a script runs, writes the server's warnings to the script log: red chat warnings, yellow moderator
+    /// messages and black banners. Each script start sets it from CoreBots Options (Other > Bot Creators Only), on by
+    /// default; the script can change it after that.
+    /// </summary>
+    bool LogServerWarnings { get; set; }
+
+    /// <summary>
+    /// While a script runs, writes the server's cyan chat messages to the script log. Each script start sets it from
+    /// CoreBots Options (Other > Bot Creators Only), off by default because these lines show private details such as
+    /// house and private room numbers; the script can change it after that.
+    /// </summary>
+    bool LogServerMessages { get; set; }
+
+    /// <summary>
     /// A rest packet will be sent every second, causing the player to heal when not in combat.
     /// </summary>
     bool RestPackets { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Skua.Core.Interfaces;
+using Skua.Core.Scripts;
 using Skua.Core.ViewModels;
 
 namespace Skua.Core.AppStartup;
@@ -68,7 +69,12 @@ internal class CoreBots
 
             new("Bludrut Brawl (PvP)", new CBOBoolOptionItemViewModel("Kill ads before boss", "Whether to kill brawlers and restorers in the PvP before the boss.", "PvP_SoloPvPBoss")),
 
-            new("Bot Creators Only", new CBOBoolOptionItemViewModel("Story Bot Test Mode", "Toggles innate isCompleteBefore checks. It remains on the for Complete Once Quests", "BCO_Story_TestBot"))
+            new("Bot Creators Only", new List<DisplayOptionItemViewModelBase>()
+            {
+                new CBOBoolOptionItemViewModel("Story Bot Test Mode", "Toggles innate isCompleteBefore checks. It remains on the for Complete Once Quests", "BCO_Story_TestBot"),
+                new CBOBoolOptionItemViewModel("Log Server Warnings", "While a script runs, write the server's red warnings, moderator messages and banners to the Script log", ScriptOption.CBOLogServerWarnings, true),
+                new CBOBoolOptionItemViewModel("Log Server Messages", "While a script runs, write the server's cyan chat lines to the Script log. They show private details such as house and private room numbers", ScriptOption.CBOLogServerMessages, false)
+            })
         };
 
         return new(otherOptions);

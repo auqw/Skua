@@ -29,6 +29,9 @@ internal class Options
         {
             if (pi.Name is nameof(IScriptOption.OptionDictionary) or nameof(ObservableRecipient.IsActive) or nameof(IScriptOption.GuildColor) or nameof(IScriptOption.NameColor))
                 continue;
+            // Set in CoreBots Options (Other > Bot Creators Only) instead.
+            if (ScriptOption.IsCoreBotsOption(pi.Name))
+                continue;
             if (pi.PropertyType == typeof(bool))
                 options.Add(CreateOptionItem<bool>(s, pi.Name, "1", new RelayCommand<bool>(b => pi.SetValue(scriptOpt, b))));
             else if (pi.PropertyType == typeof(string))

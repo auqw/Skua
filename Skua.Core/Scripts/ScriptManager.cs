@@ -82,6 +82,38 @@ public partial class ScriptManager : ObservableObject, IScriptManager, IDisposab
 
     public bool ShouldExit => ScriptCts?.IsCancellationRequested ?? false;
 
+    /// <summary>
+    /// Sets the server log options from the account's CoreBots Options (Other > Bot Creators Only), or to their defaults
+    /// when it has none. Runs before each script, which can still change them.
+    /// </summary>
+    private void ApplyServerLogOptions()
+    {
+        Dictionary<string, string> cbo = new();
+        try
+        {
+            string path = Path.Combine(ClientFileSources.SkuaOptionsDIR, $"CBO_Storage({_lazyBot.Value.Player.Username}).txt");
+            if (File.Exists(path))
+            {
+                foreach (string line in File.ReadAllLines(path))
+                {
+                    string[] parts = line.Split(':', 2, StringSplitOptions.TrimEntries);
+                    if (parts.Length == 2)
+                        cbo[parts[0]] = parts[1];
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.DebugLog($"Could not read CoreBots Options for the server log options: {ex.Message}");
+        }
+
+        IScriptOption options = _lazyBot.Value.Options;
+        options.LogServerWarnings = Get(ScriptOption.CBOLogServerWarnings, true);
+        options.LogServerMessages = Get(ScriptOption.CBOLogServerMessages, false);
+
+        bool Get(string key, bool fallback) => cbo.TryGetValue(key, out string? value) && bool.TryParse(value, out bool b) ? b : fallback;
+    }
+
     public async Task<Exception?> StartScript()
     {
         lock (_threadLock)
@@ -125,6 +157,7 @@ public partial class ScriptManager : ObservableObject, IScriptManager, IDisposab
             ManualResetEventSlim scriptReady = new(false);
 
             Handlers.Clear();
+            ApplyServerLogOptions();
 
             lock (_stateLock)
             {
